@@ -7,3 +7,20 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: raf-tech-website-content-bucket
+      WebsiteConfiguration:
+        IndexDocument: index.html
+
+  TechWebsiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: TechWebsiteS3Bucket
+      PolicyDocument:
+        Statement:
+          -
+            Sid: "PublicReadGetObject"
+            Effect: "Allow"
+            Principal: "*"
+            Action:
+              - "s3:GetObject"
+            Resource: "arn:aws:s3:::raf-tech-website-content-bucket/*"
