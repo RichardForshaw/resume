@@ -1,0 +1,9 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Stack for running the resume website
+
+Resources:
+  TechWebsiteS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: raf-tech-website-content-bucket
