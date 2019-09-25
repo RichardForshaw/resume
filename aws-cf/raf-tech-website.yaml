@@ -1,4 +1,4 @@
-# Personal Access Token: 104098887dc97ebdff07d78ab6a59c75aaf0f854
+# Personal Access Token: e539025e7ebe8250bfbc20d0904974b64ae10036
 
 
 AWSTemplateFormatVersion: 2010-09-09
@@ -77,7 +77,7 @@ Resources:
                 Repo: resume
                 Branch: master
                 PollForSourceChanges: false
-                OAuthToken: 104098887dc97ebdff07d78ab6a59c75aaf0f854
+                OAuthToken: e539025e7ebe8250bfbc20d0904974b64ae10036
               RunOrder: 1
         -
           Name: Deploy
