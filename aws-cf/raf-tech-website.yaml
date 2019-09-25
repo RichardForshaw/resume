@@ -1,3 +1,6 @@
+# Personal Access Token: 104098887dc97ebdff07d78ab6a59c75aaf0f854
+
+
 AWSTemplateFormatVersion: 2010-09-09
 
 Description: Stack for running the resume website
@@ -24,3 +27,73 @@ Resources:
             Action:
               - "s3:GetObject"
             Resource: "arn:aws:s3:::raf-tech-website-content-bucket/*"
+
+  WebsiteDeploymentRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Description: Role to allow deployment of website data from Source Control to S3
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              Service: codepipeline.amazonaws.com #"arn:aws:iam::801774630682:root"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+      RoleName: raf-tech-website-deployment-role
+
+  WebsiteDeploymentArtifactBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: raf-tech-website-deploy-artifact-bucket
+
+  WebsiteDeploymentPipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: raf-tech-website-deployment-pipeline
+      RoleArn: !GetAtt WebsiteDeploymentRole.Arn
+      ArtifactStore:
+        Type: S3
+        Location:
+          Ref: WebsiteDeploymentArtifactBucket
+      Stages:
+        -
+          Name: Source
+          Actions:
+            -
+              Name: GitHubSourceAction
+              ActionTypeId:
+                Category: Source
+                Owner: ThirdParty
+                Provider: GitHub
+                Version: 1
+              OutputArtifacts:
+                - Name: WebsiteSource
+              Configuration:
+                Owner: RichardForshaw
+                Repo: resume
+                Branch: master
+                PollForSourceChanges: false
+                OAuthToken: 104098887dc97ebdff07d78ab6a59c75aaf0f854
+              RunOrder: 1
+        -
+          Name: Deploy
+          Actions:
+            -
+              Name: S3DeploymentAction
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: S3
+                Version: 1
+              InputArtifacts:
+                - Name: WebsiteSource
+              Configuration:
+                BucketName:
+                  Ref: TechWebsiteS3Bucket
+                Extract: true
+              RunOrder: 1
+
