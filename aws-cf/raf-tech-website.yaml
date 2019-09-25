@@ -64,7 +64,7 @@ Resources:
           Name: Source
           Actions:
             -
-              Name: GitHubSourceAction
+              Name: GithubSourceAction
               ActionTypeId:
                 Category: Source
                 Owner: ThirdParty
@@ -96,4 +96,20 @@ Resources:
                   Ref: TechWebsiteS3Bucket
                 Extract: true
               RunOrder: 1
+
+  WebsiteDeploymentWebhook:
+    Type: AWS::CodePipeline::Webhook
+    Properties:
+      Name: ResumeRepoUpdatedWebhook
+      Authentication: GITHUB_HMAC
+      Filters:
+        -
+          JsonPath: "$.ref"
+          MatchEquals: refs/heads/{Branch}
+      AuthenticationConfiguration:
+        SecretToken: e539025e7ebe8250bfbc20d0904974b64ae10036
+      TargetPipeline:
+        Ref: WebsiteDeploymentPipeline
+      TargetPipelineVersion: 1
+      TargetAction: GithubSourceAction
 
