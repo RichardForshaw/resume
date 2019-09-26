@@ -1,9 +1,14 @@
-# Personal Access Token: e539025e7ebe8250bfbc20d0904974b64ae10036
-
-
+# Template for defining Website and Continuous Deployment pipeline
 AWSTemplateFormatVersion: 2010-09-09
 
 Description: Stack for running the resume website
+
+Parameters:
+  GitHubOAuthAccessToken:
+    Type: String
+    Description: OAuth Token to access the GitHub repo
+    MinLength: 20
+    AllowedPattern: '[a-zA-Z0-9]*'
 
 Resources:
   TechWebsiteS3Bucket:
@@ -38,7 +43,7 @@ Resources:
           -
             Effect: Allow
             Principal:
-              Service: codepipeline.amazonaws.com #"arn:aws:iam::801774630682:root"
+              Service: codepipeline.amazonaws.com
             Action:
               - "sts:AssumeRole"
       ManagedPolicyArns:
@@ -77,7 +82,8 @@ Resources:
                 Repo: resume
                 Branch: master
                 PollForSourceChanges: false
-                OAuthToken: e539025e7ebe8250bfbc20d0904974b64ae10036
+                OAuthToken:
+                  Ref: GitHubOAuthAccessToken
               RunOrder: 1
         -
           Name: Deploy
@@ -107,7 +113,8 @@ Resources:
           JsonPath: "$.ref"
           MatchEquals: refs/heads/{Branch}
       AuthenticationConfiguration:
-        SecretToken: e539025e7ebe8250bfbc20d0904974b64ae10036
+        SecretToken:
+          Ref: GitHubOAuthAccessToken
       TargetPipeline:
         Ref: WebsiteDeploymentPipeline
       TargetPipelineVersion: 1
