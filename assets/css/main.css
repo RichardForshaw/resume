@@ -3165,22 +3165,26 @@ input, select, textarea {
 /* Feature Icons */
 
 	ul.feature-icons {
-		display: flex;
+		/* display: flex; */
 		flex-wrap: wrap;
 		list-style: none;
 		margin: 3rem 0;
 		padding-left: 0;
 	}
 
-		ul.feature-icons:first-child {
+		/* ul.feature-icons:first-child {
 			margin-top: 0;
 		}
+    ul.feature-icons li:nth-child(1), ul.feature-icons li:nth-child(2) {
+      margin-top: 0;
+    }
+    */
 
 		ul.feature-icons li {
-			margin: 2.5rem 0 0 0;
+			margin: 1.0rem 0 0 0;
 			padding: 0.5rem 0 0 4.5rem;
 			position: relative;
-			width: 50%;
+			/* width: 50%; */
 		}
 
 			ul.feature-icons li:before {
@@ -3198,10 +3202,6 @@ input, select, textarea {
 				text-align: center;
 				top: 0;
 				width: 3.25rem;
-			}
-
-			ul.feature-icons li:nth-child(1), ul.feature-icons li:nth-child(2) {
-				margin-top: 0;
 			}
 
 		@media screen and (max-width: 736px) {
