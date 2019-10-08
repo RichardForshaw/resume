@@ -3401,7 +3401,7 @@ input, select, textarea {
 			}
 
 		#wrapper section {
-			margin: 7.5rem 0 0 0;
+			margin: 3rem 0 0 0;
 		}
 
 			#wrapper section > header {
@@ -3410,7 +3410,7 @@ input, select, textarea {
 			}
 
 			#wrapper section > .content {
-				padding: 5rem;
+				padding: 3rem;
 			}
 
 			#wrapper section > footer {
