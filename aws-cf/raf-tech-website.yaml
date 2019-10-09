@@ -4,6 +4,12 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Stack for running the resume website
 
 Parameters:
+  WebsiteName:
+    Type: String
+    Description: The canonical name of the website, used to prefix all associated infrastructure.
+    MinLength: 5
+    MaxLength: 20
+    AllowedPattern: '[a-zA-Z0-9\-]*'
   GitHubOAuthAccessToken:
     Type: String
     Description: OAuth Token to access the GitHub repo
@@ -14,7 +20,7 @@ Resources:
   TechWebsiteS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: raf-tech-website-content-bucket
+      BucketName: !Join [ '', [!Ref WebsiteName, '-website-content-bucket']]
       WebsiteConfiguration:
         IndexDocument: index.html
 
@@ -31,7 +37,7 @@ Resources:
             Principal: "*"
             Action:
               - "s3:GetObject"
-            Resource: "arn:aws:s3:::raf-tech-website-content-bucket/*"
+            Resource: !Join [ '', ['arn:aws:s3:::', !Ref WebsiteName, '-website-content-bucket/*']]
 
   WebsiteDeploymentRole:
     Type: AWS::IAM::Role
@@ -48,17 +54,17 @@ Resources:
               - "sts:AssumeRole"
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonS3FullAccess
-      RoleName: raf-tech-website-deployment-role
+      RoleName: !Join [ '', [!Ref WebsiteName, '-website-deployment-role']]
 
   WebsiteDeploymentArtifactBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: raf-tech-website-deploy-artifact-bucket
+      BucketName: !Join [ '', [!Ref WebsiteName, '-website-deploy-artifact-bucket']]
 
   WebsiteDeploymentPipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
-      Name: raf-tech-website-deployment-pipeline
+      Name: !Join [ '', [!Ref WebsiteName, '-website-deployment-pipeline']]
       RoleArn: !GetAtt WebsiteDeploymentRole.Arn
       ArtifactStore:
         Type: S3
@@ -74,7 +80,7 @@ Resources:
                 Category: Source
                 Owner: ThirdParty
                 Provider: GitHub
-                Version: 1
+                Version: '1'
               OutputArtifacts:
                 - Name: WebsiteSource
               Configuration:
@@ -94,7 +100,7 @@ Resources:
                 Category: Deploy
                 Owner: AWS
                 Provider: S3
-                Version: 1
+                Version: '1'
               InputArtifacts:
                 - Name: WebsiteSource
               Configuration:
