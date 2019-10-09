@@ -46,6 +46,10 @@ On the GitHub side, once you know the URL, you create the webhook call in your p
 
 ## Parameterising the CloudFormation
 
+In the initial CloudFormation, there is a bunch of project-specific information. It is fairly easy to see that if we remove this, we have a fairly generic CloudFormation template which could be used to roll out many S3-website-pipeline-webhook patterns which can be configured for different projects.
+
+In order to parameterise the CloudFormation, simply add a 'Parameters' section to the top which defines them.
+
 ## CloudFormation Linting
 
 ## CloudWatch and Error Notification
