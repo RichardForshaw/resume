@@ -41,6 +41,16 @@ This requires a 2-step process of creating a URL endpoint and also telling GitHu
 
 On the GitHub side, once you know the URL, you create the webhook call in your project settings. The Gotcha is that you need to specify the URL payload as *JSON*.
 
+## Routing
+
+This was a tricky bit, mainly because I had a custom domain. I could have simply created a record in my domain provider to point at the S3 bucket, but then if anything about the bucket had changed I would have had to update manually, as well as update it manually in the first place... where is the automation in that?
+
+Instead, I set up a hosted zone in Route53 with Nameservers that I pointed my domain provider to, and created a record to point to my S3-hosted website.
+
+This is where things became a bit unstuck... Firstly the documentation is a bit wacky around how to set up the alias record. It turns out you have to use some hardcoded hosted zone IDs and region-specific endpoint names in your CloudFormation, which was not straightforward to understand. Secondly, an important part of the puzzle to get this DNS routing to work is that _your S3 bucket name has to have the same name as the *URL you wish to access it* with_. I found this snippet buried away in a support forum - I'm not sure where it is in the documentation.
+
+Fortunately, because everything is code, I just added a parameter and referenced it through the CloudFormation, and then ran update-stack. After some messing about with deleting a non-empty bucket (gotcha) then everything was fine.
+
 
 # Advanced
 
@@ -48,8 +58,16 @@ On the GitHub side, once you know the URL, you create the webhook call in your p
 
 In the initial CloudFormation, there is a bunch of project-specific information. It is fairly easy to see that if we remove this, we have a fairly generic CloudFormation template which could be used to roll out many S3-website-pipeline-webhook patterns which can be configured for different projects.
 
-In order to parameterise the CloudFormation, simply add a 'Parameters' section to the top which defines them.
+In order to parameterise the CloudFormation, simply add a 'Parameters' section to the top which defines them. This allows us to do thinks like define a root name for the project which we can prepend to all the infrastructure.
+
+We can put these parameters into a file, but it is unsafe to store things like OAuth tokens in a file like this.
 
 ## CloudFormation Linting
 
+This can be done with a simple program like `cfn-lint` for python. This will go through your template and let you know if you have any errors.
+
+A neat way to do this is to download a docker image that has a slim version of Python installed and run the command from there, if you don't want python packages to pollute your local environment.
+
 ## CloudWatch and Error Notification
+
+### Sub: Re-creating the site if it is accidentally deleted!
