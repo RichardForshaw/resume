@@ -10,6 +10,12 @@ Parameters:
     MinLength: 5
     MaxLength: 20
     AllowedPattern: '[a-zA-Z0-9\-]*'
+  WebsiteURL:
+    Type: String
+    Description: The intended URL of the website. This is required for accessing S3 website with custom domains.
+    MinLength: 7
+    MaxLength: 40
+    AllowedPattern: '[a-zA-Z0-9\-\.]*'
   GitHubOAuthAccessToken:
     Type: String
     Description: OAuth Token to access the GitHub repo
@@ -20,7 +26,7 @@ Resources:
   TechWebsiteS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Join [ '', [!Ref WebsiteName, '-website-content-bucket']]
+      BucketName: !Ref WebsiteURL
       WebsiteConfiguration:
         IndexDocument: index.html
 
@@ -37,7 +43,27 @@ Resources:
             Principal: "*"
             Action:
               - "s3:GetObject"
-            Resource: !Join [ '', ['arn:aws:s3:::', !Ref WebsiteName, '-website-content-bucket/*']]
+            Resource: !Join [ '', ['arn:aws:s3:::', !Ref WebsiteURL, '/*']]
+
+  TechWebsiteHostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      HostedZoneConfig:
+        Comment: "Domain registered at hover.com"
+      Name: !Ref WebsiteURL
+
+  TechWebsiteRouting:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId:
+        Ref: TechWebsiteHostedZone
+      Name: !Ref WebsiteURL
+      Comment: Alias records for S3 website bucket
+      Type: A
+      AliasTarget:
+        DNSName: s3-website-ap-southeast-1.amazonaws.com  # From AWS Service Endpoint Documentation
+        HostedZoneId: Z3O0J2DXBE1FTB                      # From AWS Service Endpoint Documentation
+
 
   WebsiteDeploymentRole:
     Type: AWS::IAM::Role
