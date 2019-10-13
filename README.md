@@ -38,8 +38,13 @@ The website is designed to be hosted on S3, as designed and deployed by myself. 
 The infrastructure stack is expressed as Cloudformation in the `aws-cf` folder. The current stack name is: `raf-tech-website-stack`. To create it:
 
 ```
-aws --profile <your cred profile> --region <target region> cloudformation create-stack --stack-name raf-tech-website-stack --template-body file://aws-cf/raf-tech-website.yaml
+aws --profile <your cred profile> --region <target region> cloudformation create-stack --stack-name raf-tech-website-stack --template-body file://aws-cf/raf-tech-website.yaml --parameters file://filename.json
 ```
+
+Note that you need to provide:
+ * WebsiteName
+ * GitHubOAuthAccessToken
+
 
 ### Services:
 
