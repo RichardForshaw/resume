@@ -47,7 +47,7 @@ This was a tricky bit, mainly because I had a custom domain. I could have simply
 
 Instead, I set up a hosted zone in Route53 with Nameservers that I pointed my domain provider to, and created a record to point to my S3-hosted website.
 
-This is where things became a bit unstuck... Firstly the documentation is a bit wacky around how to set up the alias record. It turns out you have to use some hardcoded hosted zone IDs and region-specific endpoint names in your CloudFormation, which was not straightforward to understand. Secondly, an important part of the puzzle to get this DNS routing to work is that _your S3 bucket name has to have the same name as the *URL you wish to access it* with_. I found this snippet buried away in a support forum - I'm not sure where it is in the documentation.
+This is where things became a bit unstuck... Firstly the documentation is a bit wacky around how to set up the alias record. It turns out you have to use some hardcoded hosted zone IDs and region-specific endpoint names in your CloudFormation, which was not straightforward to understand. Secondly, an important part of the puzzle to get this DNS routing to work is that _your S3 bucket name has to have the same name as the *URL you wish to access it* with_. I found this snippet buried away in a support forum - (It's actually hidden away in this bit of doco: https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/RoutingToS3Bucket.html).
 
 Fortunately, because everything is code, I just added a parameter and referenced it through the CloudFormation, and then ran update-stack. After some messing about with deleting a non-empty bucket (gotcha) then everything was fine.
 
