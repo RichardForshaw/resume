@@ -209,3 +209,9 @@ Resources:
           Arn: !Ref PipelineFailureNotificationTopic
           Id: !Join [ '', [!Ref WebsiteName, '-deploy-pipeline-topic']]
           InputPath: '$.detail'
+
+
+Outputs:
+  WebsiteDeployWebhookTriggerURL:
+    Description: The URL for the webhook to trigger when website repo is updated
+    Value: !GetAtt WebsiteDeploymentWebhook.Url
