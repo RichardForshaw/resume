@@ -70,4 +70,12 @@ A neat way to do this is to download a docker image that has a slim version of P
 
 ## CloudWatch and Error Notification
 
+A Cloudwatch event rule can be set up to listen for failures of all or part of your code pipeline. This is fairly straightforward, but there are a few gotchas...
+ - CloudWatch event groups have to be prefixed by `/aws/events/` it seems
+ - In order to publish to an SNS topic, CloudWatch Events have to be granted the appropriate permissions
+
+Once these are solved, the cloudwatch rule can be created to match specific events based on some of its published details, and then both log the event and also publish the event (or part of it) to SNS where it can be distributed to subscriber endpoints. Again, this can all be defined in cloudformation.
+
+(More advanced: this can form a different cloudformation template which uses outputs of the web stack template)
+
 ### Sub: Re-creating the site if it is accidentally deleted!
