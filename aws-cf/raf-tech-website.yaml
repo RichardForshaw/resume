@@ -21,6 +21,11 @@ Parameters:
     Description: OAuth Token to access the GitHub repo
     MinLength: 20
     AllowedPattern: '[a-zA-Z0-9]*'
+  AlertTargetPhoneNumber:
+    Type: String
+    Description: The SMS-enabled phone number for receiving alert notifications
+    MinLength: 10
+    AllowedPattern: '\+[0-9]*'
 
 Resources:
   TechWebsiteS3Bucket:
@@ -152,3 +157,55 @@ Resources:
       TargetPipelineVersion: 1
       TargetAction: GithubSourceAction
 
+  PipelineFailureNotificationTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Join [ '', [ !Ref WebsiteName, '-pipeline-failure-topic']]
+      DisplayName: !Join [ '', [ 'Pipeline failure notification topic for ', !Ref WebsiteName]]
+
+  PipelineEventTopicPolicy:
+    Type: 'AWS::SNS::TopicPolicy'
+    Properties:
+      PolicyDocument:
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: 'sns:Publish'
+            Resource: !Ref PipelineFailureNotificationTopic
+      Topics:
+        - !Ref PipelineFailureNotificationTopic
+
+  PipelineFailureTopicSMSSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: !Ref AlertTargetPhoneNumber
+      Protocol: sms
+      TopicArn: !Ref PipelineFailureNotificationTopic
+
+  PipelineLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Join [ '', [ '/aws/events/', !Ref WebsiteName, '-deploy-pipeline-group']]  # Seem to have to specify /aws/events/ here
+      RetentionInDays: 30
+
+  PipelineSourceFailureRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: Catch pipeline source failure events and send to log
+      Name: TechWebsitePipelineSourceFailures
+      EventPattern:
+        source: [ "aws.codepipeline" ]
+        detail-type: [ "CodePipeline Stage Execution State Change" ]
+        detail:
+          state: [ "FAILED" ]
+          pipeline: [ !Ref WebsiteDeploymentPipeline ]
+      Targets:
+        -
+          Arn: !GetAtt PipelineLogGroup.Arn
+          Id: !Join [ '', [!Ref WebsiteName, '-deploy-pipeline-group']]
+        -
+          Arn: !Ref PipelineFailureNotificationTopic
+          Id: !Join [ '', [!Ref WebsiteName, '-deploy-pipeline-topic']]
+          InputPath: '$.detail'
