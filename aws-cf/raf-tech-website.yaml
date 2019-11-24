@@ -10,7 +10,7 @@ Parameters:
     MinLength: 5
     MaxLength: 20
     AllowedPattern: '[a-zA-Z0-9\-]*'
-  WebsiteURL:
+  WebsiteBaseURL:
     Type: String
     Description: The intended URL of the website. This is required for accessing S3 website with custom domains.
     MinLength: 7
@@ -31,7 +31,7 @@ Resources:
   TechWebsiteS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Ref WebsiteURL
+      BucketName: !Join [ '', [ 'www.', !Ref WebsiteBaseURL]]
       WebsiteConfiguration:
         IndexDocument: index.html
 
@@ -48,27 +48,35 @@ Resources:
             Principal: "*"
             Action:
               - "s3:GetObject"
-            Resource: !Join [ '', ['arn:aws:s3:::', !Ref WebsiteURL, '/*']]
+            Resource: !Join [ '', [!GetAtt TechWebsiteS3Bucket.Arn, '/*']]
 
+  TechWebsiteS3ForwardingBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref WebsiteBaseURL
+      WebsiteConfiguration:
+        RedirectAllRequestsTo:
+          HostName: !Join [ '', [ 'www.', !Ref WebsiteBaseURL]]
+
+  # DO I NEED THIS???
   TechWebsiteHostedZone:
     Type: AWS::Route53::HostedZone
     Properties:
       HostedZoneConfig:
         Comment: "Domain registered at hover.com"
-      Name: !Ref WebsiteURL
+      Name: !Ref WebsiteBaseURL
 
   TechWebsiteRouting:
     Type: AWS::Route53::RecordSet
     Properties:
       HostedZoneId:
         Ref: TechWebsiteHostedZone
-      Name: !Ref WebsiteURL
-      Comment: Alias records for S3 website bucket
+      Name: !Join [ '', [ 'www.', !Ref WebsiteBaseURL]]   # For 'www' lookup
+      Comment: Alias 'www' records for S3 website bucket
       Type: A
       AliasTarget:
         DNSName: s3-website-ap-southeast-1.amazonaws.com  # From AWS Service Endpoint Documentation
         HostedZoneId: Z3O0J2DXBE1FTB                      # From AWS Service Endpoint Documentation
-
 
   WebsiteDeploymentRole:
     Type: AWS::IAM::Role
