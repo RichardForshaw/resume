@@ -51,6 +51,10 @@ This is where things became a bit unstuck... Firstly the documentation is a bit 
 
 Fortunately, because everything is code, I just added a parameter and referenced it through the CloudFormation, and then ran update-stack. After some messing about with deleting a non-empty bucket (gotcha) then everything was fine.
 
+### Routing both sites
+
+This is a simple method of having one bucket that routes to another. The root domain appears to try to route to an S3 bucket that is called the same as the domain (but I'm not sure why this happens). Since there isn't one, we just have to create one which redirects everything to the `www` bucket, which does have the website content.
+
 
 # Advanced
 
@@ -79,3 +83,18 @@ Once these are solved, the cloudwatch rule can be created to match specific even
 (More advanced: this can form a different cloudformation template which uses outputs of the web stack template)
 
 ### Sub: Re-creating the site if it is accidentally deleted!
+
+I did test this because I had to rename the bucket. Deleting the bucket, re-running the cloud formation and then running the pipeline all works fine and the site is re-deployed in a few minutes.
+
+## Future:
+
+### Trigger pipeline run on bucket creation, in case you have to recreate the bucket.
+
+### Split into 2 repos
+
+Because submitting changes to the Stack shouldn't really cause the pipeline to re-run (unless you are doing some inception stuff). So they are dependent on each other but only one way.
+
+### But sensitive keys into secure storage
+
+Because even though the parameters are only local, some of them should probably be checked in with the pipeline (or maybe the website code), and some (like API keys) end up being visible on the stack information page.
+
