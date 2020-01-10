@@ -221,5 +221,17 @@ Resources:
 
 Outputs:
   WebsiteDeployWebhookTriggerURL:
-    Description: The URL for the webhook to trigger when website repo is updated
+    Description: The URL for the webhook to trigger when website repo is updated (Not cross-stack)
     Value: !GetAtt WebsiteDeploymentWebhook.Url
+
+  TechWebsiteHostedZoneID:
+    Description: Cross-Stack export of Hosted Zone ID of this Route53 Stack
+    Value: !Ref TechWebsiteHostedZone
+    Export:
+        Name: !Sub "${AWS::StackName}-HostedZoneID"
+
+  TechWebsiteRootDomainURL:
+    Description: Cross-Stack export of Route53 root domain
+    Value: !Ref WebsiteBaseURL
+    Export:
+        Name: !Sub "${AWS::StackName}-RootDomainURL"
