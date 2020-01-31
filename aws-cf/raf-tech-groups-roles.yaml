@@ -3,6 +3,58 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: Cloudformation for accounts and roles within the forshaw.tech account
 
 Resources:
+  ReceiptTrackingDeveloperGroup:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: ReceiptTrackingDeveloperGroup
+      Policies:
+        - PolicyName: AssumeRolePolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Resource:
+                  - 'arn:aws:iam::801774630682:role/Receipt-Tracking*'
+                Action:
+                  - 'sts:AssumeRole'
+
+  ServerlessDeploymentGroup:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: ServerlessDeploymentGroup
+      Policies:
+        - PolicyName: ServerlessDeploymentPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Resource:
+                  - 'arn:aws:cloudformation:us-west-2:801774630682:stack/*/*'
+                Action:
+                  - 'cloudformation:DescribeStack*'
+                  - 'cloudformation:CreateStack'
+                  - 'cloudformation:UpdateStack'
+                  - 'cloudformation:DeleteStack'
+                  - 'cloudformation:ListStack*'
+              - Effect: Allow
+                Action:
+                  - 'cloudformation:ValidateTemplate'
+                Resource:
+                  - '*'
+              - Effect: Allow
+                Action:
+                  - 'lambda:*'
+                Resource:
+                  - 'arn:aws:lambda:*:801774630682:*:*'
+              - Effect: Allow
+                Resource:
+                  - 'arn:aws:iam::801774630682:role/Receipt-Bot-Serverless*'
+                Action:
+                  - 'sts:AssumeRole'
+                  - 'iam:PassRole'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+
   ReceiptTrackingDeveloperRole:
     Type: AWS::IAM::Role
     Properties:
@@ -21,4 +73,44 @@ Resources:
         - arn:aws:iam::aws:policy/AmazonSESFullAccess
         - arn:aws:iam::aws:policy/AmazonSNSFullAccess
         - arn:aws:iam::aws:policy/AmazonS3FullAccess
+
+  ReceiptBotServerlessDeploymentRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: Receipt-Bot-Serverless-Deploy-Role
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - 'arn:aws:iam::801774630682:root'
+              Service:
+                - 'cloudformation.amazonaws.com'
+                - 'lambda.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
+      Policies:
+        - PolicyName: ServerlessDeployPolicies
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow   # Allow all IAM actions to roles prefixed with sls-
+                Resource:
+                  - 'arn:aws:iam::801774630682:role/sls-*'
+                Action:
+                  - 'iam:*'
+              - Effect: Allow   # Allow all S3 actions to buckets prefixed with sls-
+                Resource:
+                  - 'arn:aws:s3:::sls-*'
+                Action:
+                  - 's3:*'
+              - Effect: Allow   # Allow all lambda & iam actions to functions prefixed with sls-
+                Resource:
+                  - 'arn:aws:lambda:*:801774630682:function:sls-*'
+                Action:
+                  - 'lambda:*'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
 
