@@ -114,3 +114,48 @@ Resources:
         - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
 
+  TechWebsiteServerlessDeploymentRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: Tech-Web-Serverless-Deploy-Role
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - 'arn:aws:iam::801774630682:root'
+              Service:
+                - 'cloudformation.amazonaws.com'
+                - 'lambda.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
+      Policies:
+        - PolicyName: ServerlessDeployPolicies
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow   # Allow all IAM actions to roles prefixed with service
+                Resource:
+                  - 'arn:aws:iam::801774630682:role/wwwstatuscheck-*'
+                Action:
+                  - 'iam:*'
+              - Effect: Allow   # Allow all S3 actions to buckets prefixed with service
+                Resource:
+                  - 'arn:aws:s3:::wwwstatuscheck-*'
+                Action:
+                  - 's3:*'
+              - Effect: Allow   # Allow all lambda & iam actions to functions prefixed with service
+                Resource:
+                  - 'arn:aws:lambda:ap-southeast-1:801774630682:function:wwwstatuscheck-*'
+                Action:
+                  - 'lambda:*'
+              - Effect: Allow   # Allow all events (for scheduling) actions to functions prefixed with service
+                Resource:
+                  - 'arn:aws:events:ap-southeast-1:801774630682:rule/wwwstatuscheck-*'
+                Action:
+                  - 'events:*'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+
