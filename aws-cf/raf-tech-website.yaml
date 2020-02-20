@@ -235,3 +235,9 @@ Outputs:
     Value: !Ref WebsiteBaseURL
     Export:
         Name: !Sub "${AWS::StackName}-RootDomainURL"
+
+  TechWebsiteFailureNotificationTopicARN:
+    Description: ARN of the SNS topic for notifying of failures
+    Value: !Ref PipelineFailureNotificationTopic
+    Export:
+      Name: !Sub "${AWS::StackName}-FailureNotificationTopic"
