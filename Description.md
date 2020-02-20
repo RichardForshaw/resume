@@ -82,9 +82,21 @@ Once these are solved, the cloudwatch rule can be created to match specific even
 
 (More advanced: this can form a different cloudformation template which uses outputs of the web stack template)
 
+### Website health monitoring
+
+This can be achieved very simply by adding a lambda which simply retrieves the site and checks for a `200:OK` status. Because it is a static website there is not much else you can do, except perhaps check that the size of the page is not really small (e.g. it's accidentally been deleted...). This can then raise an SNS notification (which can send you a text).
+
+This was done with the serverless framework, which is a very simple deployment (in fact using SLS might be overkill, but it's simpler for a developer!). The main requirements are:
+ - Need to set up a timer
+ - Lambda needs permission to write to the SNS queue
+ - Lambda needs access to the SNS queue ARN to use
+ - Use a few environment variables
+
 ### Sub: Re-creating the site if it is accidentally deleted!
 
 I did test this because I had to rename the bucket. Deleting the bucket, re-running the cloud formation and then running the pipeline all works fine and the site is re-deployed in a few minutes.
+
+Following on from the above health monitor, if the site returns a code which indicates the site is not there (404 maybe?) then the lambda could also kick off the pipeline deployment again.
 
 ## Future:
 
