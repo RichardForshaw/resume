@@ -106,7 +106,9 @@ Following on from the above health monitor, if the site returns a code which ind
 
 Because submitting changes to the Stack shouldn't really cause the pipeline to re-run (unless you are doing some inception stuff). So they are dependent on each other but only one way.
 
-### But sensitive keys into secure storage
+### Put sensitive keys into secure storage
 
 Because even though the parameters are only local, some of them should probably be checked in with the pipeline (or maybe the website code), and some (like API keys) end up being visible on the stack information page.
+
+## Best Practices???
 
