@@ -1,0 +1,13 @@
+<div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        {% for nav_item in nav %}
+        {% if nav_item.children %}
+            <li class="first-level active">{{ nav_item.title }}</a></li>
+            {% for nav_item in nav_item.children %}
+            <li class="second-level active"><a href="{{ nav_item.url }}">{{ nav_item.title }}</a></li>
+            {%- endfor %}
+        {% endif %}
+        {%- endfor %}
+    </ul>
+</div>
+

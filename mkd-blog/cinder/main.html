@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{#
+The entry point for the MkDocs Theme.
+
+Any theme customisations should override this file to redefine blocks defined in
+the various templates. The custom theme should only need to define a main.html
+which `{% extends "base.html" %}` and defines various blocks which will replace
+the blocks defined in base.html and its included child templates.
+#}
+
+{# Override content block #}
+{% block content %}
+{% if page.meta.disable_toc %}
+<div class="col-md-3">{% include "article-list.html" %}</div>
+<div class="col-md-9" role="main">{% include "content.html" %}</div>
+{% else %}
+<div class="col-md-3">{% include "toc.html" %}</div>
+<div class="col-md-9" role="main">{% include "content.html" %}</div>
+{% endif %}
+{% endblock %}

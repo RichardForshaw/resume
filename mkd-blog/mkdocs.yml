@@ -1,0 +1,10 @@
+site_name: Forshaw.Tech
+site_url: http://www.forshaw.tech/blog/
+
+site_author: Richard Forshaw
+
+theme:
+    name: null
+    custom_dir: cinder
+    colorscheme: sunburst
+
