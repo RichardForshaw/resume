@@ -1,4 +1,4 @@
-# Overview of hosting a static website on S3
+# Overview of hosting a static website with continuous delivery on S3
 
 This file provides an overview of the steps taken to host a website on AWS S3.
 
@@ -55,10 +55,15 @@ Fortunately, because everything is code, I just added a parameter and referenced
 
 This is a simple method of having one bucket that routes to another. The root domain appears to try to route to an S3 bucket that is called the same as the domain (but I'm not sure why this happens). Since there isn't one, we just have to create one which redirects everything to the `www` bucket, which does have the website content.
 
+## How long did this take?
+
+Because I experienced a bit of pain with the IAM roles and the routing, setting up the basic hosting and delivery pipeline probably took about a day. Which in the scheme of things is not a long time. If I had to set it up again it would probably take half as long.
 
 # Advanced
 
-## Parameterising the CloudFormation
+## Good practices
+
+### Parameterising the CloudFormation
 
 In the initial CloudFormation, there is a bunch of project-specific information. It is fairly easy to see that if we remove this, we have a fairly generic CloudFormation template which could be used to roll out many S3-website-pipeline-webhook patterns which can be configured for different projects.
 
@@ -66,13 +71,15 @@ In order to parameterise the CloudFormation, simply add a 'Parameters' section t
 
 We can put these parameters into a file, but it is unsafe to store things like OAuth tokens in a file like this.
 
-## CloudFormation Linting
+### CloudFormation Linting
 
 This can be done with a simple program like `cfn-lint` for python. This will go through your template and let you know if you have any errors.
 
 A neat way to do this is to download a docker image that has a slim version of Python installed and run the command from there, if you don't want python packages to pollute your local environment.
 
-## CloudWatch and Error Notification
+## Monitoring
+
+### CloudWatch and Error Notification
 
 A Cloudwatch event rule can be set up to listen for failures of all or part of your code pipeline. This is fairly straightforward, but there are a few gotchas...
  - CloudWatch event groups have to be prefixed by `/aws/events/` it seems
@@ -97,6 +104,10 @@ This was done with the serverless framework, which is a very simple deployment (
 I did test this because I had to rename the bucket. Deleting the bucket, re-running the cloud formation and then running the pipeline all works fine and the site is re-deployed in a few minutes.
 
 Following on from the above health monitor, if the site returns a code which indicates the site is not there (404 maybe?) then the lambda could also kick off the pipeline deployment again.
+
+### How long did this take?
+
+Cloudwatch was a bit tricky, and had a few manual steps, but once that was solved, it took maybe 2 hours total. The lambda probably took less than 2 hours.
 
 ## Future:
 
