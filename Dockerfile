@@ -7,7 +7,8 @@ FROM amaysim/serverless:1.60.0
 
 # Install python packages
 RUN pip3 install --no-cache --upgrade \
-	boto3
+	boto3  \
+    mkdocs
 
 # For access to web testing
 EXPOSE 8000
