@@ -26,6 +26,11 @@ Parameters:
     Description: The SMS-enabled phone number for receiving alert notifications
     MinLength: 10
     AllowedPattern: '\+[0-9]*'
+  CodeBuildProjectName:
+    Type: String
+    Description: Name of the build project for the Build Pipeline to access
+    MinLength: 8
+    AllowedPattern: '[a-zA-Z0-9\-]*'
 
 Resources:
   TechWebsiteS3Bucket:
@@ -93,6 +98,7 @@ Resources:
               - "sts:AssumeRole"
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/AWSCodeBuildDeveloperAccess
       RoleName: !Join [ '', [!Ref WebsiteName, '-website-deployment-role']]
 
   WebsiteDeploymentArtifactBucket:
@@ -131,6 +137,24 @@ Resources:
                   Ref: GitHubOAuthAccessToken
               RunOrder: 1
         -
+          Name: Static-Build
+          Actions:
+            -
+              Name: StaticBuildAction
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: '1'
+              InputArtifacts:
+                - Name: WebsiteSource
+              OutputArtifacts:
+                - Name: WebsiteBuild
+              Configuration:
+                ProjectName:
+                  Ref: CodeBuildProjectName
+              RunOrder: 1
+        -
           Name: Deploy
           Actions:
             -
@@ -141,7 +165,7 @@ Resources:
                 Provider: S3
                 Version: '1'
               InputArtifacts:
-                - Name: WebsiteSource
+                - Name: WebsiteBuild
               Configuration:
                 BucketName:
                   Ref: TechWebsiteS3Bucket

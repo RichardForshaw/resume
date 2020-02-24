@@ -53,17 +53,23 @@ Resources:
     Properties:
       Name: raf-tech-website-codebuild
       Source:
-        Type: S3
-        Location: raf-tech-website-deploy-artifact-bucket/codebuildtest.zip
+        Type: CODEPIPELINE
       Environment:
         Image: aws/codebuild/amazonlinux2-x86_64-standard:2.0
         ComputeType: BUILD_GENERAL1_SMALL   # the free one
         Type: LINUX_CONTAINER
       ServiceRole: !GetAtt RafTechCodeBuildServiceRole.Arn
       Artifacts:
-        Type: S3
-        Location: www.forshaw.tech
-        Name: /
-        Path: CodeBuildOutput
-        EncryptionDisabled: true
-        NamespaceType: BUILD_ID
+        Type: CODEPIPELINE
+        # Uncomment if you want to put this back to 'manual' build
+        # Type: S3
+        # Location: www.forshaw.tech
+        # Name: /
+        # Path: CodeBuildOutput
+        # EncryptionDisabled: true
+        # NamespaceType: BUILD_ID
+
+Outputs:
+  CodeBuildProjectName:
+    Description: Name of the CodeBuild project which builds the static website
+    Value: !Ref WebsiteBlogBuild
