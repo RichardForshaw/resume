@@ -109,6 +109,28 @@ Following on from the above health monitor, if the site returns a code which ind
 
 Cloudwatch was a bit tricky, and had a few manual steps, but once that was solved, it took maybe 2 hours total. The lambda probably took less than 2 hours.
 
+## A better DevOps example: adding a build step
+
+In order to demonstrate DevOps practices more advanced than just copying a repo to an S3 bucket, I decided to use a static website generator to convert my blog articles into a website and host them in the same location. And of course use it to deploy website updates.
+
+### CodePipeline and CodeBuild
+
+First up was creating a codebuild to perform the simple task of generating the static site. I did this by using MKDocs, a python-based static site generator, and then used CodeBuild to perform it in my DevOps CD pipeline.
+
+Codebuild is fairly simple with CloudFormation, however as with most services you need to define a ServiceRole, and it takes a bit of time to make sure that you grant the role the appropriate permissions. In our case we just need access to creating logs and the S3 buckets where the source and output artifacts are hosted.
+
+Gotcha: You need separate permissions for the Bucket and the Bucket Contents, since these are different actions.
+
+Setting up a buildspec is also fairly straightforward; the main thing is to specify the build envronment (python), install libraries that you need for the build (MKDocs), and then list the build steps.
+
+Gotcha: If you want to use the `**/*` glob to copy the whole directory as the output artifact it needs to be quoted: `"**/*"`.
+
+Downside: When debugging CodeBuild and the `buildspec.yml` file, it can be a bit painful as you will need to keep uploading your source ZIP file and invoking CodeBuild to check the output. However there is the ability to run the build locally.
+
+### Integrating with CodePipeline
+
+
+
 ## Future:
 
 ### Trigger pipeline run on bucket creation, in case you have to recreate the bucket.
