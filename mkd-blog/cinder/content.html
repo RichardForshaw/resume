@@ -7,6 +7,12 @@
 {% endif %}
 
 <h1>{{ page.title }}</h1>
-Written {{ page.meta.revision_date }}
+
+{% if page.meta.disable_toc %}
+{# Likely to be main landing page #}
+Last deployed: {{ page.meta.revision_date }}
+{% else %}
+Published: {{ page.meta.revision_date }}
+{% endif %}
 <hr>
 {{ page.content }}

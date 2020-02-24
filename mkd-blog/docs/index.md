@@ -1,5 +1,6 @@
 ---
 disable_toc: true
+revision_date: ##sed_date_here##
 ---
 
 # Forshaw.Tech Blog
