@@ -1,0 +1,69 @@
+# Template for defining the Website Continuous Deployment build step
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Stack for running the resume website
+
+Resources:
+  RafTechCodeBuildServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: ['sts:AssumeRole']
+          Effect: Allow
+          Principal:
+            Service: [codebuild.amazonaws.com]
+        Version: '2012-10-17'
+      Path: /
+      Policies:
+        - PolicyName: CodeBuildS3BucketAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Action:
+                - 's3:List*'
+                - 's3:GetBucket*'
+                Effect: Allow
+                Resource:
+                  - 'arn:aws:s3:::raf-tech-website-deploy-artifact-bucket'
+                  - 'arn:aws:s3:::www.forshaw.tech'
+        - PolicyName: CodeBuildS3Access
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Action:
+                - 's3:Get*'
+                - 's3:Put*'
+                Effect: Allow
+                Resource:
+                  - 'arn:aws:s3:::raf-tech-website-deploy-artifact-bucket/*'
+                  - 'arn:aws:s3:::www.forshaw.tech/*'
+        - PolicyName: CodeBuildLogs
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Action:
+                - 'logs:*'
+                Effect: Allow
+                Resource:
+                  - !Join [ '', ['arn:aws:logs:ap-southeast-1:', !Ref 'AWS::AccountId', ':log-group:*']]
+
+  WebsiteBlogBuild:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: raf-tech-website-codebuild
+      Source:
+        Type: S3
+        Location: raf-tech-website-deploy-artifact-bucket/codebuildtest.zip
+      Environment:
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:2.0
+        ComputeType: BUILD_GENERAL1_SMALL   # the free one
+        Type: LINUX_CONTAINER
+      ServiceRole: !GetAtt RafTechCodeBuildServiceRole.Arn
+      Artifacts:
+        Type: S3
+        Location: www.forshaw.tech
+        Name: /
+        Path: CodeBuildOutput
+        EncryptionDisabled: true
+        NamespaceType: BUILD_ID
