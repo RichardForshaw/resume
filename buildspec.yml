@@ -13,6 +13,7 @@ phases:
   build:
     commands:
       - echo Build started on `date`
+      - if [[ "${INJECT_BUILD_FAILURE" ]]; then exit 1; fi
       - cd mkd-blog
       - sed -i "s/##sed_date_here##/`date +"%Y-%m-%d %H:%M"`/" docs/index.md
       - mkdocs build -d ../blog
