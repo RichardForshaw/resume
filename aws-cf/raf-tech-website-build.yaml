@@ -16,6 +16,7 @@ Resources:
         Version: '2012-10-17'
       Path: /
       Policies:
+        # uncomment other buckets if running codebuild directly (not in CodePipeline)
         - PolicyName: CodeBuildS3BucketAccess
           PolicyDocument:
             Version: '2012-10-17'
@@ -26,7 +27,7 @@ Resources:
                 Effect: Allow
                 Resource:
                   - 'arn:aws:s3:::raf-tech-website-deploy-artifact-bucket'
-                  - 'arn:aws:s3:::www.forshaw.tech'
+                  # - 'arn:aws:s3:::www.forshaw.tech'
         - PolicyName: CodeBuildS3Access
           PolicyDocument:
             Version: '2012-10-17'
@@ -37,7 +38,7 @@ Resources:
                 Effect: Allow
                 Resource:
                   - 'arn:aws:s3:::raf-tech-website-deploy-artifact-bucket/*'
-                  - 'arn:aws:s3:::www.forshaw.tech/*'
+                  # - 'arn:aws:s3:::www.forshaw.tech/*'
         - PolicyName: CodeBuildLogs
           PolicyDocument:
             Version: '2012-10-17'

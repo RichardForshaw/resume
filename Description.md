@@ -125,11 +125,15 @@ Setting up a buildspec is also fairly straightforward; the main thing is to spec
 
 Gotcha: If you want to use the `**/*` glob to copy the whole directory as the output artifact it needs to be quoted: `"**/*"`.
 
+Gotcha: Because we are deploying to a public Web-site S3 bucket, you need to turn off encryption, otherwise no-one will be able to read it!
+
 Downside: When debugging CodeBuild and the `buildspec.yml` file, it can be a bit painful as you will need to keep uploading your source ZIP file and invoking CodeBuild to check the output. However there is the ability to run the build locally.
 
 ### Integrating with CodePipeline
 
+Integration with CodePipeline is simple; you just have to change the `Source` and `Artifact` types to be `CODEPIPELINE` and it just works. CodePipeline takes care of passing the artefacts between stages. Note that you still need a deployment stage because CodeBuild will not longer write to your chosen artifact deployment bucket - instead it passes it on to CodePipeline.
 
+The service role becomes slightly simpler in this case as CodeBuild no longer needs to access anything other than the artifact bucket.
 
 ## Future:
 
