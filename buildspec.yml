@@ -14,8 +14,12 @@ phases:
     commands:
       - echo Build started on `date`
       - cd mkd-blog
+      - sed -i "s/##sed_date_here##/`date +"%Y-%m-%d %H:%M"`/" docs/index.md
       - mkdocs build -d ../blog
       - cd ..
+      - rm -r mkd-blog  # Un-needed
+      - rm -r sls       # Un-needed
+      - rm -r aws-cf    # Un-needed
   post_build:
     commands:
       - echo Build completed on `date`
