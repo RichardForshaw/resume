@@ -63,6 +63,6 @@ The SCRUM Fieldbook refers to this behaviour in one section called "Rules Should
 
 ## Summary
 
-These are the three key problems that I took from reading the SCRUM Fieldbook as the biggest causes of the failure rates mentioned above. Hopefully you can see how these issues can map to the three definitions of project failure: Misunderstanding of problem complexity lead to delivering the wrong thing, and decision latency and stagnant processes both lead to time and budget problems. So how does Scrum deal with these? Stay tuned for the next part!
+These are the three key problems that I took from reading the SCRUM Fieldbook as the biggest causes of the failure rates mentioned above. Hopefully you can see how these issues can map to the three definitions of project failure: Misunderstanding of problem complexity lead to delivering the wrong thing, and decision latency and stagnant processes both lead to time and budget problems. So how does Scrum deal with these? Head over to [Part 2!](../2021-11-21-understanding-scrum-part-2)
 
 
