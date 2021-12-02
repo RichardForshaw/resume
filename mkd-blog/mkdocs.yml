@@ -8,3 +8,5 @@ theme:
     custom_dir: cinder
     colorscheme: sunburst
 
+markdown-extensions:
+  - attr_list
