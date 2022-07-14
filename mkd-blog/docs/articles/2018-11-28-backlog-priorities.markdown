@@ -37,9 +37,9 @@ What does this mean for the estimate v priorities argument? Determining the feat
 ## Better Prioritising
 
 So how to prioritise? When it comes to prioritising I usually think about three things:
- - What features deliver core value
- - What additional features do you need in order to enable those features
- - Which features have are the highest risks or carry some auxilliary benefits?
+-   What features deliver core value
+-   What additional features do you need in order to enable those features
+-   Which features have are the highest risks or carry some auxilliary benefits?
 
 Firstly, as we have already discussed, customer value is very important. If you don't provide customers with value then someone else will. Identifying values should be at the top of your list.
 
