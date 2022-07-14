@@ -13,11 +13,12 @@ If you are a developer and are working for a growing small tech business, chance
 ## Tooling
 
 It is possible that you can (or have already) bake these reports straight into your software, however this often comes with a high level of overhead, which may include:
--   searching for and selecting a data visualisation package
--   provisioning read-only follower databases with additional analysis fields
--   lover level knowledge and storage of database queries
--   ensuring installed packages and libraries supporting your visualisations are up to date
--   handling interface or behaviour changes to the same packages
+
+ - searching for and selecting a data visualisation package
+ - provisioning read-only follower databases with additional analysis fields
+ - lover level knowledge and storage of database queries
+ - ensuring installed packages and libraries supporting your visualisations are up to date
+ - handling interface or behaviour changes to the same packages
 
 all of which, while giving you ultimate control, will add to your delivery time and may introduce impromtu unwanted delays later on.
 
@@ -32,19 +33,21 @@ Unfortunately ChartIO was closed down this year after being bought by Atlassian.
 It is likely that whatever BI tool you use, you will need to set up a data source and model, the data source being the connection to your database and the model being a description of the data that you have.
 
 The data source is straightforward to set up in most BI tools and usually requires access to your DB URL, however there are 2 tips I recommend doing. Either:
--   Create a new follower database from your master OR
--   at least create a new set of user credentials which are READ ONLY (and may resrict access to some sensitive tables)
+
+ - Create a new follower database from your master OR
+ - at least create a new set of user credentials which are READ ONLY (and may resrict access to some sensitive tables)
 
 This is of course to ensure that no accidents happen! Setting up a separate user is usually simpler and cheaper, but having a follower database is usually more flexible, especially if there are many people wanting to do different type of analysis since it will allow you to  implement your own 'view' of the data which is tailored to business analysis use (this is useful but beyind the scope of this article).
 
 ## Data Model
 
 The Data Model is where you describe to the BI tool what your data looks like and perform any additional modeling on the raw database data. Usually the tool will be able to detect what your basic metadata is (i.e. column name, data type etc). However as with the case of Bipp, this is also where you need to:
--   Convert abbreviations into English names (e.g. your database format may use codes or single-letter abbreviations which are not very useful in reporting)
--   Provide formatting conventions (e.g. adding currency symbols to your chosen payment data formatting)
--   Define 'buckets' to later use for grouping and filtering (descibed later in this article)
--   prove some data 'decoration' to make it more relevant to your business users (e.g. you may want to break pricing down into price components or cost centers, or label transactions by quarter)
--   Perform any necessary table joining
+
+ - Convert abbreviations into English names (e.g. your database format may use codes or single-letter abbreviations which are not very useful in reporting)
+ - Provide formatting conventions (e.g. adding currency symbols to your chosen payment data formatting)
+ - Define 'buckets' to later use for grouping and filtering (descibed later in this article)
+ - prove some data 'decoration' to make it more relevant to your business users (e.g. you may want to break pricing down into price components or cost centers, or label transactions by quarter)
+ - Perform any necessary table joining
 
  The joining item is an odd one - ChartIO allowed the analyst to join at the point the query was written, however Bipp requires that you perform the joining at the modeling stage*. So YMMV depending on your BI tool of choice.
 
@@ -107,10 +110,11 @@ Weeks come in two flavours - the standard Monday-Sunday week that humans operate
 Your first thought may be to modify the query above which filtered on this month's and last month's data and simply change the grouping to group by week number and change the filter to use weeks instead of months. But this is where it goes wrong.
 
 Referencing a 'week' in `TO_CHAR` may or may not return a week number in what is known as the [ISO week-numbering system](https://en.wikipedia.org/wiki/ISO_week_date). The basic difference is that the ISO week number starts on a Monday, whereas the regular 'week of the year' starts on the 1st of January. You can see that in 6 years out of 7 these will be different. The key takeaway is:
--   `TO_CHAR` with `WW` will return the week number where the 1st week starts on 1st Jan
--   `TO_CHAR` with `IW` will return the ISO week number which starts on a Monday
--   `EXTRACT` and `date_trunc` also work on ISO weeks which start on Monday
--   Stick to ISO weeks in most cases
+
+ - `TO_CHAR` with `WW` will return the week number where the 1st week starts on 1st Jan
+ - `TO_CHAR` with `IW` will return the ISO week number which starts on a Monday
+ - `EXTRACT` and `date_trunc` also work on ISO weeks which start on Monday
+ - Stick to ISO weeks in most cases
 
 So to get the previous week's date, filter on:
 ```
