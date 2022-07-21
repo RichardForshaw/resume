@@ -23,6 +23,14 @@ Yes you can just load `index.html` into your browser, but it is better to try an
 
 `docker run --name raf-resume -v ${PWD}:/usr/share/nginx/html:ro -p 8000:80 nginx:1.17-alpine`
 
+### Testing the blog
+
+There is a dockerfile which creates a simple docker image with mkdocs installed. Once this is created (say with the name: mkdimage), the blog can be built in docker as follows. First change to the mkdocs folder (with the YML file in it). Then run:
+
+`docker run --rm -v ${PWD}:/opt/project --entrypoint mkdocs mkdimage build`
+
+This will output the resulting build into a directory called 'site', which you can then use to run the previously mentioned `nginx` docker image.
+
 # Components
 
 Template: https://html5up.net/
@@ -53,3 +61,4 @@ Note that you need to provide:
  * Webhook
  * IAM Roles and Policies
 
+# The Blog
