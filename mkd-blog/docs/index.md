@@ -8,7 +8,7 @@ A collection of articles written by me.
 
 ## About this site
 
-In the interest of keeping things simple, and to eat a bit of my own dogfood, this site is hosted on an AWS serverless bucket and generated using CodePipeline and a static site generator [MKDocs](www.mkdocs.org).
+In the interest of keeping things simple, and to eat a bit of my own dogfood, this site is hosted on an AWS serverless bucket and generated using CodePipeline and a static site generator [MKDocs](https://www.mkdocs.org).
 
 An overview is presented here.
 

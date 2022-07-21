@@ -26,7 +26,7 @@ The alternative is to use a BI tool. These also come in a wide range of flavours
 
 We used to use ChartIO for reporting, which was an excellent tool, mainly because it had a mature data-modeling tool which allowed non-technical people to generate the queries that they needed. We found that maybe only 10-15% of queries actually needed any technical assistance, and most of that was up-front and one-time only.
 
-Unfortunately ChartIO was closed down this year after being bought by Atlassian. So after a brief search for other products matching our scope and budget, we selected [Bipp.io](bipp.io). We found out that Bipp was a little immature compared to our experience with ChartIO, which mainly meant that we needed some more technical input to get the reports we needed. However, they are pumping out regular updates, and it did mean that it gave me cause to write this article! (In fact while writing this they have already improved their platform.)
+Unfortunately ChartIO was closed down this year after being bought by Atlassian. So after a brief search for other products matching our scope and budget, we selected [Bipp.io](http://bipp.io). We found out that Bipp was a little immature compared to our experience with ChartIO, which mainly meant that we needed some more technical input to get the reports we needed. However, they are pumping out regular updates, and it did mean that it gave me cause to write this article! (In fact while writing this they have already improved their platform.)
 
 ## Basic Setup
 
