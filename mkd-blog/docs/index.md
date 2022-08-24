@@ -6,6 +6,12 @@ title: Forshaw.Tech Blog
 
 A collection of articles written by me.
 
+## Latest
+
+### Vietnam: First Experiences
+
+"I wrote those words a few weeks ago, with the hazy idea of providing a contrast between that and what we have seen so far in Ho Chi Minh City, of chaos vs order, fluid vs rigid, rumpus vs relaxed. But I found it hard to make more than a superficial comparison, especially having only spent a few months poking at Vietnam's veneer, under which I expect lie the depths of a rich culture. Until I plumb those depths, I can only write what we have experienced so far." [...More](articles/2022-08-24-first-vietnam-experiences.markdown)
+
 ## About this site
 
 In the interest of keeping things simple, and to eat a bit of my own dogfood, this site is hosted on an AWS serverless bucket and generated using CodePipeline and a static site generator [MKDocs](https://www.mkdocs.org).
