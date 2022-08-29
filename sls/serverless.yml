@@ -22,7 +22,7 @@ service: wwwstatuscheck
 
 provider:
   name: aws
-  runtime: python3.8
+  runtime: python3.9
   profile: raf-tech
   region: ap-southeast-1
   cfnRole: arn:aws:iam::801774630682:role/Tech-Web-Serverless-Deploy-Role
