@@ -21,8 +21,9 @@ GitHub storage for online resume. Also to demonstrate some simple CD from here t
 
 Yes you can just load `index.html` into your browser, but it is better to try and mimic it being served from a webserver instead. Do this with the following command:
 
-`docker run --name raf-resume -v ${PWD}:/usr/share/nginx/html:ro -p 8000:80 nginx:1.17-alpine`
+`docker run --name raf-resume -v ${PWD}:/usr/share/nginx/html:ro -p 8000:80 nginx:1.23-alpine`
 
+_Note that the docker container does not seem to respond to Ctrl-C inputs. So you can run it with a `-d` flag (detached) and then just stop it with `docker container stop...`_
 ### Testing the blog
 
 There is a dockerfile which creates a simple docker image with mkdocs installed. Once this is created (say with the name: mkdimage), the blog can be built in docker as follows. First change to the mkdocs folder (with the YML file in it). Then run:
@@ -57,8 +58,9 @@ Note that you need to provide:
 ### Services:
 
  * S3
- * CodePipeline
+ * CodePipeline, CodeBuild
  * Webhook
+ * Lambda
  * IAM Roles and Policies
 
 # The Blog

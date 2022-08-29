@@ -8,7 +8,7 @@ The purpose of this project was to demonstrate how a static website could be hos
 
 ## S3 Hosting
 
-The website is hosted on AWS S3. This is straighforward to do in CloudFormation, however you need to remember to assign a Bucket Policy in order to allow the public to access it (but not modify it).
+The website is hosted on AWS S3. This is straightforward to do in CloudFormation, however you need to remember to assign a Bucket Policy in order to allow the public to access it (but not modify it).
 The bucket also needs to be put into 'WebSite' configuration mode so that it can serve the index.html file.
 
 ## IAM/Role Setup
@@ -31,7 +31,7 @@ Pipelines are defined in 'Stages'. Our pipeline has 2 simple stages: a 'source' 
 
 This also requires us to grant AWS CodePipeline permission to access our GitHub repo for the Source stage. This is done by providing a GitHub OAuth token. This is generated manually from GitHub, and is passed to the Pipeline stage in CloudFormation. Note it is best to do this as a parameter, *not* to hard-code the token into the CloudFormation file. (Coincidentally, if you check a file into GitHub that has a string that matches an OAuth token that it has generated, it will delete the OAuth token. This is a good demonstration of DevSecOps).
 
-One of the odd things is that the pipeline needs a place to store the checked-out artefacts. This is typically an S3 bucket. At the moment this means that we need to create a second bucket to do this, and also means that in the future we will need to come up with a method of cleaning this bucket up. (TODO)
+One of the odd things is that the pipeline needs a place to store the checked-out artifacts. This is typically an S3 bucket. At the moment this means that we need to create a second bucket to do this, and also means that in the future we will need to come up with a method of cleaning this bucket up. (TODO)
 
 ## Webhook Creation
 
@@ -105,6 +105,42 @@ I did test this because I had to rename the bucket. Deleting the bucket, re-runn
 
 Following on from the above health monitor, if the site returns a code which indicates the site is not there (404 maybe?) then the lambda could also kick off the pipeline deployment again.
 
+## Upgrading
+
+### Dependencies
+
+The current dependency list is:
+
+ - Docker:
+   - amaysim/serverless 2.72
+   - Python 3.9.7
+   - mkdocs 1.3.1
+
+
+### Upgrading the docker image
+
+The docker image is referenced in the Dockerfile. You can refer to a new version here and then run
+
+`docker build -t <your tag name> .`
+
+**NOTE: This will always get the latest MKDocs, because there is no `requirements.txt` file to lock the version.
+
+You should then test the following:
+
+ - Build the mkdocs image
+ - Anything else??
+
+### Upgrading Python
+
+Note that the python version in the docker image (tested above) affects the following:
+ - The MKDocs build
+ - The lambda to test the website health
+
+ The MKDocs build is affected by the python version in the CodeBuild image. This is defined in the `buildspec.yml`, and is deployed when the website is pushed to github (the codebuild image will look for `buildspec.xml` in the root folder which is being deployed). This can therefore be tested when the latest blog version is pushed to github.
+
+ The health-test lambda is deployed with the serverless functions, and so can only really be tested when the lambda is executed. The health-check lambda is currently run every 30 minutes, or can be run manually from the console or invoked using `sls`. In the future it might be better to test this on deployment somehow, or have an SNS which notifies someone of a failed execution.
+
+## Meta
 ### How long did this take?
 
 Cloudwatch was a bit tricky, and had a few manual steps, but once that was solved, it took maybe 2 hours total. The lambda probably took less than 2 hours.
