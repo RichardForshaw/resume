@@ -3,7 +3,7 @@
 # python 3.9.7
 # yarn
 # serverless
-FROM amaysim/serverless:2.72.1
+FROM amaysim/serverless:3.10.2
 
 # Install python packages
 RUN pip3 install --no-cache --upgrade \
