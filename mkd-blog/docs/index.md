@@ -8,9 +8,9 @@ A collection of articles written by me.
 
 ## Latest
 
-### Vietnam: First Experiences
+### AWS CLI and Docker Essentials
 
-"I wrote those words a few weeks ago, with the hazy idea of providing a contrast between that and what we have seen so far in Ho Chi Minh City, of chaos vs order, fluid vs rigid, rumpus vs relaxed. But I found it hard to make more than a superficial comparison, especially having only spent a few months poking at Vietnam's veneer, under which I expect lie the depths of a rich culture. Until I plumb those depths, I can only write what we have experienced so far." [...More](articles/2022-08-24-first-vietnam-experiences.markdown)
+"So when it was time to jump back into my old projects (and perhaps do a few new ones), I had to re-familiarise myself with using the AWS CLI in order to re-familiarise myself with my project structures. In the spirit of documentation and spreading of knowledge, this article is a collection of the commands and configuration that came up, and tend to come up often, so I don't have to google them repeatedly, and now hopefully neither do you." [...More](articles/2022-08-30-aws-cli-essentials.markdown)
 
 ## About this site
 
