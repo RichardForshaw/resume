@@ -9,5 +9,14 @@ theme:
     colorscheme: sunburst
     highlightjs: true
 
+# Experimental styling
+# extra_css:
+#     - "css/extra.css"
+
+plugins:
+    - search
+    - awesome-pages
+    - categories
+
 markdown_extensions:
     - attr_list
