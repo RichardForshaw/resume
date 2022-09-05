@@ -2,7 +2,9 @@
 layout: post
 title:  "Data Reporting Tips For Developers"
 revision_date:   2022-07-14
-tags: Data Reporting Database Query Dates Analytics
+categories:
+    - Data Reporting
+    - Databases
 author: Richard Forshaw
 ---
 
@@ -20,7 +22,7 @@ It is possible that you can (or have already) bake these reports straight into y
  - ensuring installed packages and libraries supporting your visualisations are up to date
  - handling interface or behaviour changes to the same packages
 
-all of which, while giving you ultimate control, will add to your delivery time and may introduce impromtu unwanted delays later on.
+all of which, while giving you ultimate control, will add to your delivery time and may introduce impromptu unwanted delays later on.
 
 The alternative is to use a BI tool. These also come in a wide range of flavours with differing prices, complexity and capabilities. However they should drastically cut the implementation overheads, albeit with the trade-off of some loss of control and having to pay some fees. But in many instances, especially for small businesses with basic or intermediate reporting requirements, these BI tools will do the trick.
 

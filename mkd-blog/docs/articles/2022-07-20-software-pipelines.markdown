@@ -2,7 +2,9 @@
 layout: post
 title:  "I Love Pipelines"
 revision_date:   2022-07-21
-tags: Software Development Programming Structures Techniques
+categories:
+    - Programming Techniques
+    - Data Structures
 author: Richard Forshaw
 ---
 

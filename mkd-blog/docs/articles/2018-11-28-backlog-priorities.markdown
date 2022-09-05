@@ -2,7 +2,9 @@
 layout: post
 title:  "Agile Priorities"
 revision_date:   2018-12-31
-tags: Agile Estimating Planning Scrum
+categories:
+    - Agile
+    - Estimating and Planning
 author: Richard Forshaw
 ---
 

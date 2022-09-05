@@ -2,7 +2,9 @@
 layout: post
 title:  "Re-Learning Scrum"
 revision_date:   2021-11-16
-tags: Scrum Agile
+categories:
+    - Scrum
+    - Agile
 author: Richard Forshaw
 ---
 

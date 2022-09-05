@@ -2,7 +2,11 @@
 layout: post
 title:  "AWS CLI and Docker Essentials"
 revision_date:   2022-09-04
-tags: Cloud AWS Infrastructure Docker Serverless
+categories:
+    - Cloud Development
+    - AWS
+    - Docker
+    - Serverless
 author: Richard Forshaw
 ---
 
