@@ -1,14 +1,14 @@
 ---
 layout: post
 title:  "AWS CLI and Docker Essentials"
-revision_date:   2022-09-02
+revision_date:   2022-09-04
 tags: Cloud AWS Infrastructure Docker Serverless
 author: Richard Forshaw
 ---
 
-A few years ago I had built up a small library of home projects deployed on AWS as I built upon my knowledge of cloud-native apps and infrastructure. Those projects are still active but have been neglected, and in the world of tech, to neglect knowledge is to destroy it.
+A few years ago I had built up a small library of home projects deployed on AWS as I built upon my knowledge of cloud-native apps and infrastructure. Those projects are still active but have been neglected, and in the world of tech, to neglect knowledge is to destroy it. Amongst that neglected knowledge is the use of the Command-Line Interface (CLI).
 
-Amongst that neglected knowledge is the use of the Command-Line Interface (CLI). I am very much an old-school keyboard lover, and I prefer being able to type commands to execute them rather than using dashboards, buttons and deployment consoles. Typing commands also lends itself to scripting and to maintaining executable definitions, which in turn is the foundation of infrastructure-as code, which in my book is also a good thing.
+I am very much an old-school keyboard lover, and I prefer being able to type commands to execute them rather than using dashboards, buttons and deployment consoles. Typing commands also lends itself to scripting and to maintaining executable definitions, which in turn is the foundation of infrastructure-as code, which in my book is also a good thing.
 
 As with a lot of AWS documentation, there is a focus on _what things do_ rather than _how to do something_, and I often want to combine the _what_ and the _how_ to re-construct my own version of the manual in my brain. So when it was time to jump back into my old projects (and perhaps do a few new ones), I had to re-familiarise myself with using the AWS CLI in order to re-familiarise myself with my project structures. In the spirit of documentation and spreading of knowledge, this article is a collection of the commands and configuration that came up, and tend to come up often, so I don't have to google them repeatedly, and now hopefully neither do you.
 
@@ -20,9 +20,9 @@ As with a lot of AWS documentation, there is a focus on _what things do_ rather 
 The tools used in this article are as follows:
 
  - Docker
- - amaysim/serverless docker image (v2.72)
+ - [amaysim/serverless](https://hub.docker.com/r/amaysim/serverless) docker image (v2.72)
  - AWS CLI
- - Serverless Framework
+ - [Serverless Framework](https://www.serverless.com/)
 
 This combination may mean that some of the examples below may not map exactly to your particular use case or configuration, so please bear that in mind.
 
@@ -30,7 +30,7 @@ This combination may mean that some of the examples below may not map exactly to
 
 I tend to do my development in Docker. Because of this, in order to use the AWS CLI in docker, it has to be configured with your AWS credentials etc. You can do this by running `aws config` every time you run your container, but you can see how that would get annoying quickly. If you have other AWS accounts and projects, it is also likely that you have one `credentials` file (and maybe a `config` file) which you share between these projects.
 
-The best way to do this is to make your AWS `profile` and `credentials` files available in the docker container. According to the [AWS Documentation](https://docs.aws.amazon.com/sdkref/latest/guide/file-location.html), the files should be stored in your home folder (i.e. in `~/.aws/`, assuming you are using a Linux-type container). The best way I have seen to do this is to mount this directory as part of your container creation process, i.e.:
+The best way to do this is to make your AWS `config` and `credentials` files available in the docker container. According to the [AWS Documentation](https://docs.aws.amazon.com/sdkref/latest/guide/file-location.html), the files should be stored in your home folder (i.e. in `~/.aws/`, assuming you are using a Linux-type container). The best way I have seen to do this is to mount this directory as part of your container creation process, i.e.:
 
 `docker container -v <dir of your files>:/your/home/.aws ...`
 
@@ -59,14 +59,14 @@ _(Note this list assumes you are familiar with setting up CLI credentials for yo
 
 I've created my fair share of containers in Python and Javascript, each with their own quirks, and maintaining the dependencies of your project is always something that comes up. This is a small detour from the primary subject of the article (and probably warrants a more complete article), but it is a worthy one, since regardless of your language of choice, you will probably:
 
- a. be doing some local testing, thus will need to have local dependencies
- b. be packaging up these dependencies somehow to deploy them somewhere
- c. want to manage your dependency versions and not have them upgraded silently (e.g. when you build or start your container)
- d. want to keep things clean in your Docker container
+  a. be doing some local testing, thus will need to have local dependencies
+  b. be packaging up these dependencies somehow to deploy them somewhere
+  c. want to manage your dependency versions and not have them upgraded silently (e.g. when you build or start your container)
+  d. want to keep things clean in your Docker container
 
-For Python, dependency management is usually straightforward because the standard way is to install them globally. In the old days (in this case I'm referring to the 'pre-Docker' days, as opposed to the days when `print` was still a keyword!), to manage multiple Python projects you typically had to use [virtualenv](https://virtualenv.pypa.io/en/latest/) (and _virtualenvwrapper_... whistfull sigh), and you then proceeded to create multiple environments and switch between them. But then Docker came along and (in my opinion) solved this problem by giving you a full virtual machine in which you could isolate you entire environment (not just your Python one).
+For Python, dependency management is usually straightforward because the standard way is to install them globally. In the old days (i.e. 'pre-Docker' days), to manage multiple Python projects you typically had to use [virtualenv](https://virtualenv.pypa.io/en/latest/) (and _virtualenvwrapper_... whistfull sigh), and you then proceeded to create multiple environments and switch between them. But then Docker came along and (in my opinion) solved this problem by giving you a full virtual machine in which you could isolate you entire environment (not just your Python one).
 
-I tend to maintain a number of requirements files: `requirements.txt` (the standard one), `requirements-dev.txt` (for development tools) and `requirements-test.txt` (for test tools). The reason for splitting them is that when you deploy your service, you only want to deploy the dependencies required to run the service; in the same vein, if I have a CICD solution, I generally want to only deploy the service requirements and the test requirements.
+I tend to maintain a number of requirements files: `requirements.txt` (the standard one), `requirements-dev.txt` (for development tools) and `requirements-test.txt` (for test tools). The reason for splitting them is that when you deploy your service, you only want to deploy the dependencies required to run the service; in the same vein, if I have a CI/CD solution, I generally want to only deploy the service requirements and the test requirements.
 
 This is done simply enough with the following lines in `Dockerfile`:
 
@@ -124,6 +124,7 @@ _[From this point on, this article assumes that you have `AWS_PROFILE` set to yo
 ### Some Philosophy
 
 There is more than one way to deploy your stuff - historically I have mixed manual Cloudformation and serverless config. (Yes there is also SAM, but I have not migrated my existing projects to that yet!) I have done this because while serverless is great for running serverless things (things that execute), some AWS infrastructure is best kept out of the serverless config files, in my opinion. This opinion is based on the following:
+
   1. Some AWS infrastructure is simply not supported by Serverless; this is because Serverless is for _creating apps_ on AWS (and other providers). Apps usually have business logic (i.e. functions) bundled with them, and so the Serverless framework is really designed around deploying this logic (i.e. Lambdas) with its associated infrastructure (e.g. REST endpoints, queues, databases).
   2. It is good practice to separate concerns of your app. If you have everything in your serverless project, then when you tear it down you tear it **all** down. Sometimes you want to deploy and test infrastructure separately, or maybe some of your infrastructure is used by multiple functions or projects, or has a different life-cycle to other infrastructure. One example is the routing for your website or email infrastructure. Another example may be your database or backup database. If you run a `sls remove`, do you want those things to disappear as well?
 
@@ -144,12 +145,14 @@ You probably tend to run the same commands over and over. Here is a refresher fo
 ## Formatting and Filtering Output
 
 Simple output formatting can be controlled with the CLI command line or the `config` file. Output is by default returned as JSON output, which can be difficult to read. A simple flag can convert this into a table format which is easier to read than the JSON format:
+
   - as parameter: `--output table`
   - as `config` file option: `output = table`
 
 If you do want to list as JSON (perhaps you wish to pipeline the output to something else), then you can do some filtering of the output. This has proven to be useful to me for example with commends that return a large amount of data, and especially useful when faced with data returned from Dynamo, when you only want to see a few fields.
 
 There are two types of filtering: client-side and server-side. The critical thing to note is:
+
   - client-side filtering is done by the CLI tool and occurs **after the information has been received** from the server. This if you are concerned with internet traffic, this filtering does not affect what is sent from the server, only what is rendered to you
   - server-side filtering is done (as the name suggests) on the server, and reduces the traffic that is sent to you. Because it is server-side, it is only supported by some services, typically those which are likely to return large data sets (such as DynamoDB)
 
