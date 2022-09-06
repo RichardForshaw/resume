@@ -145,6 +145,7 @@ You probably tend to run the same commands over and over. Here is a refresher fo
 |  Deploy a stack / function      | `aws cloudformation create-stack --stack-name <the stack name> --template-body file://my-cf-file.json --parameters file://my-params-file.json `         | `sls deploy [-f function]`  |
 |  Update a stack / function      | `aws cloudformation update-stack <see above params>`         | `sls deploy [-f function]`      |
 
+_Extra notes: If your cloudformation file contains IAM specifications, you must append `--capabilities CAPABILITY_NAMED_IAM` on the end of the aws command._
 
 ## Formatting and Filtering Output
 
