@@ -16,37 +16,56 @@ service: wwwstatuscheck
 #app: your-app-name
 #org: your-org-name
 
-# You can pin your service to only deploy with a specific Serverless version
-# Check out our docs for more details
-# frameworkVersion: "=X.X.X"
+custom:
+  # Variables for this deployment
+  accessLogBucket: ${cf:raf-tech-website-stack.TechWebsiteAccessLogsBucket}
+  wwwBucketName: www.${cf:raf-tech-website-stack.TechWebsiteRootDomainURL}
 
 provider:
   name: aws
   runtime: python3.9
   profile: raf-tech
   region: ap-southeast-1
-  cfnRole: arn:aws:iam::801774630682:role/Tech-Web-Serverless-Deploy-Role
   memorySize: 128
-
-# you can overwrite defaults here
-#  stage: dev
-#  region: us-east-1
-
-# you can add statements to the Lambda function's IAM Role here
-  iamRoleStatements:
-    - Effect: "Allow"
-      Action:
-        - "SNS:Publish"
-      Resource: ${cf:raf-tech-website-stack.TechWebsiteFailureNotificationTopicARN}
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:PutObject"
-#      Resource:
-#        Fn::Join:
-#          - ""
-#          - - "arn:aws:s3:::"
-#            - "Ref" : "ServerlessDeploymentBucket"
-#            - "/*"
+  iam:
+    deploymentRole: arn:aws:iam::801774630682:role/Tech-Web-Serverless-Deploy-Role
+    role:
+      statements:
+        # IAM statements for statuschecker
+        - Effect: "Allow"
+          Action:
+            - "SNS:Publish"
+          Resource: ${cf:raf-tech-website-stack.TechWebsiteFailureNotificationTopicARN}
+        # IAM statements for pageviewcollector
+        - Effect: "Allow"
+          Action:
+            - "s3:ListBucket"
+          Resource: ${cf:raf-tech-website-stack.TechWebsiteAccessLogsBucketARN}
+        - Effect: "Allow"
+          Action:
+            - "s3:GetObject"
+          Resource:
+            - Fn::Join:
+              - ''
+              - - ${cf:raf-tech-website-stack.TechWebsiteAccessLogsBucketARN}
+                - "/logs/*"
+        - Effect: "Allow"
+          Action:
+            - "s3:PutObject"
+            - "s3:GetObject"
+          Resource:
+            - Fn::Join:
+              - ''
+              - - ${cf:raf-tech-website-stack.TechWebsiteAccessLogsBucketARN}
+                - "/*"
+        - Effect: "Deny"
+          Action:
+            - "s3:PutObject"
+          Resource:
+            - Fn::Join:
+              - ''
+              - - ${cf:raf-tech-website-stack.TechWebsiteAccessLogsBucketARN}
+                - "/logs/*"
 
 # you can define service wide environment variables here
 #  environment:
@@ -62,8 +81,24 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
+  pageviewcollector:
+    handler: handlers.run_pageviews
+    logRetentionInDays: 30
+    timeout: 20
+    events:
+      - schedule: rate(12 hours)
+    # - s3:
+    #   bucket: ${self:custom.accessLogBucket}
+    #   event: s3:ObjectCreated:Put
+    #   rules:
+    #     - prefix: logs/
+    environment:
+      LOGS_BUCKET_NAME: ${self:custom.accessLogBucket}
+      WWW_BUCKET_NAME: ${self:custom.wwwBucketName}
+      PATH_PREFIX: blog/
+
   statuschecker:
-    handler: handler.run
+    handler: handlers.run_health
     logRetentionInDays: 30
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
