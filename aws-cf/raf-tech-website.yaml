@@ -37,8 +37,24 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: !Join [ '', [ 'www.', !Ref WebsiteBaseURL]]
+      LoggingConfiguration:
+        DestinationBucketName: !Ref TechWebsiteS3LogsBucket
+        LogFilePrefix: 'logs/'
       WebsiteConfiguration:
         IndexDocument: index.html
+
+  TechWebsiteS3LogsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Join [ '', [ 'logs.', !Ref WebsiteBaseURL]]
+      AccessControl: LogDeliveryWrite
+      LifecycleConfiguration:
+        Rules:
+          - Id: DeleteLogsRule
+            Prefix: 'logs/'
+            Status: Enabled
+            ExpirationInDays: 180
+
 
   TechWebsiteBucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -259,6 +275,18 @@ Outputs:
     Value: !Ref WebsiteBaseURL
     Export:
         Name: !Sub "${AWS::StackName}-RootDomainURL"
+
+  TechWebsiteAccessLogsBucket:
+    Description: Name of the S3 bucket capturing the website access logs
+    Value: !Ref TechWebsiteS3LogsBucket
+    Export:
+      Name: !Sub "${AWS::StackName}-TechWebsiteAccessLogsBucket"
+
+  TechWebsiteAccessLogsBucketARN:
+    Description: ARN of the S3 bucket capturing the website access logs
+    Value: !GetAtt TechWebsiteS3LogsBucket.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-TechWebsiteAccessLogsBucketARN"
 
   TechWebsiteFailureNotificationTopicARN:
     Description: ARN of the SNS topic for notifying of failures
