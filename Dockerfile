@@ -3,13 +3,13 @@
 # python 3.9.7
 # yarn
 # serverless
-FROM amaysim/serverless:3.10.2
+FROM amaysim/serverless:3.18.2
 
 # Setup working directory
 WORKDIR /opt/project
 
 # Install general python packages
-RUN pip3 install --no-cache --upgrade boto3
+RUN pip3 install --no-cache --upgrade boto3 pytest
 
 # Install MKDocs requirements
 COPY requirements.txt .
