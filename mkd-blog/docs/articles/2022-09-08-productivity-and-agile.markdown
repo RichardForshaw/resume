@@ -106,7 +106,7 @@ It struck me enough that against several highlights I made in the book I simply 
 
 *_I had a major epiphany upon this realisation which I will write about later._
 
-My success in adopting these methods not only re-enforced what I have learned about Agile-type methods, they also served to clarify some of them. SCRUM is designed to help navigate teams through complex systems and tries to dispense with detailed up-front analysis in favour of prioritizing, measuring and adjusting. As Burkeman even says in this unrelated book "the problem with unforeseen delays is that you can't forsee them"; SCRUM admits their presence and does its best to manage them. You can read more about this in my [SCRUM post](2021-11-16-understanding-scrum)
+My success in adopting these methods not only re-enforced what I have learned about Agile-type methods, they also served to clarify some of them. SCRUM is designed to help navigate teams through complex systems and tries to dispense with detailed up-front analysis in favour of prioritizing, measuring and adjusting. As Burkeman even says in this unrelated book "the problem with unforeseen delays is that you can't forsee them"; SCRUM admits their presence and does its best to manage them. You can read more about this in my [SCRUM post](../articles/2021-11-16-understanding-scrum.markdown)
 
 ### For Success
 
