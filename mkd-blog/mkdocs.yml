@@ -16,7 +16,8 @@ theme:
 plugins:
     - search
     - awesome-pages
-    - categories
+    - categories:
+        section_title: ''
 
 markdown_extensions:
     - attr_list
