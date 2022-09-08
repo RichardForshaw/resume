@@ -3,7 +3,7 @@ layout: post
 title:  "Data Reporting Tips For Developers"
 revision_date:   2022-07-14
 categories:
-    - Data Reporting
+    - Reporting and BI
     - Databases
 author: Richard Forshaw
 ---
