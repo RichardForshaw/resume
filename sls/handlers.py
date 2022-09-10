@@ -70,7 +70,7 @@ def collate_page_views(log_data, bucket_name='.*', folder_prefix='', only_folder
     return dict(Counter(re.sub(re_match, r'\1', l) for l in filter(lambda x: re.match(re_match, x), log_data)))
 
 def run_health(event, context):
-    # Handler to check website health by ensuring it meets a certain size
+    ''' Handler to check website health by ensuring it meets a certain size '''
     response = webpage_size_test("http://www.forshaw.tech", int(os.environ.get('EXPECTED_WEBSITE_SIZE_KB', 10)))
     if not response["health"]:
         # This will throw if it does not exist, so hopefully raise a cloudwatch error
@@ -101,3 +101,54 @@ def webpage_size_test(url, expected_size_kb):
         "status": r.msg,
         "health": r.code == 200 and r.msg == "OK" and good_length
     }
+
+def contact_form_email(event, context):
+    ''' Handler for web contact form email '''
+    # Receiver is defined in environment (or the admin account)
+    receiver = os.environ.get('CONTACT_FORM_TARGET_EMAIL', 'aws@forshaw.tech')
+
+    # Receiver is an email that is from the verified domain
+    sender = os.environ.get('CONTACT_FORM_SOURCE_EMAIL', None)
+
+    if not sender:
+        print("Incorrectly configured: Missing email sender address")
+
+    # Get body from context
+    print(f"Processing event: {event}")
+    if 'rawPath' in event and 'body' in event:
+        # HTTP response. Get everything from the event body JSON
+        data = json.loads(event['body'])
+    else:
+        # (Otherwise assume this is a test event from the lambda console)
+        data = event
+
+    msgBody = f"Name: {data.get('name', 'No name supplied')}\nEmail: {data['email']}\nMessage: {data.get('message', 'No message provided')}\n"
+    message = {
+        'Body': {
+            'Text': {
+                'Data': msgBody,
+                'Charset': 'UTF-8'
+            }
+        },
+        'Subject': {
+            'Data': 'Forshaw.tech contact enquiry from: ' + data['email'],
+            'Charset': 'UTF-8'
+        }
+    }
+
+    # Email parameters
+    email_dest = { 'ToAddresses': (receiver, ) }
+
+    # Log
+    print(f"Preparing to send contact request received from {data['email']}")
+    print(data.get('message', 'No message provided'))
+
+    # For the timebeing, send a notification to pushbullet
+
+    # Get email client
+    ses = boto3.client('ses')
+    response = ses.send_email(Destination=email_dest, Source=sender, Message=message)
+
+    print(response)
+
+    return { 'action': f'email sent to {receiver}', 'status': response}

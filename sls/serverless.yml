@@ -18,6 +18,7 @@ service: wwwstatuscheck
 
 custom:
   # Variables for this deployment
+  projectStackName: raf-tech-website-stack
   accessLogBucket: ${cf:raf-tech-website-stack.TechWebsiteAccessLogsBucket}
   wwwBucketName: www.${cf:raf-tech-website-stack.TechWebsiteRootDomainURL}
 
@@ -66,6 +67,12 @@ provider:
               - ''
               - - ${cf:raf-tech-website-stack.TechWebsiteAccessLogsBucketARN}
                 - "/logs/*"
+        # IAM statements for contact form lambda
+        - Effect: "Allow"
+          Action:
+            - 'SES:SendEmail'
+          Resource: "*"
+
 
 # you can define service wide environment variables here
 #  environment:
@@ -104,18 +111,22 @@ functions:
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
     events:
-#      - http:
-#          path: users/create
-#          method: get
+      - schedule: rate(30 minutes)
+    environment:
+      EXPECTED_WEBSITE_SIZE_KB: 20
+      HEALTH_ALERT_SNS_ARN: ${cf:raf-tech-website-stack.TechWebsiteFailureNotificationTopicARN}
+
+  contactformemail:
+    handler: handlers.contact_form_email
+    events:
+      - httpApi: 'POST /contact_form'
+    environment:
+      CONTACT_FORM_TARGET_EMAIL: ${cf:${self:custom.projectStackName}.TechWebsiteContactFormTargetEmail}
+      CONTACT_FORM_SOURCE_EMAIL: ${cf:${self:custom.projectStackName}.TechWebsiteContactFormSourceEmail}
 #      - websocket: $connect
 #      - s3: ${env:BUCKET}
-      - schedule: rate(30 minutes)
 #      - sns: greeter-topic
 #      - stream: arn:aws:dynamodb:region:XXXXXX:table/foo/stream/1970-01-01T00:00:00.000
-#      - alexaSkill: amzn1.ask.skill.xx-xx-xx-xx
-#      - alexaSmartHome: amzn1.ask.skill.xx-xx-xx-xx
-#      - iot:
-#          sql: "SELECT * FROM 'some_topic'"
 #      - cloudwatchEvent:
 #          event:
 #            source:
@@ -126,20 +137,7 @@ functions:
 #              state:
 #                - pending
 #      - cloudwatchLog: '/aws/lambda/hello'
-#      - cognitoUserPool:
-#          pool: MyUserPool
-#          trigger: PreSignUp
-#      - alb:
-#          listenerArn: arn:aws:elasticloadbalancing:us-east-1:XXXXXX:listener/app/my-load-balancer/50dc6c495c0c9188/
-#          priority: 1
-#          conditions:
-#            host: example.com
-#            path: /hello
-
 #    Define function environment variables here
-    environment:
-      EXPECTED_WEBSITE_SIZE_KB: 20
-      HEALTH_ALERT_SNS_ARN: ${cf:raf-tech-website-stack.TechWebsiteFailureNotificationTopicARN}
 
 # you can add CloudFormation resource templates here
 #resources:

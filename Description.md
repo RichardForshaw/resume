@@ -55,6 +55,23 @@ Fortunately, because everything is code, I just added a parameter and referenced
 
 This is a simple method of having one bucket that routes to another. The root domain appears to try to route to an S3 bucket that is called the same as the domain (but I'm not sure why this happens). Since there isn't one, we just have to create one which redirects everything to the `www` bucket, which does have the website content.
 
+## Contact Form Implementation
+
+The contact form server-side setup was fairly straightforward. You can add an `SES:EmailIdentity` to your cloudformation and AWS will identify the new resource and verify the email address by sending a verification email to it. Once the user verifies it, you can use this email address in a boto3 `ses.send_email` call.
+
+A serverless lambda is then deployed which is triggered from an APIGateway. The lambda simply takes POST data and executes the email action. The contact form can execute the POST data.
+
+### Service idea:
+
+Can infrastructure be set up to *create* email addresses, and assign a lambda to it so that contact forms can be dynamically created by a user?
+
+  - User requests a contact form endpoint
+  - A lambda creates cloudformation template for that user
+  - lambda uses cloudformation call to create the SES email identity and hook up a lambda to it
+  - (potentially one lambda is better for versioning purposes, but one lambda per user better for billing?)
+  - User can then unsubscribe or update their email
+  - How to make money? First mailbox is free? Second costs X/month? X/100 emails?
+
 ## How long did this take?
 
 Because I experienced a bit of pain with the IAM roles and the routing, setting up the basic hosting and delivery pipeline probably took about a day. Which in the scheme of things is not a long time. If I had to set it up again it would probably take half as long.
