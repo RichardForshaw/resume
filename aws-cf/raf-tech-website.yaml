@@ -16,6 +16,16 @@ Parameters:
     MinLength: 7
     MaxLength: 40
     AllowedPattern: '[a-zA-Z0-9\-\.]*'
+  WebsiteContactFormSourceAddress:
+    Type: String
+    Description: The source email address for sending emails from the contact form
+    MinLength: 8
+    AllowedPattern: '[a-zA-Z0-9_\.\+]+@[a-zA-Z0-9_\.]+'
+  WebsiteContactFormTargetAddress:
+    Type: String
+    Description: The target email address for sending emails from the contact form
+    MinLength: 8
+    AllowedPattern: '[a-zA-Z0-9_\.\+]+@[a-zA-Z0-9_\.]+'
   GitHubOAuthAccessToken:
     Type: String
     Description: OAuth Token to access the GitHub repo
@@ -98,6 +108,19 @@ Resources:
       AliasTarget:
         DNSName: s3-website-ap-southeast-1.amazonaws.com  # From AWS Service Endpoint Documentation
         HostedZoneId: Z3O0J2DXBE1FTB                      # From AWS Service Endpoint Documentation
+
+  TechWebsiteContactFormEmailSourceIdentity:
+    Type: AWS::SES::EmailIdentity
+    Properties:
+      EmailIdentity: !Ref WebsiteContactFormSourceAddress
+
+  TechWebsiteContactFormEmailTargetIdentity:
+    Type: AWS::SES::EmailIdentity
+    Properties:
+      EmailIdentity: !Ref WebsiteContactFormTargetAddress
+
+
+  #####  Deployment Pipeline Definitions  #####
 
   WebsiteDeploymentRole:
     Type: AWS::IAM::Role
@@ -275,6 +298,18 @@ Outputs:
     Value: !Ref WebsiteBaseURL
     Export:
         Name: !Sub "${AWS::StackName}-RootDomainURL"
+
+  TechWebsiteContactFormSourceEmail:
+    Description: The source email for sending an email from a contact form submission
+    Value: !Ref WebsiteContactFormSourceAddress
+    Export:
+        Name: !Sub "${AWS::StackName}-ContactFormSourceEmail"
+
+  TechWebsiteContactFormTargetEmail:
+    Description: The target email for sending an email from a contact form submission
+    Value: !Ref WebsiteContactFormTargetAddress
+    Export:
+        Name: !Sub "${AWS::StackName}-ContactFormTargetEmail"
 
   TechWebsiteAccessLogsBucket:
     Description: Name of the S3 bucket capturing the website access logs
