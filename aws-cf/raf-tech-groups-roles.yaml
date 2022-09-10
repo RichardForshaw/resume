@@ -45,7 +45,7 @@ Resources:
                 Action:
                   - 'lambda:*'
                 Resource:
-                  - 'arn:aws:lambda:*:801774630682:*:*'
+                  - 'arn:aws:lambda:*:801774630682:function:*'
               - Effect: Allow
                 Resource:
                   - 'arn:aws:iam::801774630682:role/Receipt-Bot-Serverless*'
@@ -124,7 +124,7 @@ Resources:
           - Effect: Allow
             Principal:
               AWS:
-                - 'arn:aws:iam::801774630682:root'
+                - 'arn:aws:iam::801774630682:user/S3-website-access'
               Service:
                 - 'cloudformation.amazonaws.com'
                 - 'lambda.amazonaws.com'
@@ -155,6 +155,11 @@ Resources:
                   - 'arn:aws:events:ap-southeast-1:801774630682:rule/wwwstatuscheck-*'
                 Action:
                   - 'events:*'
+              - Effect: Allow   # Allow all operations to API gateway to APIs prefixed with service
+                Action:
+                  - 'apigateway:*'
+                Resource:
+                  - 'arn:aws:apigateway:ap-southeast-1:801774630682:/*'
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
