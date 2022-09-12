@@ -470,21 +470,21 @@ print 'Sorted in ' + i + ' iterations.';</code></pre>
 							<h2>Get in touch</h2>
 						</header>
 						<div class="content">
-							<p><strong>Drop me</strong> a line...</p>
-							<form>
+							<p><strong>Drop me a line...</strong></p>
+							<form id="contactform">
 								<div class="fields">
 									<div class="field half">
-										<input type="text" name="name" id="name" placeholder="Name" />
+										<input type="text" name="name" id="namefield" placeholder="Your Name" />
 									</div>
 									<div class="field half">
-										<input type="email" name="email" id="email" placeholder="Email" />
+										<input type="email" name="email" id="emailfield" placeholder="Your Email" />
 									</div>
 									<div class="field">
-										<textarea name="message" id="message" placeholder="Message" rows="7"></textarea>
+										<textarea name="message" id="messagefield" placeholder="Message" rows="7"></textarea>
 									</div>
 								</div>
 								<ul class="actions">
-									<li><input type="submit" value="Send Message" class="button primary" /></li>
+									<li><button type="button" class="button primary" onClick="$.fn.submitContactForm(event)"/>Send Message!</li>
 								</ul>
 							</form>
 						</div>
@@ -529,6 +529,7 @@ print 'Sorted in ' + i + ' iterations.';</code></pre>
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
+            <script src="assets/js/forms.js"></script>
 
 	</body>
 </html>
