@@ -28,6 +28,12 @@ provider:
   profile: raf-tech
   region: ap-southeast-1
   memorySize: 128
+
+  # Enable cors so we can post contact info from the web page
+  httpApi:
+    cors: true
+
+  # iam data
   iam:
     deploymentRole: arn:aws:iam::801774630682:role/Tech-Web-Serverless-Deploy-Role
     role:
