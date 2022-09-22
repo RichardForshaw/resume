@@ -8,14 +8,15 @@ A collection of articles written by me.
 
 ## Latest
 
+### On Disconnecting
+
+"My email notifications recently stopped working because I changed some of the settings. Ironically the new settings were to help organise my inbox so I would be interrupted unnecessarily less often, but I didn't think they would stop altogether. I thought about googling for solutions to fix it, but the thought also occurred to me - would being interrupted even _less_ than I had planned be an even better outcome? Would fixing this actually be a step back?" [...More](articles/2022-09-22-On-Disconnecting.markdown)
+
 ### When Productivity is... Agile?
 
 "In an effort to make productive use of my spare hours during the day, I have increased my reading over the last year. Not only of general topics (science, history) and fiction, but also self-improvement, both a mix of classic stoicism and modern self-improvement. One of my friends offered me the book ['Help' by Oliver Burkeman](https://www.goodreads.com/book/show/9411145-help), which appealed to me because I'm a sucker for books which distill a lot of information into some informative summaries.I found myself highlighting quite a few passages, and I could feel that some of them were somehow linked together in an interesting and familiar way.
 
 I now present a list of productivity tips to you below which I feel had the most impact, and their surprising association." [...More](articles/2022-09-08-productivity-and-agile.markdown)
-### AWS CLI and Docker Essentials
-
-"So when it was time to jump back into my old projects (and perhaps do a few new ones), I had to re-familiarise myself with using the AWS CLI in order to re-familiarise myself with my project structures. In the spirit of documentation and spreading of knowledge, this article is a collection of the commands and configuration that came up, and tend to come up often, so I don't have to google them repeatedly, and now hopefully neither do you." [...More](articles/2022-08-30-aws-cli-essentials.markdown)
 
 ## About this site
 
