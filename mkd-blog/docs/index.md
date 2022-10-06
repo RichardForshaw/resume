@@ -8,15 +8,13 @@ A collection of articles written by me.
 
 ## Latest
 
+### Getting To Know Modern Javascript
+
+"Last year I undertook a large project in Javascript, and I was able to dig a bit deeper into the language, instead of just using it to manipulate web pages. I noticed the same thing happening, and I have been since reminded about how many cool things you can do in JavaScript these days to write clean, compact and concise code." [...More](articles/2022-10-06-getting-to-know-javascript.markdown)
+
 ### On Disconnecting
 
 "My email notifications recently stopped working because I changed some of the settings. Ironically the new settings were to help organise my inbox so I would be interrupted unnecessarily less often, but I didn't think they would stop altogether. I thought about googling for solutions to fix it, but the thought also occurred to me - would being interrupted even _less_ than I had planned be an even better outcome? Would fixing this actually be a step back?" [...More](articles/2022-09-22-On-Disconnecting.markdown)
-
-### When Productivity is... Agile?
-
-"In an effort to make productive use of my spare hours during the day, I have increased my reading over the last year. Not only of general topics (science, history) and fiction, but also self-improvement, both a mix of classic stoicism and modern self-improvement. One of my friends offered me the book ['Help' by Oliver Burkeman](https://www.goodreads.com/book/show/9411145-help), which appealed to me because I'm a sucker for books which distill a lot of information into some informative summaries.I found myself highlighting quite a few passages, and I could feel that some of them were somehow linked together in an interesting and familiar way.
-
-I now present a list of productivity tips to you below which I feel had the most impact, and their surprising association." [...More](articles/2022-09-08-productivity-and-agile.markdown)
 
 ## About this site
 
