@@ -21,3 +21,6 @@
 
 # pytest cache
 */__pycache__
+
+# mkdocs stuff
+mkd-blog/site/
