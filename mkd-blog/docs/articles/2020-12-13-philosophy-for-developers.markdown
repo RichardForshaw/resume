@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Philosophy for Developers"
-revision_date:   2020-12-13
-categories:
+revision_date: "2020-12-13"
+tags:
     - Personal Development
 author: Richard Forshaw
 ---

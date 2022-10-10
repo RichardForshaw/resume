@@ -1,9 +1,10 @@
 ---
 layout: post
 title:  "The Multiple Layers of Software Quality"
-revision_date:   2022-10-08
-categories:
-    - Software Quality
+description: "I had a discussion recently where I was asked: 'How do you go about ensuring quality in your software?' I used to think this was a simple question, but that was when I was young and I only looked at the world in a certain way. After several years of experience I am uncovering and understanding more aspects of quality."
+revision_date: "2022-10-08"
+tags:
+  - Software Quality
 author: Richard Forshaw
 ---
 

@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Re-Learning Scrum Part 2: Scrum's Answers"
-revision_date:   2021-12-02
-categories:
+revision_date: "2021-12-02"
+tags:
     - Scrum
     - Agile
 author: Richard Forshaw

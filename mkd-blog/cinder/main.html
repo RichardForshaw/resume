@@ -12,10 +12,10 @@ the blocks defined in base.html and its included child templates.
 {# Override content block #}
 {% block content %}
 {% if page.meta.disable_toc %}
-<div class="col-md-3">{% include "article-list.html" %}</div>
-<div class="col-md-9" role="main">{% include "content.html" %}</div>
+    {# Use the toc of the nav structure instead #}
+    <div class="col-md-3">{% include "toc-site.html" %}</div>
 {% else %}
-<div class="col-md-3">{% include "toc.html" %}</div>
-<div class="col-md-9" role="main">{% include "content.html" %}</div>
+    <div class="col-md-3">{% include "toc.html" %}</div>
 {% endif %}
+<div class="col-md-9" role="main">{% include "content.html" %}</div>
 {% endblock %}

@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "On Malaysia"
-revision_date:   2022-04-28
-categories:
+revision_date: "2022-04-28"
+tags:
     - Personal
     - Travel
 author: Richard Forshaw

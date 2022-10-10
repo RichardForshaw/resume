@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Serverless: Adventures in a New Dimension"
-revision_date:   2019-10-16
-categories:
+revision_date: "2019-10-16"
+tags:
     - Serverless
     - Cloud Native
 author: Richard Forshaw

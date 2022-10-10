@@ -1,8 +1,9 @@
 ---
 layout: post
 title:  "AWS CLI and Docker Essentials"
-revision_date:   2022-09-04
-categories:
+description: "Over a few years I have built up a small library of home projects deployed on AWS. When I need to revisit them it is easy to forget many of the key CLI commands and configuration items that I need most often to get back up and running."
+revision_date: "2022-09-04"
+tags:
     - Cloud Development
     - AWS
     - Docker

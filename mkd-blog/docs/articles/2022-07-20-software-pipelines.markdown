@@ -1,8 +1,9 @@
 ---
 layout: post
 title:  "I Love Pipelines"
-revision_date:   2022-07-21
-categories:
+description: "I love queues, and I think I love pipelines more. Software pipelines that is. What's so great about them? In here I try to present the benefits to using pipelines in your code."
+revision_date: "2022-07-21"
+tags:
     - Programming Techniques
     - Data Structures
 author: Richard Forshaw

@@ -18,6 +18,7 @@ phases:
       - if [[ "${INJECT_BUILD_FAILURE}" ]]; then exit 1; fi
       - cd mkd-blog
       - sed -i "s/##sed_date_here##/`date +"%Y-%m-%d %H:%M"`/" docs/index.md
+      - sed -i "s;site_url:.*;site_url: http://www.forshaw.tech/blog/;" docs/index.md
       - mkdocs build -d ../blog
       - cd ..
       - rm -r mkd-blog  # Un-needed

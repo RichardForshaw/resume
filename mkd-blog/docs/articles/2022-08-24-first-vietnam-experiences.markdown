@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Vietnam: First Months"
-revision_date:   2022-08-24
-categories:
+revision_date: "2022-08-24"
+tags:
     - Personal
     - Travel
 author: Richard Forshaw
