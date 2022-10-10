@@ -2,6 +2,7 @@
 layout: post
 title:  "Data Reporting Tips For Developers"
 description: "If you are a developer and are working for a growing small tech business, chances are you may have to assist with some data reporting with a database or BI tool. In here I discuss some tips to help develop exactly the reports that they need."
+date: "2022-07-14"
 revision_date: "2022-07-14"
 tags:
     - Reporting and BI

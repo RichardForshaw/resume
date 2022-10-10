@@ -2,6 +2,7 @@
 layout: post
 title:  "Serverless: Adventures in a New Dimension"
 revision_date: "2019-10-16"
+date: "2019-10-16"
 tags:
     - Serverless
     - Cloud Native

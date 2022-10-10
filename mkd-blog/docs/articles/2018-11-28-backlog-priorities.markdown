@@ -2,6 +2,7 @@
 layout: post
 title:  "Agile Priorities"
 revision_date: "2018-12-31"
+date: "2018-12-31"
 tags:
     - Agile
     - Estimating and Planning

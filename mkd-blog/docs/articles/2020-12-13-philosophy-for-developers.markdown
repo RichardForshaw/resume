@@ -2,6 +2,7 @@
 layout: post
 title:  "Philosophy for Developers"
 revision_date: "2020-12-13"
+date: "2020-12-13"
 tags:
     - Personal Development
 author: Richard Forshaw
@@ -17,7 +18,7 @@ There are 6 chapters in all, each with their own wisdom, but I found 3 to be par
 
 ## Unpopularity
 
-We live more than ever in an opinionated world. Not only do opinions surround us in social media, but as 2020 has shown us there are more and more outlets of opinion-heavy media. Equally, starting out in a new profession can be daunting as you are suddently thrust into an environment full of experience and authority much greater than yours. Or so you might think.
+We live more than ever in an opinionated world. Not only do opinions surround us in social media, but as 2020 has shown us there are more and more outlets of opinion-heavy media. Equally, starting out in a new profession can be daunting as you are suddenly thrust into an environment full of experience and authority much greater than yours. Or so you might think.
 
 The chapter on Unpopularity discusses Socrates, a philosopher nearly everyone has heard of. If you have not heard of him, he is known for wandering the streets of Athens, engaging someone in conversation, listening to their opinions on a subject and through means of logic and reason (the 'Socratic Method'), revealing to his quarry that the opinion that they held as 'truth' was not as truthful as they thought.
 
@@ -29,7 +30,7 @@ As software developers, we seek the truth every day. We have discussions and deb
 
 Frustration besets us all. Whether it be frustration over having to spend weeks in your house, or frustration over that build last night that had yet another silly error in it, or when you spilt coffee on your keyboard, or maybe all three happened together. It seemed like they unfairly stalked us and pounced on us, causing us to have a bad day when other people were making their way through their days just fine.
 
-The pholosopher Seneca had his share of misfortunes, culminating in his banishment and then betrayal by his student the Emperor Nero, who finally ordered his death. But Seneca had been long thinking on how we deal with frustration and misfortune.
+The philosopher Seneca had his share of misfortunes, culminating in his banishment and then betrayal by his student the Emperor Nero, who finally ordered his death. But Seneca had been long thinking on how we deal with frustration and misfortune.
 
 He reminds us that 'Injustice' and 'Unfairness' are human constructs; nature and chance events do not conspire against us with the aim of causing us misery, as much as a wine glass conspires to spill its contents over your new iPhone. Equally, Seneca notes that raging against these events will not restore our sense of justice to the world. Usually this rage has been caused by our own state of mind. Even frustration caused by the actions of another person are oftentimes simply our own misinterpretation of the events, and examination by a cool head will reveal that there was no malice intended.
 

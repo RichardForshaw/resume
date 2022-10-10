@@ -2,7 +2,8 @@
 layout: post
 title:  "Getting To Know Modern Javascript (and You Should Too)"
 description: "Last year I undertook a large project in Javascript, and I was able to dig a bit deeper into the language, instead of just using it to manipulate web pages. I noticed the same thing happening, and I have been since reminded about how many cool things you can do in JavaScript these days to write clean, compact and concise code."
-revision_date: "2022-10-05"
+date: "2022-10-06"
+revision_date: "2022-10-06"
 tags:
     - Programming Techniques
     - Javascript

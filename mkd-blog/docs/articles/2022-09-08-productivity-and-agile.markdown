@@ -2,6 +2,7 @@
 layout: post
 title:  "When Productivity is... Agile?"
 description: "In an effort to increase my daily productivity, I read the book 'Help' by Oliver Burkeman. I found myself highlighting quite a few passages, and I could feel that some of them were somehow linked together in an interesting and familiar way."
+date: "2022-09-08"
 revision_date: "2022-09-08"
 tags:
     - Personal Development

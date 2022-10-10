@@ -6,6 +6,9 @@ title: Forshaw.Tech Blog
 
 A collection of articles on Software, Technology and Self-Development.
 
+### Latest Articles:
+
+
 {{ blog_content }}
 
 
