@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Getting To Know Modern Javascript (and You Should Too)"
-revision_date:   2022-09-16
+revision_date:   2022-10-05
 categories:
     - Programming Techniques
     - Javascript
