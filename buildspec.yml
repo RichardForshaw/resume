@@ -20,10 +20,7 @@ phases:
       - sed -i "s/##sed_date_here##/`date +"%Y-%m-%d %H:%M"`/" docs/index.md
       - sed -i "s;localhost.*;www.forshaw.tech/blog/;" mkdocs.yml
       - mkdocs build -d ../blog
-      - cd ..
-      - rm -r mkd-blog  # Un-needed
-      - rm -r sls       # Un-needed
-      - rm -r aws-cf    # Un-needed
+      - cd .. && rm -r mkd-blog && rm -r sls && rm -r aws-cf    # Un-needed dirs
   post_build:
     commands:
       - echo Build completed on `date`
