@@ -3,7 +3,7 @@ layout: post
 title:  "The Multiple Layers of Software Quality"
 description: "I had a discussion recently where I was asked: 'How do you go about ensuring quality in your software?' I used to think this was a simple question, but that was when I was young and I only looked at the world in a certain way. After several years of experience I am uncovering and understanding more aspects of quality."
 date: "2022-10-08"
-revision_date: "2022-10-08"
+revision_date: "2022-10-12"
 tags:
   - Software Quality
 author: Richard Forshaw
@@ -49,7 +49,7 @@ Having delved deeply into Scrum recently, which is a derivative of Agile, it hol
 
 A Product Owner in a scrum team should ideally be a customer, but is often a proxy. Even if the PO is an experienced proxy, they cannot fully represent a real customer, and even if the PO is a real customer, they cannot fully represent the entire market. That is why your product's quality in the market still needs to be measured. How often are features being used? Are they being used but abandoned? Did the customer enjoy using them?
 
-Some of these metrics are easy to gather and some are hard, but they cannot 100% be replaced by a PO. As with many things which are part of a multiple-layered whole, they vary in difficulty but also in value; this type of quality may be difficult to measure but it may prove to be the difference between an iPhone and a Blackberry, or a Facebook and a Friendster.
+Some of these metrics are easy to gather and some are hard, but they cannot 100% be replaced by a PO. As with many things which are part of a multiple-layered whole, they vary in difficulty but also in value. Some of them are talked about in [this blog post](https://denimdev.com.au/blog/build-test-adapt-repeat/). This type of quality may be difficult to measure but it may prove to be the difference between an iPhone and a Blackberry, or a Facebook and a Friendster.
 
 ### Feedback
 
