@@ -129,12 +129,21 @@ Resources:
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
-          -
-            Effect: Allow
+          - Effect: Allow
             Principal:
               Service: codepipeline.amazonaws.com
             Action:
               - "sts:AssumeRole"
+      Policies:
+        - PolicyName: CodeStarConnectionAccess
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow   # Allow use of codestar
+                Resource:
+                  - !Sub 'arn:aws:codestar-connections:${AWS::Region}:${AWS::AccountId}:connection/*'
+                Action:
+                  - 'codestar-connections:*'
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AmazonS3FullAccess
         - arn:aws:iam::aws:policy/AWSCodeBuildDeveloperAccess
@@ -162,18 +171,15 @@ Resources:
               Name: GithubSourceAction
               ActionTypeId:
                 Category: Source
-                Owner: ThirdParty
-                Provider: GitHub
+                Owner: AWS
+                Provider: CodeStarSourceConnection
                 Version: '1'
               OutputArtifacts:
                 - Name: WebsiteSource
               Configuration:
-                Owner: RichardForshaw
-                Repo: resume
-                Branch: master
-                PollForSourceChanges: false
-                OAuthToken:
-                  Ref: GitHubOAuthAccessToken
+                ConnectionArn: !Ref WebsiteCodeStarConnection
+                FullRepositoryId: 'RichardForshaw/resume'
+                BranchName: master
               RunOrder: 1
         -
           Name: Static-Build
@@ -211,22 +217,11 @@ Resources:
                 Extract: true
               RunOrder: 1
 
-  WebsiteDeploymentWebhook:
-    Type: AWS::CodePipeline::Webhook
+  WebsiteCodeStarConnection:
+    Type: AWS::CodeStarConnections::Connection
     Properties:
-      Name: ResumeRepoUpdatedWebhook
-      Authentication: GITHUB_HMAC
-      Filters:
-        -
-          JsonPath: "$.ref"
-          MatchEquals: refs/heads/{Branch}
-      AuthenticationConfiguration:
-        SecretToken:
-          Ref: GitHubOAuthAccessToken
-      TargetPipeline:
-        Ref: WebsiteDeploymentPipeline
-      TargetPipelineVersion: 1
-      TargetAction: GithubSourceAction
+      ConnectionName: ResumeRepoGitHubConnection
+      ProviderType: GitHub
 
   PipelineFailureNotificationTopic:
     Type: AWS::SNS::Topic
@@ -283,10 +278,6 @@ Resources:
 
 
 Outputs:
-  WebsiteDeployWebhookTriggerURL:
-    Description: The URL for the webhook to trigger when website repo is updated (Not cross-stack)
-    Value: !GetAtt WebsiteDeploymentWebhook.Url
-
   TechWebsiteHostedZoneID:
     Description: Cross-Stack export of Hosted Zone ID of this Route53 Stack
     Value: !Ref TechWebsiteHostedZone
