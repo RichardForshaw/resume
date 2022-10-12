@@ -37,9 +37,16 @@ One of the odd things is that the pipeline needs a place to store the checked-ou
 
 This is all great, but currently we need to manually kick off the deployment. In order to automate this, a Webhook is used to kick off the pipeline when GitHub notifies the URL endpoint that something has happened. In the CloudFormation, you must specify what it is that you want the webhook to do, in our case it is to kick off the 'source' part of the pipeline.
 
-This requires a 2-step process of creating a URL endpoint and also telling GitHub what that endpoint is. This is a little bit cumbersome because after creating the stack, you will need to run a `aws list-webhooks` command to get this and feed it back to GitHub.
+This requires a 2-step process of creating a CodeStar connection to an external 3rd party (i.e. GitHub), and then enabling it. You can only create the connection and link it to the pipeline in CloudFormation - you must enable the connection in the console manually via the CodePipeline stage or something called 'CodeSuite' (Below), because it will open up an authentication window with GitHub to perform the handshaking.
 
-On the GitHub side, once you know the URL, you create the webhook call in your project settings. The Gotcha is that you need to specify the URL payload as *JSON*.
+There is nothing to do on the GitHub side - once the connection is set up then you are good to go. The connection will appear in "Settings -> Integrations/GitHub Apps". If you want to modify the connection details here (e.g. permissions) then you can.
+
+Useful info:
+
+ - https://docs.aws.amazon.com/codepipeline/latest/userguide/update-github-action-connections.html
+ - https://docs.aws.amazon.com/codepipeline/latest/userguide/connections-github.html
+ - https://console.aws.amazon.com/codesuite/settings/connections
+
 
 ## Routing
 
