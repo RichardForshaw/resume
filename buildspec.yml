@@ -19,6 +19,7 @@ phases:
       - cd mkd-blog
       - sed -i "s/##sed_date_here##/`date +"%Y-%m-%d %H:%M"`/" docs/index.md
       - sed -i "s;localhost.*;www.forshaw.tech/blog/;" mkdocs.yml
+      - ../bin/insert-article-dates.sh
       - mkdocs build -d ../blog
       - cd .. && rm -r mkd-blog && rm -r sls && rm -r aws-cf    # Un-needed dirs
   post_build:
