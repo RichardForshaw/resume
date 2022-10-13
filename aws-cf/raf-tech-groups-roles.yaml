@@ -150,11 +150,19 @@ Resources:
                   - 'arn:aws:lambda:ap-southeast-1:801774630682:function:wwwstatuscheck-*'
                 Action:
                   - 'lambda:*'
+        - PolicyName: EventsPolicies
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
               - Effect: Allow   # Allow all events (for scheduling) actions to functions prefixed with service
                 Resource:
                   - 'arn:aws:events:ap-southeast-1:801774630682:rule/wwwstatuscheck-*'
                 Action:
                   - 'events:*'
+        - PolicyName: APIGatewayPolicies
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
               - Effect: Allow   # Allow all operations to API gateway to APIs prefixed with service
                 Action:
                   - 'apigateway:*'

@@ -180,6 +180,7 @@ Resources:
                 ConnectionArn: !Ref WebsiteCodeStarConnection
                 FullRepositoryId: 'RichardForshaw/resume'
                 BranchName: master
+                OutputArtifactFormat: CODEBUILD_CLONE_REF
               RunOrder: 1
         -
           Name: Static-Build
@@ -301,6 +302,12 @@ Outputs:
     Value: !Ref WebsiteContactFormTargetAddress
     Export:
         Name: !Sub "${AWS::StackName}-ContactFormTargetEmail"
+
+  TechWebsiteCodeStarConnectionARN:
+    Description: ARN of codestar connection to GitHub repository
+    Value: !Ref WebsiteCodeStarConnection
+    Export:
+      Name: !Sub "${AWS::StackName}-TechWebsiteCodeStarConnectionARN"
 
   TechWebsiteAccessLogsBucket:
     Description: Name of the S3 bucket capturing the website access logs

@@ -7,6 +7,7 @@ Resources:
   RafTechCodeBuildServiceRole:
     Type: AWS::IAM::Role
     Properties:
+      RoleName: Tech-Web-CodeBuild-Service-Role
       AssumeRolePolicyDocument:
         Statement:
         - Action: ['sts:AssumeRole']
@@ -48,6 +49,14 @@ Resources:
                 Effect: Allow
                 Resource:
                   - !Join [ '', ['arn:aws:logs:ap-southeast-1:', !Ref 'AWS::AccountId', ':log-group:*']]
+        - PolicyName: CodeStarConnection
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Action:
+                - 'codestar-connections:UseConnection'
+                Effect: Allow
+                Resource: !ImportValue 'raf-tech-website-stack-TechWebsiteCodeStarConnectionARN'
 
   WebsiteBlogBuild:
     Type: AWS::CodeBuild::Project
