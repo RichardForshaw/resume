@@ -13,8 +13,11 @@
         {# Likely to be main landing page #}
         Last deployed: {{ page.meta.revision_date }}
     {% else %}
-        Published: {{ page.meta.revision_date }}
+        Last Updated: {{ page.meta.revision_date }}
     {% endif %}
+{% else %}
+    {# Use the internal blog publish date (from mkdocs blog plugin) #}
+    Published: {{ page.meta["localized-time"] }}
 {% endif %}
 <hr>
 {{ page.content }}
