@@ -110,6 +110,8 @@ functions:
     timeout: 20
     events:
       - schedule: rate(12 hours)
+    onError: ${cf:raf-tech-website-stack.TechWebsiteFailureNotificationTopicARN}
+    maximumRetryAttempts: 0
     # - s3:
     #   bucket: ${self:custom.accessLogBucket}
     #   event: s3:ObjectCreated:Put
@@ -139,6 +141,7 @@ functions:
     environment:
       CONTACT_FORM_TARGET_EMAIL: ${cf:${self:custom.projectStackName}.TechWebsiteContactFormTargetEmail}
       CONTACT_FORM_SOURCE_EMAIL: ${cf:${self:custom.projectStackName}.TechWebsiteContactFormSourceEmail}
+      PB_TOKEN: ${env:PB_TOKEN}
 #      - websocket: $connect
 #      - s3: ${env:BUCKET}
 #      - sns: greeter-topic

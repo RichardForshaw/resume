@@ -6,6 +6,9 @@ import urllib.request
 import os
 import re
 
+# Pushbullet notifications
+from pushbullet import Pushbullet
+
 import boto3
 
 def run_pageviews(event, context):
@@ -143,12 +146,22 @@ def contact_form_email(event, context):
     print(f"Preparing to send contact request received from {data['email']}")
     print(data.get('message', 'No message provided'))
 
-    # For the timebeing, send a notification to pushbullet
-
     # Get email client
     ses = boto3.client('ses')
     response = ses.send_email(Destination=email_dest, Source=sender, Message=message)
-
     print(response)
 
-    return { 'action': f'email sent to {receiver}', 'status': response}
+    # For the time-being, send a notification to pushbullet
+    http_response = response['ResponseMetadata']['HTTPStatusCode']
+    notify_pushbullet("Tech Website Form Submission", f"Message from {data['email']} (SES Response: {http_response})")
+
+    return { 'action': f'email sent to {receiver}', 'status': http_response}
+
+def notify_pushbullet(subject, message):
+    if not 'PB_TOKEN' in os.environ:
+        print('Cannot sent PushBullet message... could not find PB_TOKEN')
+        return
+
+    pb=Pushbullet(os.environ['PB_TOKEN'])
+    pb.push_note(subject, message)
+
