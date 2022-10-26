@@ -16,8 +16,12 @@
 .installed.cfg
 *.egg
 
+# VSCode
+.vscode
+
 # Serverless directories
-.serverless
+sls/.serverless
+sls/node_modules
 
 # pytest cache
 */__pycache__
