@@ -2,8 +2,6 @@
 layout: post
 title:  "On Disconnecting"
 description: "When my email notifications recently stopped working, I thought about googling for solutions to fix it, but the thought also occurred to me - would being interrupted even _less_ than I had planned be an even better outcome? Would fixing this actually be a step back?"
-date: "2022-09-22"
-revision_date: "2022-09-22"
 tags:
     - Personal
     - Technology
