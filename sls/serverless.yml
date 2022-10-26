@@ -16,7 +16,15 @@ service: wwwstatuscheck
 #app: your-app-name
 #org: your-org-name
 
+plugins:
+  - serverless-python-requirements
 custom:
+  pythonRequirements:
+    dockerizePip: false
+    useStaticCache: false
+    slim: true
+    #vendor: ./vendor
+
   # Variables for this deployment
   projectStackName: raf-tech-website-stack
   accessLogBucket: ${cf:raf-tech-website-stack.TechWebsiteAccessLogsBucket}
@@ -85,13 +93,15 @@ provider:
 #    variable1: value1
 
 # you can add packaging information here
-#package:
-#  include:
-#    - include-me.py
-#    - include-me-dir/**
-#  exclude:
-#    - exclude-me.py
-#    - exclude-me-dir/**
+# Exclude all the NPM rubbish that we get...
+package:
+  patterns:
+    - '!package-lock.json'
+    - '!package.json'
+    - '!node_modules/**'
+    - '!.pytest_cache/**'
+    - '!__pycache__/**'
+
 
 functions:
   pageviewcollector:
