@@ -6,10 +6,13 @@ import urllib.request
 import os
 import re
 
-# Pushbullet notifications
-from pushbullet import Pushbullet
-
 import boto3
+
+
+def get_pushbullet_token():
+    # Get pushbullet token from environment
+    return os.environ.get('PB_TOKEN')
+
 
 def run_pageviews(event, context):
     # Handler to correlate all S3 logs into a single blog statistic
@@ -157,11 +160,17 @@ def contact_form_email(event, context):
 
     return { 'action': f'email sent to {receiver}', 'status': http_response}
 
+# Pushbullet notifications - load conditionally
+if get_pushbullet_token():
+    from pushbullet import Pushbullet
+
 def notify_pushbullet(subject, message):
-    if not 'PB_TOKEN' in os.environ:
+    pb_token = get_pushbullet_token()
+
+    if not pb_token:
         print('Cannot sent PushBullet message... could not find PB_TOKEN')
         return
 
-    pb=Pushbullet(os.environ['PB_TOKEN'])
+    pb=Pushbullet(pb_token)
     pb.push_note(subject, message)
 
