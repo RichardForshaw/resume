@@ -29,15 +29,15 @@ The Pipeline is the most complicated part, even though its parts are simple. You
 
 Pipelines are defined in 'Stages'. Our pipeline has 2 simple stages: a 'source' stage (to checkout the repository) and a 'Deploy' stage to deploy it. The source stage needs to be configured with the correct GitHub owner and repository, and the deploy stage needs to know where the outputs from that stage are together with information on the target (in this case S3). Because the code obtained from GitHub is a zip file, the Deploy stage also needs to specify `extract: true`.
 
-This also requires us to grant AWS CodePipeline permission to access our GitHub repo for the Source stage. This is done by providing a GitHub OAuth token. This is generated manually from GitHub, and is passed to the Pipeline stage in CloudFormation. Note it is best to do this as a parameter, *not* to hard-code the token into the CloudFormation file. (Coincidentally, if you check a file into GitHub that has a string that matches an OAuth token that it has generated, it will delete the OAuth token. This is a good demonstration of DevSecOps).
+This also requires us to grant AWS CodePipeline permission to access our GitHub repo for the Source stage. This is done using the [GitHub V2 source action](https://docs.aws.amazon.com/codepipeline/latest/userguide/update-github-action-connections.html) (See also "Detecting Updates" Below). This is better than Version1, because although you need to go through a manual authentication step (as opposed to a manually-generated token), there is no token to keep track of and to accidentally save in a repo somewhere. (Coincidentally, if you do check a file into GitHub that has a string that matches an OAuth token that it has generated, it will delete the OAuth token. This is a good demonstration of DevSecOps).
 
 One of the odd things is that the pipeline needs a place to store the checked-out artifacts. This is typically an S3 bucket. At the moment this means that we need to create a second bucket to do this, and also means that in the future we will need to come up with a method of cleaning this bucket up. (TODO)
 
-## Webhook Creation
+## Detecting updates
 
-This is all great, but currently we need to manually kick off the deployment. In order to automate this, a Webhook is used to kick off the pipeline when GitHub notifies the URL endpoint that something has happened. In the CloudFormation, you must specify what it is that you want the webhook to do, in our case it is to kick off the 'source' part of the pipeline.
+This is all great, but currently we need to manually kick off the deployment. In order to automate this, for Github V1 actions a Webhook was used to kick off the pipeline, with GitHub notifying a configured URL endpoint that something has happened. With Github V2 actions, this ins included with the action itself.
 
-This requires a 2-step process of creating a CodeStar connection to an external 3rd party (i.e. GitHub), and then enabling it. You can only create the connection and link it to the pipeline in CloudFormation - you must enable the connection in the console manually via the CodePipeline stage or something called 'CodeSuite' (Below), because it will open up an authentication window with GitHub to perform the handshaking.
+Configuring this requires a 2-step process of creating a CodeStar connection to an external 3rd party (i.e. GitHub), and then enabling it. You can only create the connection and link it to the pipeline in CloudFormation - you must enable the connection in the console manually via the CodePipeline stage or something called 'CodeSuite' (Below), because it will open up an authentication window with GitHub to perform the handshaking.
 
 There is nothing to do on the GitHub side - once the connection is set up then you are good to go. The connection will appear in "Settings -> Integrations/GitHub Apps". If you want to modify the connection details here (e.g. permissions) then you can.
 
@@ -181,7 +181,7 @@ Codebuild is fairly simple with CloudFormation, however as with most services yo
 
 Gotcha: You need separate permissions for the Bucket and the Bucket Contents, since these are different actions.
 
-Setting up a buildspec is also fairly straightforward; the main thing is to specify the build envronment (python), install libraries that you need for the build (MKDocs), and then list the build steps.
+Setting up a buildspec is also fairly straightforward; the main thing is to specify the build environment (python), install libraries that you need for the build (MKDocs), and then list the build steps.
 
 Gotcha: If you want to use the `**/*` glob to copy the whole directory as the output artifact it needs to be quoted: `"**/*"`.
 

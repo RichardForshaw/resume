@@ -26,11 +26,6 @@ Parameters:
     Description: The target email address for sending emails from the contact form
     MinLength: 8
     AllowedPattern: '[a-zA-Z0-9_\.\+]+@[a-zA-Z0-9_\.]+'
-  GitHubOAuthAccessToken:
-    Type: String
-    Description: OAuth Token to access the GitHub repo
-    MinLength: 20
-    AllowedPattern: '[a-zA-Z0-9]*'
   AlertTargetPhoneNumber:
     Type: String
     Description: The SMS-enabled phone number for receiving alert notifications
