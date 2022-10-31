@@ -15,7 +15,9 @@ Below is my short guide and experience.
 
 ## Version 1
 
-The old GitHub Source Action required that you obtain an OAuth token from GitHub and pass it into CloudFormation when building your deployment stack. There are some issues with this, the most obvious being that you need to keep track of a token. Token-based authentication has caused problems for people in the past mainly because, like a password, it is in people's default nature to store them somewhere. There have been some high-profile data breaches recently that have been caused by OAuth tokens being stored in code repositories, the most widely known probably being (Heroku)... and (Toyota)
+The old GitHub Source Action required that you obtain an OAuth token from GitHub and pass it into CloudFormation when building your deployment stack. There are some issues with this, the most obvious being that you need to keep track of a token. Token-based authentication has caused problems for people in the past mainly because, like a password, it is often in people's default nature to store them somewhere.
+
+There have been some high-profile data breaches recently that have been caused by OAuth tokens being stored in code repositories, the most widely known probably being a [leak of Heroku and Travis CI tokens](https://github.blog/2022-04-15-security-alert-stolen-oauth-user-tokens/) and the most recent being a [database access key exposed in a public repository by Toyota](https://blog.gitguardian.com/toyota-accidently-exposed-a-secret-key-publicly-on-github-for-five-years/).
 
 We all know that we shouldn't do it, but sometimes it is overlooked. GitHub did in fact make it harder to store OAuth tokens in your repo accidentally by automatically scanning your repositories for OAuth tokens that it has generated, and will automatically remove any that it finds. That's some fancy shift-left DevSecOps right there. But this is only a select case and most tokens stored in GitHub will be stored unnoticed.
 
