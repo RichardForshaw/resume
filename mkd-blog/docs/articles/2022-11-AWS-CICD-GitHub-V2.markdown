@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "AWS CICD with Github Source Action V2"
-description: ""
+description: "I recently updated this Blog's GitHub connection from V1 (OAuth tokens) to V2 (CodeStar connection), which brings about many advantages. This is a short guide into how to do the same."
 tags:
     - Cloud Development
     - Serverless
