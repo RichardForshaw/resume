@@ -52,15 +52,14 @@ aws --profile <your cred profile> --region <target region> cloudformation create
 
 Note that you need to provide:
  * WebsiteName
- * GitHubOAuthAccessToken
 
 
 ### Services:
 
+ * IAM Roles and Policies
  * S3
  * CodePipeline, CodeBuild
- * Webhook
  * Lambda
- * IAM Roles and Policies
+ * Dynamo
 
 # The Blog
