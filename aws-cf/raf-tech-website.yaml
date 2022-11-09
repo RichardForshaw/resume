@@ -246,6 +246,13 @@ Resources:
       Protocol: sms
       TopicArn: !Ref PipelineFailureNotificationTopic
 
+  WebsiteFailureTopicEmailSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: "aws+error@forshaw.tech"
+      Protocol: email
+      TopicArn: !Ref PipelineFailureNotificationTopic
+
   PipelineLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
