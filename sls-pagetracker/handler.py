@@ -1,0 +1,135 @@
+import json
+import os
+import re
+from operator import itemgetter, contains
+from datetime import datetime
+from itertools import chain
+
+import boto3
+
+S3_LOG_TS_FORMAT = '[%d/%b/%Y:%H:%M:%S %z]'
+
+def handle_s3_view_log(event, context):
+    # Handler which parses the content of the new object and writes to Dynamo
+    # Important fields (Note there could be multiple records):
+    # event['Records'][0]['s3']: The s3 information
+    # event['Records'][0]['s3']['bucket']['name']
+    # event['Records'][0]['s3']['object']['key']
+    bucket_name = event['Records'][0]['s3']['bucket']['name']
+    object_key = event['Records'][0]['s3']['object']['key']
+
+    # Parameters from environment
+    try:
+        expected_logs_bucket = os.environ['LOGS_BUCKET_NAME']
+        expected_www_bucket = os.environ['WWW_BUCKET_NAME']
+        expected_path = os.environ['PATH_PREFIX']
+        dynamo_table = os.environ['TARGET_DYNAMO_TABLE']
+    except KeyError:
+        print("IMPROPERLY CONFIGURED: Could not access expected environment variables BUCKET_NAME and PATH_PREFIX")
+        return False
+
+    # open and parse
+    s3 = boto3.client('s3')
+    try:
+        data = s3.get_object(Bucket=bucket_name, Key=object_key).read()
+    except Exception as e:
+        print(f"Unable to read {object_key} from {bucket_name}")
+        print(e)
+
+    # parse the data
+    page_data = data.splitlines()
+    print(f"Scan complete: {len(page_data)} entries loaded")
+
+    collate_config = {
+        'bucket_name': expected_www_bucket,
+        'folder_prefix': expected_path,
+        'only_folders': True
+    }
+    print(f"Collate page views. Config: {collate_config}")
+
+
+def flatten_byte_strings(lists):
+    # Flatten a list of lists of byte strings into a list of strings
+    return map(lambda x: str(x, 'utf-8', 'ignore'), chain(*lists))
+
+def parse_log_string_to_dynamo(log_string, fields_tuple, pk_format=None, translations={}):
+    ''' Parse an AWS log string to a dynamo dictionary.
+        The log string follows the format defined here: https://docs.aws.amazon.com/AmazonS3/latest/userguide/LogFormat.html
+
+        The fields_tuple is a tuple of 3-tuples which define the index, target field name and type
+        of the field to be extracted, such as:
+        (1, 'BucketName', 'S') or (9, 'HTTPResult', 'N')
+
+        Structured field names can be provided in pk_format and sk_format. If provided:
+         - pk_format will provide the string format to write the partition key value, assumed to be
+           the first item in fields_tuple
+         - sk_format will provide the string format to write the sort key value, assumed to be the
+           second item in fields_tuple
+         - translations is a dict of translations to apply to field names. These will run on the
+           field, before any formatting takes place
+
+    '''
+    def not_blank(s):
+        return s != ' ' and s != ''
+
+    # Parse the string into a tuple of entries
+    fields = list(filter(not_blank, re.split(r'( |["\[].*?["\]])', log_string)))
+    print(translations)
+
+    # Extract the fields as per the spec
+    def extract_field(idx, name, type):
+        field = fields[idx].strip('"')
+        t = translations.get(name)
+        if t:
+            field = t(field)
+        return (name, {type: int(field) if type == 'N' else field})
+
+    data = dict(extract_field(*field_spec) for field_spec in fields_tuple)
+
+    # Format the PK if requested
+    if pk_format:
+        data[fields_tuple[0][1]] = { fields_tuple[0][2]: pk_format.format(fields[fields_tuple[0][0]]) }
+
+    return data
+
+
+def parse_s3_logs_to_dynamo(log_data, field_tuples, bucket_name='', folder_prefix='', file_filter='', **kwargs):
+    ''' Parse a list of log strings and return a list of equivalent dynamo records to write
+        Options:
+         - bucket_name: the expected name of the bucket being accessed
+         - folder_prefix: the prefix folder to the GET operations. This filters anything starting
+                with GET /folder_prefix/something...
+         - file_filter: only match access to certain files. Often in blogs, the blog entries are served
+                as an access to a directory, thus this allows the log to be filtered on requests
+                for 'index.html' or similar
+         - kwargs: All other arguments are sent to the log string parser
+
+        Notes:
+         - The log strings are either a list of strings or a single string separated by newlines
+         - This function will ONLY parse 'GET.OBJECT' operations
+         - The function is reliant on the current AWS access log format (see parse_log_string_to_dynamo)
+
+    '''
+    # Ensure folder name has trailing slash
+    if len(folder_prefix) and folder_prefix[-1] != '/':
+        folder_prefix += '/'
+
+    # Work internally with a list of strings
+    if isinstance(log_data, str):
+        log_data = log_data.splitlines()
+
+    # Filter anything not matching GET.OBJECT. Include a folder prefix if present
+    # NOTE this currently relies on the log format maintaining the current field ordering
+    # REGEX explanation:
+    #  - Match bucket name if given
+    #  - Match anything then ".GET.OBJECT " literal (note space)
+    #  - Match the folder prefix if given
+    #  - Match any non-whitespace
+    #  - Match the file filter before the next whitespace
+    filter_match = bucket_name + r".*\.GET\.OBJECT " + folder_prefix + r"\S*" + file_filter
+    print(f"Matching with: {filter_match}")
+    r = re.compile(filter_match)
+    valid_strings = filter(r.search, log_data)
+
+    # Call parsing function
+    return [parse_log_string_to_dynamo(entry, field_tuples, **kwargs) for entry in valid_strings]
