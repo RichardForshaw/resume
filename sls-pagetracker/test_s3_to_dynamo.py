@@ -83,6 +83,14 @@ def test_parse_multi_log_string_fields_to_dynamo_dict(test_data, field_tuples, f
     result = parse_log_string_to_dynamo(test_data, field_tuples, pk_format=format)
     assert result == expected
 
+def test_parse_and_format_and_translate_pk():
+    field_tuples = ((1, 'BucketName', 'S'),)
+    trans_fn = {'BucketName': str.upper }
+    pk_format = 'Formatted-{}'
+
+    result = parse_log_string_to_dynamo(TEST_DATA_1[1], field_tuples, translations=trans_fn, pk_format=pk_format)
+    assert result == { 'BucketName': { 'S': 'Formatted-AWSEXAMPLEBUCKET1'}}
+
 def test_parse_log_string_array_to_dynamo_dict_list():
 
     field_tuples = ((7, 'UserPages', 'S'), (2, 'SortKey', 'S'), (16, 'AgentString', 'S'), (13, 'ServiceTime', 'N'))

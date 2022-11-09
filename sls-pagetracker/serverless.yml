@@ -8,6 +8,9 @@ service: sls-page-tracker
 # Check out our docs for more details
 frameworkVersion: '3'
 
+custom:
+  logsBucketSourceARN: ${cf:raf-tech-website-stack.TechWebsiteAccessLogsBucketARN}
+
 provider:
   name: aws
   runtime: python3.9
@@ -21,6 +24,22 @@ provider:
 # you can add statements to the Lambda function's IAM Role here
   iam:
     deploymentRole: arn:aws:iam::801774630682:role/Tech-Web-Serverless-Deploy-Role
+    role:
+      statements:
+        # IAM role to access S3 objects
+        - Effect: "Allow"
+          Action:
+            - "s3:ListBucket"
+          Resource:
+            - ${self:custom.logsBucketSourceARN}
+        - Effect: "Allow"
+          Action:
+            - "s3:GetObject"
+          Resource:
+            - Fn::Join:
+              - ''
+              - - ${self:custom.logsBucketSourceARN}
+                - "/logs*"
 #    role:
 #      statements:
 #        - Effect: "Allow"
@@ -69,8 +88,9 @@ functions:
 #      - sns: greeter-topic
 
 #    Define function environment variables here
-#    environment:
-#      variable2: value2
+    environment:
+      WWW_BUCKET_NAME: www.${cf:raf-tech-website-stack.TechWebsiteRootDomainURL}
+      PATH_PREFIX: blog/
 
 # you can add CloudFormation resource templates here
 resources:

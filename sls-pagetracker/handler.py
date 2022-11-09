@@ -1,7 +1,6 @@
 import json
 import os
 import re
-from operator import itemgetter, contains
 from datetime import datetime
 from itertools import chain
 
@@ -9,62 +8,103 @@ import boto3
 
 S3_LOG_TS_FORMAT = '[%d/%b/%Y:%H:%M:%S %z]'
 
+# The tuple defining what to get from the aws s3 log string
+DYNAMO_FIELDS_TUPLE = (
+    (7, 'UserPages', 'S'),      # PartitionKey: User and Page
+    (2, 'SortKey', 'S'),        # Sort Key: Timestamp
+    (16, 'AgentString', 'S'),   # Agent Access String
+    (13, 'ServiceTime', 'N'),   # Page Access Time
+    (3, 'RemoteAddress', 'S')
+)
+
 def handle_s3_view_log(event, context):
     # Handler which parses the content of the new object and writes to Dynamo
     # Important fields (Note there could be multiple records):
     # event['Records'][0]['s3']: The s3 information
     # event['Records'][0]['s3']['bucket']['name']
     # event['Records'][0]['s3']['object']['key']
+    print(f"S3 event has {len(event['Records'])} record(s)")
     bucket_name = event['Records'][0]['s3']['bucket']['name']
     object_key = event['Records'][0]['s3']['object']['key']
 
     # Parameters from environment
     try:
-        expected_logs_bucket = os.environ['LOGS_BUCKET_NAME']
         expected_www_bucket = os.environ['WWW_BUCKET_NAME']
         expected_path = os.environ['PATH_PREFIX']
-        dynamo_table = os.environ['TARGET_DYNAMO_TABLE']
+        # dynamo_table = os.environ['TARGET_DYNAMO_TABLE']
     except KeyError:
         print("IMPROPERLY CONFIGURED: Could not access expected environment variables BUCKET_NAME and PATH_PREFIX")
         return False
 
     # open and parse
+    # TODO: Multiple files
     s3 = boto3.client('s3')
     try:
-        data = s3.get_object(Bucket=bucket_name, Key=object_key).read()
+        data = s3.get_object(Bucket=bucket_name, Key=object_key)['Body'].read()
     except Exception as e:
         print(f"Unable to read {object_key} from {bucket_name}")
         print(e)
+        data = ''
 
-    # parse the data
-    page_data = data.splitlines()
-    print(f"Scan complete: {len(page_data)} entries loaded")
+    # Parse the data: Convert from bytes to string and split
+    if isinstance(data, bytes):
+        data = str(data, 'utf-8', 'ignore')
+    log_data = data.splitlines()
+    print(f"Scan complete: {len(log_data)} entries loaded.")
 
-    collate_config = {
+    if not log_data:
+        print(f"No page data could be loaded for {object_key}")
+        return
+
+    # Run extraction
+    parse_config = {
         'bucket_name': expected_www_bucket,
         'folder_prefix': expected_path,
-        'only_folders': True
+        'file_filter': 'index.html',
+        'pk_format': 'Richard#{}'
     }
-    print(f"Collate page views. Config: {collate_config}")
+    print(f"Extract access data. Config: {parse_config}")
+
+    # Add translations here because it can't be printed
+    parse_config['translations'] = {
+        # Convert timestamp to epoch
+        'SortKey': lambda x: str(int(datetime.strptime(x, S3_LOG_TS_FORMAT).timestamp())),
+        # Strip index.html from page name
+        'UserPages': lambda x: re.sub(r'index\.html', '', x)
+    }
+    table_data = parse_s3_logs_to_dynamo(log_data, DYNAMO_FIELDS_TUPLE, **parse_config)
+
+    if len(table_data):
+        matched_pages = [item['UserPages']['S'] for item in table_data]
+        print(f"Matched data for pages:\n" + ('\n').join(matched_pages))
+        print(table_data[0])
+
+    else:
+        print(f'No items from {object_key} were matched')
 
 
-def flatten_byte_strings(lists):
-    # Flatten a list of lists of byte strings into a list of strings
-    return map(lambda x: str(x, 'utf-8', 'ignore'), chain(*lists))
+# def flatten_byte_strings(lists):
+#     # Flatten a list of lists of byte strings into a list of strings
+#     # This is because the data read from s3 is bytes, not chars
+#     print(type(lists[0]), lists[0])
+#     if isinstance(lists[0], str):
+#         return lists
+#     print('Converting bytes to strings')
+#     return map(lambda x: str(x, 'utf-8', 'ignore'), chain(*lists))
 
-def parse_log_string_to_dynamo(log_string, fields_tuple, pk_format=None, translations={}):
+def parse_log_string_to_dynamo(log_string, fields_tuples, pk_format=None, translations={}):
     ''' Parse an AWS log string to a dynamo dictionary.
         The log string follows the format defined here: https://docs.aws.amazon.com/AmazonS3/latest/userguide/LogFormat.html
 
-        The fields_tuple is a tuple of 3-tuples which define the index, target field name and type
+        The fields_tuples is a tuple of 3-tuples which define the index, target field name and type
         of the field to be extracted, such as:
         (1, 'BucketName', 'S') or (9, 'HTTPResult', 'N')
 
         Structured field names can be provided in pk_format and sk_format. If provided:
          - pk_format will provide the string format to write the partition key value, assumed to be
-           the first item in fields_tuple
+           the first item in fields_tuples
          - sk_format will provide the string format to write the sort key value, assumed to be the
-           second item in fields_tuple
+           second item in fields_tuples
          - translations is a dict of translations to apply to field names. These will run on the
            field, before any formatting takes place
 
@@ -74,21 +114,22 @@ def parse_log_string_to_dynamo(log_string, fields_tuple, pk_format=None, transla
 
     # Parse the string into a tuple of entries
     fields = list(filter(not_blank, re.split(r'( |["\[].*?["\]])', log_string)))
-    print(translations)
 
     # Extract the fields as per the spec
     def extract_field(idx, name, type):
         field = fields[idx].strip('"')
         t = translations.get(name)
         if t:
+            print(f"Executing translation for {name} on {field}")
             field = t(field)
         return (name, {type: int(field) if type == 'N' else field})
 
-    data = dict(extract_field(*field_spec) for field_spec in fields_tuple)
+    data = dict(extract_field(*field_spec) for field_spec in fields_tuples)
 
     # Format the PK if requested
     if pk_format:
-        data[fields_tuple[0][1]] = { fields_tuple[0][2]: pk_format.format(fields[fields_tuple[0][0]]) }
+        pk_data = fields_tuples[0]
+        data[pk_data[1]][pk_data[2]] = pk_format.format(data[pk_data[1]][pk_data[2]])
 
     return data
 
@@ -127,7 +168,7 @@ def parse_s3_logs_to_dynamo(log_data, field_tuples, bucket_name='', folder_prefi
     #  - Match any non-whitespace
     #  - Match the file filter before the next whitespace
     filter_match = bucket_name + r".*\.GET\.OBJECT " + folder_prefix + r"\S*" + file_filter
-    print(f"Matching with: {filter_match}")
+    print(f"Filtering with expression: {filter_match}")
     r = re.compile(filter_match)
     valid_strings = filter(r.search, log_data)
 
