@@ -20,8 +20,8 @@
 .vscode
 
 # Serverless directories
-sls/.serverless
-sls/node_modules
+sls*/.serverless
+sls*/node_modules
 
 # pytest cache
 */__pycache__
