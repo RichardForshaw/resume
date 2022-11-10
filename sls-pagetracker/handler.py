@@ -31,7 +31,7 @@ def handle_s3_view_log(event, context):
     try:
         expected_www_bucket = os.environ['WWW_BUCKET_NAME']
         expected_path = os.environ['PATH_PREFIX']
-        # dynamo_table = os.environ['TARGET_DYNAMO_TABLE']
+        dynamo_table_name = os.environ['TARGET_DYNAMO_TABLE']
     except KeyError:
         print("IMPROPERLY CONFIGURED: Could not access expected environment variables BUCKET_NAME and PATH_PREFIX")
         return False
@@ -53,7 +53,7 @@ def handle_s3_view_log(event, context):
     print(f"Scan complete: {len(log_data)} entries loaded.")
 
     if not log_data:
-        print(f"No page data could be loaded for {object_key}")
+        print(f"No page data could be loaded for {object_key}. Exiting.")
         return
 
     # Run extraction
@@ -63,7 +63,7 @@ def handle_s3_view_log(event, context):
         'file_filter': 'index.html',
         'pk_format': 'Richard#{}'
     }
-    print(f"Extract access data. Config: {parse_config}")
+    print(f"Parsing config: {parse_config}")
 
     # Add translations here because it can't be printed
     parse_config['translations'] = {
@@ -78,19 +78,20 @@ def handle_s3_view_log(event, context):
         matched_pages = [item['UserPages']['S'] for item in table_data]
         print(f"Matched data for pages:\n" + ('\n').join(matched_pages))
         print(table_data[0])
-
     else:
         print(f'No items from {object_key} were matched')
 
 
-# def flatten_byte_strings(lists):
-#     # Flatten a list of lists of byte strings into a list of strings
-#     # This is because the data read from s3 is bytes, not chars
-#     print(type(lists[0]), lists[0])
-#     if isinstance(lists[0], str):
-#         return lists
-#     print('Converting bytes to strings')
-#     return map(lambda x: str(x, 'utf-8', 'ignore'), chain(*lists))
+    # Write to dynamo. Currently one call per item.
+    dynamo_client = boto3.client('dynamodb')
+    for item in table_data:
+        # Add in an attribute for the key source
+        item['SourceObject'] = {'S': object_key}
+        try:
+            dynamo_client.put_item(TableName=dynamo_table_name, Item=item)
+        except Exception as e:
+            print(f"Failed to write {item['UserPages']} record to Dynamo")
+            print(e)
 
 def parse_log_string_to_dynamo(log_string, fields_tuples, pk_format=None, translations={}):
     ''' Parse an AWS log string to a dynamo dictionary.
@@ -120,9 +121,10 @@ def parse_log_string_to_dynamo(log_string, fields_tuples, pk_format=None, transl
         field = fields[idx].strip('"')
         t = translations.get(name)
         if t:
-            print(f"Executing translation for {name} on {field}")
             field = t(field)
-        return (name, {type: int(field) if type == 'N' else field})
+
+        # Note that numbers must be sent as strings, so force the conversion here
+        return (name, {type: str(field) if type in ['S', 'N'] else field})
 
     data = dict(extract_field(*field_spec) for field_spec in fields_tuples)
 
@@ -168,7 +170,7 @@ def parse_s3_logs_to_dynamo(log_data, field_tuples, bucket_name='', folder_prefi
     #  - Match any non-whitespace
     #  - Match the file filter before the next whitespace
     filter_match = bucket_name + r".*\.GET\.OBJECT " + folder_prefix + r"\S*" + file_filter
-    print(f"Filtering with expression: {filter_match}")
+    print(f"Filtering logs with expression: {filter_match}")
     r = re.compile(filter_match)
     valid_strings = filter(r.search, log_data)
 

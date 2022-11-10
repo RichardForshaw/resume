@@ -40,29 +40,22 @@ provider:
               - ''
               - - ${self:custom.logsBucketSourceARN}
                 - "/logs*"
-#    role:
-#      statements:
-#        - Effect: "Allow"
-#          Action:
-#            - "s3:ListBucket"
-#          Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
-#        - Effect: "Allow"
-#          Action:
-#            - "s3:PutObject"
-#          Resource:
-#            Fn::Join:
-#              - ""
-#              - - "arn:aws:s3:::"
-#                - "Ref" : "ServerlessDeploymentBucket"
-#                - "/*"
+        # IAM statements to update DynamoDB (from internal resource)
+        - Effect: "Allow"
+          Action:
+            - "dynamodb:PutItem"
+            - "dynamodb:UpdateItem"
+          Resource:
+            - Fn::GetAtt: [PageTrackTable, Arn]
 
 # you can define service wide environment variables here
 #  environment:
 #    variable1: value1
 
 # you can add packaging information here
-#package:
-#  patterns:
+package:
+ patterns:
+   - '!test*'
 #    - '!exclude-me.py'
 #    - '!exclude-me-dir/**'
 #    - include-me.py
@@ -91,6 +84,7 @@ functions:
     environment:
       WWW_BUCKET_NAME: www.${cf:raf-tech-website-stack.TechWebsiteRootDomainURL}
       PATH_PREFIX: blog/
+      TARGET_DYNAMO_TABLE: ${self:resources.Resources.PageTrackTable.Properties.TableName}
 
 # you can add CloudFormation resource templates here
 resources:
@@ -121,10 +115,3 @@ resources:
           WriteCapacityUnits: 2
         SSESpecification:
           SSEEnabled: True
-
-
-
-#  Outputs:
-#     NewOutput:
-#       Description: "Description for the output"
-#       Value: "Some output value"

@@ -39,9 +39,9 @@ d6ad5f7 www.forshaw.tech [06/Sep/2022:07:13:17 +0000] 14.161.28.234 - 90TZPQQ22Y
     [
         (TEST_DATA_1[1], ((1, 'BucketName', 'S'),), { 'BucketName': {'S': 'awsexamplebucket1'} }),
         (TEST_DATA_1[4], ((3, 'RemoteAddress', 'S'),), { 'RemoteAddress': {'S': '192.0.2.3'} }),
-        (TEST_DATA_1[3], ((9, 'HTTPResult', 'N'),), { 'HTTPResult': {'N': 404} }),
+        (TEST_DATA_1[3], ((9, 'HTTPResult', 'N'),), { 'HTTPResult': {'N': '404'} }),
         (TEST_DATA_2[1], ((1, 'BucketName', 'S'),), { 'BucketName': {'S': 'www.forshaw.tech'} }),
-        (TEST_DATA_2[6], ((13, 'ThirdNumber', 'N'),), { 'ThirdNumber': {'N': 61} }),
+        (TEST_DATA_2[6], ((13, 'ThirdNumber', 'N'),), { 'ThirdNumber': {'N': '61'} }),
         (TEST_DATA_2[9], ((7, 'PageName', 'S'),), { 'PageName': {'S': 'blog/articles/2022-08-30-aws-cli-essentials/index.html'} }),
     ])
 def test_parse_single_log_string_field_to_dynamo_dict(test_data, field_tuples, expected):
@@ -63,8 +63,8 @@ def test_parse_log_string_with_pk_format_rule(test_data, field_tuples, format, e
 @mark.parametrize('test_data,field_tuples,trans_fn,expected',
     [
         (TEST_DATA_1[1], ((1, 'BucketName', 'S'),), {'BucketName': str.upper}, { 'BucketName': {'S': 'AWSEXAMPLEBUCKET1'} }),
-        (TEST_DATA_1[4], ((3, 'RemoteAddress', 'S'),), {'RemoteAddress': lambda x: x.split('.')}, { 'RemoteAddress': {'S': ['192', '0', '2', '3']} }),
-        (TEST_DATA_2[4], ((2, 'Timestamp', 'N'),), {'Timestamp': lambda x: int(datetime.strptime(x, S3_LOG_TS_FORMAT).timestamp())}, { 'Timestamp': {'N': 1662446421} }),
+        (TEST_DATA_1[4], ((3, 'RemoteAddress', 'SS'),), {'RemoteAddress': lambda x: x.split('.')}, { 'RemoteAddress': {'SS': ['192', '0', '2', '3']} }),
+        (TEST_DATA_2[4], ((2, 'Timestamp', 'N'),), {'Timestamp': lambda x: datetime.strptime(x, S3_LOG_TS_FORMAT).timestamp()}, { 'Timestamp': {'N': '1662446421.0'} }),
     ])
 def test_parse_log_string_with_field_translation_rule(test_data, field_tuples, trans_fn, expected):
 
@@ -74,9 +74,9 @@ def test_parse_log_string_with_field_translation_rule(test_data, field_tuples, t
 @mark.parametrize('test_data,field_tuples,format,expected',
     [
         (TEST_DATA_1[1], ((1, 'BucketName', 'S'), (3, 'RemoteAddress', 'S'), (9, 'HTTPResult', 'N')), 'Test#{}',
-            { 'BucketName': {'S': 'Test#awsexamplebucket1'}, 'RemoteAddress': { 'S': '192.0.2.3'}, 'HTTPResult': {'N': 200 } }),
+            { 'BucketName': {'S': 'Test#awsexamplebucket1'}, 'RemoteAddress': { 'S': '192.0.2.3'}, 'HTTPResult': {'N': '200' } }),
         (TEST_DATA_2[7], ((7, 'PK', 'S'), (1, 'BucketName', 'S'), (13, 'ServiceTime', 'N')), 'Richard#{}',
-            { 'PK': {'S': 'Richard#blog/index.html'},  'BucketName': {'S': 'www.forshaw.tech'}, 'ServiceTime': { 'N': 40 } }),
+            { 'PK': {'S': 'Richard#blog/index.html'},  'BucketName': {'S': 'www.forshaw.tech'}, 'ServiceTime': { 'N': '40' } }),
     ])
 def test_parse_multi_log_string_fields_to_dynamo_dict(test_data, field_tuples, format, expected):
 
@@ -104,19 +104,19 @@ def test_parse_log_string_array_to_dynamo_dict_list():
             'UserPages': { 'S': 'Richard#favicon.ico'},
             'SortKey': { 'S': '1662446463'},
             'AgentString': { 'S': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:103.0) Gecko/20100101 Firefox/103.0'},
-            'ServiceTime': { 'N': 13}
+            'ServiceTime': { 'N': '13'}
         },
         {
             'UserPages': { 'S': 'Richard#blog/search/worker.js'},
             'SortKey': { 'S': '1662446463'},
             'AgentString': { 'S': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:103.0) Gecko/20100101 Firefox/103.0'},
-            'ServiceTime': { 'N': 56}
+            'ServiceTime': { 'N': '56'}
         },
         {
             'UserPages': { 'S': 'Richard#blog/search/search_index.json'},
             'SortKey': { 'S': '1662446463'},
             'AgentString': { 'S': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:103.0) Gecko/20100101 Firefox/103.0'},
-            'ServiceTime': { 'N': 61}
+            'ServiceTime': { 'N': '61'}
         }
     ]
 
@@ -135,22 +135,22 @@ def test_parse_multi_line_string_to_dynamo_dict_list():
         {
             'UserPages': { 'S': 'Richard#blog/StaticWebSiteDevOps_Basic.png'},
             'SortKey': { 'S': '1662448389'},
-            'ServiceTime': { 'N': 65}
+            'ServiceTime': { 'N': '65'}
         },
         {
             'UserPages': { 'S': 'Richard#blog/index.html'},
             'SortKey': { 'S': '1662448389'},
-            'ServiceTime': { 'N': 88}
+            'ServiceTime': { 'N': '88'}
         },
         {
             'UserPages': { 'S': 'Richard#blog/articles/images/calculator.jpg'},
             'SortKey': { 'S': '1662448397'},
-            'ServiceTime': { 'N': 82}
+            'ServiceTime': { 'N': '82'}
         },
         {
             'UserPages': { 'S': 'Richard#blog/articles/2018-11-28-backlog-priorities/index.html'},
             'SortKey': { 'S': '1662448397'},
-            'ServiceTime': { 'N': 67}
+            'ServiceTime': { 'N': '67'}
         }
     ]
 
