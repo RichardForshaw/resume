@@ -2,13 +2,13 @@
 layout: post
 title:  "AWS CLI and Docker Essentials"
 description: "Over a few years I have built up a small library of home projects deployed on AWS. When I need to revisit them it is easy to forget many of the key CLI commands and configuration items that I need most often to get back up and running."
-date: "2022-09-02"
-revision_date: "2022-09-04"
+revision_date: "2022-11-10"
 tags:
     - Cloud Development
     - AWS
     - Docker
     - Serverless
+    - DynamoDB
 author: Richard Forshaw
 ---
 
@@ -156,14 +156,14 @@ Simple output formatting can be controlled with the CLI command line or the `con
   - as parameter: `--output table`
   - as `config` file option: `output = table`
 
-If you do want to list as JSON (perhaps you wish to pipeline the output to something else), then you can do some filtering of the output. This has proven to be useful to me for example with commends that return a large amount of data, and especially useful when faced with data returned from Dynamo, when you only want to see a few fields.
+If you do want to list as JSON (perhaps you wish to pipeline the output to something else), then you can do some filtering of the output. This has proven to be useful to me for example with commands that return a large amount of data. This is of particular note when faced with data returned from Dynamo, when faced with a large query result but you only want to see a few fields.
 
 There are two types of filtering: client-side and server-side. The critical thing to note is:
 
   - client-side filtering is done by the CLI tool and occurs **after the information has been received** from the server. This if you are concerned with internet traffic, this filtering does not affect what is sent from the server, only what is rendered to you
   - server-side filtering is done (as the name suggests) on the server, and reduces the traffic that is sent to you. Because it is server-side, it is only supported by some services, typically those which are likely to return large data sets (such as DynamoDB)
 
-**CLI examples:**
+### CLI examples
 
 Filter only stack ID, name and update time:
 
@@ -173,7 +173,7 @@ Show stack name and ID for stacks whose name contains 'database':
 
 ``aws cloudformation describe-stacks --query 'Stacks[?StackId.contains(@, `database`)].[StackId, StackName]'``
 
-**Dynamo examples:**
+### Dynamo examples
 
 Dynamo is a more complicated beast, but when your database gets big then server-side filtering will be helpful in saving bandwidth and increasing responsiveness. You should be very careful to note the difference between _querying_ and _filtering_, as there is a subtle distinction. I shall not attempt to explain it here, instead jump into [Alex Debrie's excellent article](https://www.alexdebrie.com/posts/dynamodb-filter-expressions/)
 
