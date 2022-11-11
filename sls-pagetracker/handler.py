@@ -39,18 +39,7 @@ def handle_s3_view_log(event, context):
 
     # open and parse
     # TODO: Multiple files
-    s3 = boto3.client('s3')
-    try:
-        data = s3.get_object(Bucket=bucket_name, Key=object_key)['Body'].read()
-    except Exception as e:
-        print(f"Unable to read {object_key} from {bucket_name}")
-        print(e)
-        data = ''
-
-    # Parse the data: Convert from bytes to string and split
-    if isinstance(data, bytes):
-        data = str(data, 'utf-8', 'ignore')
-    log_data = data.splitlines()
+    log_data = read_strings_from_s3_object(bucket_name, object_key)
     print(f"Scan complete: {len(log_data)} entries loaded.")
 
     if not log_data:
@@ -114,6 +103,22 @@ def handle_s3_view_log(event, context):
         except Exception as e:
             print(f"Failed to write {item} record to Dynamo")
             print(e)
+
+
+def read_strings_from_s3_object(bucket_name, object_key):
+    ''' Given a S3 bucket name and object key, read the contents and return an array of strings.'''
+    s3 = boto3.client('s3')
+    try:
+        data = s3.get_object(Bucket=bucket_name, Key=object_key)['Body'].read()
+    except Exception as e:
+        print(f"Unable to read {object_key} from {bucket_name}")
+        print(e)
+        data = ''
+
+    # Parse the data: Convert from bytes to string and split
+    if isinstance(data, bytes):
+        data = str(data, 'utf-8', 'ignore')
+    return data.splitlines()
 
 
 def parse_log_string_to_dynamo(log_string, fields_tuples, pk_format=None, translations={}):
