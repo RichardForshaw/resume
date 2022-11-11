@@ -58,7 +58,7 @@ Resources:
           - Id: DeleteLogsRule
             Prefix: 'logs/'
             Status: Enabled
-            ExpirationInDays: 180
+            ExpirationInDays: 90
 
 
   TechWebsiteBucketPolicy:
