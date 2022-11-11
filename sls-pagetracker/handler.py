@@ -4,6 +4,7 @@ import re
 from datetime import datetime
 from itertools import chain
 
+from botocore.exceptions import ClientError
 import boto3
 
 S3_LOG_TS_FORMAT = '[%d/%b/%Y:%H:%M:%S %z]'
@@ -74,13 +75,13 @@ def handle_s3_view_log(event, context):
     }
     table_data = parse_s3_logs_to_dynamo(log_data, DYNAMO_FIELDS_TUPLE, **parse_config)
 
+    matched_pages = []
     if len(table_data):
         matched_pages = [item['UserPages']['S'] for item in table_data]
         print(f"Matched data for pages:\n" + ('\n').join(matched_pages))
         print(table_data[0])
     else:
         print(f'No items from {object_key} were matched')
-
 
     # Write to dynamo. Currently one call per item.
     dynamo_client = boto3.client('dynamodb')
@@ -92,6 +93,28 @@ def handle_s3_view_log(event, context):
         except Exception as e:
             print(f"Failed to write {item['UserPages']} record to Dynamo")
             print(e)
+
+    # Write page index to Dynamo
+    for page in set(matched_pages):
+        item = { 'UserPages': {'S': 'Richard#INDEX'}, 'SortKey': {'S': page} }
+        try:
+            dynamo_client.put_item(
+                TableName=dynamo_table_name,
+                Item=item,
+                ConditionExpression="attribute_not_exists(SortKey)")
+            print(f"Wrote new INDEX record: {page}")
+        except ClientError as ce:
+            # Probably means that the record already exists
+            if ce.response['Error']['Code'] =='ConditionalCheckFailedException':
+                # Do Nothing
+                pass
+            else:
+                print(f'Got unexpected ClientError:')
+                print(ce)
+        except Exception as e:
+            print(f"Failed to write {item} record to Dynamo")
+            print(e)
+
 
 def parse_log_string_to_dynamo(log_string, fields_tuples, pk_format=None, translations={}):
     ''' Parse an AWS log string to a dynamo dictionary.
