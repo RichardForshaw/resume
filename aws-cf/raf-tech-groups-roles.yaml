@@ -48,7 +48,7 @@ Resources:
                   - 'arn:aws:lambda:*:801774630682:function:*'
               - Effect: Allow
                 Resource:
-                  - 'arn:aws:iam::801774630682:role/Receipt-Bot-Serverless*'
+                  - !GetAtt TechWebsiteServerlessDeploymentRole.Arn
                 Action:
                   - 'sts:AssumeRole'
                   - 'iam:PassRole'
@@ -137,19 +137,38 @@ Resources:
             Statement:
               - Effect: Allow   # Allow all IAM actions to roles prefixed with service
                 Resource:
-                  - 'arn:aws:iam::801774630682:role/wwwstatuscheck-*'
+                  - !Sub 'arn:aws:iam::${AWS::AccountId}:role/wwwstatuscheck-*'
+                  - !Sub 'arn:aws:iam::${AWS::AccountId}:role/sls-page-tracker-*'
+                  - !Sub 'arn:aws:iam::${AWS::AccountId}:role/Tech-Web-Serverless-Deploy-Role'
                 Action:
                   - 'iam:*'
               - Effect: Allow   # Allow all S3 actions to buckets prefixed with service
                 Resource:
                   - 'arn:aws:s3:::wwwstatuscheck-*'
+                  - 'arn:aws:s3:::sls-page-tracker-*'
                 Action:
                   - 's3:*'
               - Effect: Allow   # Allow all lambda & iam actions to functions prefixed with service
                 Resource:
-                  - 'arn:aws:lambda:ap-southeast-1:801774630682:function:wwwstatuscheck-*'
+                  - !Sub 'arn:aws:lambda:ap-southeast-1:${AWS::AccountId}:function:wwwstatuscheck-*'
+                  - !Sub 'arn:aws:lambda:ap-southeast-1:${AWS::AccountId}:function:sls-page-tracker-*'
                 Action:
                   - 'lambda:*'
+              - Effect: Allow   # Allow all Dynamo actions
+                Resource:
+                  - !Sub 'arn:aws:dynamodb:ap-southeast-1:${AWS::AccountId}:table/PageTrackTable'
+                Action:
+                  - 'dynamodb:*'
+        - PolicyName: S3CustomConfigurationPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow   # Allow the logs bucket to be configured
+                Resource:
+                  - 'arn:aws:s3:::logs.forshaw.tech'
+                Action:
+                  - 's3:getBucket*'
+                  - 's3:putBucket*'
         - PolicyName: EventsPolicies
           PolicyDocument:
             Version: 2012-10-17
@@ -167,7 +186,9 @@ Resources:
                 Action:
                   - 'apigateway:*'
                 Resource:
-                  - 'arn:aws:apigateway:ap-southeast-1:801774630682:/*'
+                  - !Sub 'arn:aws:apigateway:ap-southeast-1:${AWS::AccountId}:/*'
+                  - 'arn:aws:apigateway:ap-southeast-1::/tags/*'
+                  - 'arn:aws:apigateway:ap-southeast-1::/apis/*'
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
