@@ -1,6 +1,7 @@
 ---
 layout: post
 title:  "AWS: A DynamoDB Page View Tracker"
+description: "After exploring DynamoDB a few times, I finally found a project which was broad enough to touch most aspects of DynamoDB but simple enough to be turned into a tutorial. So here it is. (Part 1 of 3)"
 tags:
     - Cloud Development
     - Serverless
@@ -46,7 +47,7 @@ This now gives me my Dynamo table design: To access data per-page and to filter 
 
 This exercise is very important because in NoSQL it is very hard to change these decisions. In a relational database once you define your relations you can design dozens of ways to query that data, so it is very flexible. With NoSQL you need to do things differently, and this is so important to remember. I have read **so many questions on Stack Overflow** asking about how to query a DynamoDB table in a different way now that it is populated with data, and the answer is the same: either try to use a secondary index (if possible), or build your table in a different way.
 
-The awsome Alex DeBrie also has a [great page](https://www.alexdebrie.com/posts/dynamodb-single-table/) on single-table DynamoDB design.
+The awesome Alex DeBrie also has a [great page](https://www.alexdebrie.com/posts/dynamodb-single-table/) on single-table DynamoDB design.
 
 !['Serverless-key'](images/serverless-key.png)
 
