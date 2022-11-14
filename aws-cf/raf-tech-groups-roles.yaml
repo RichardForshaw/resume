@@ -142,7 +142,7 @@ Resources:
                   - !Sub 'arn:aws:iam::${AWS::AccountId}:role/Tech-Web-Serverless-Deploy-Role'
                 Action:
                   - 'iam:*'
-              - Effect: Allow   # Allow all S3 actions to buckets prefixed with service
+              - Effect: Allow   # Allow all S3 actions to buckets prefixed with service. Note this is for code deployment.
                 Resource:
                   - 'arn:aws:s3:::wwwstatuscheck-*'
                   - 'arn:aws:s3:::sls-page-tracker-*'

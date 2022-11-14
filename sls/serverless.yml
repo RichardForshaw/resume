@@ -27,8 +27,6 @@ custom:
 
   # Variables for this deployment
   projectStackName: raf-tech-website-stack
-  accessLogBucket: ${cf:raf-tech-website-stack.TechWebsiteAccessLogsBucket}
-  wwwBucketName: www.${cf:raf-tech-website-stack.TechWebsiteRootDomainURL}
 
 provider:
   name: aws
@@ -46,42 +44,12 @@ provider:
     deploymentRole: arn:aws:iam::801774630682:role/Tech-Web-Serverless-Deploy-Role
     role:
       statements:
-        # IAM statements for statuschecker
+        # IAM statements for statuschecker lambda
         - Effect: "Allow"
           Action:
             - "SNS:Publish"
           Resource: ${cf:raf-tech-website-stack.TechWebsiteFailureNotificationTopicARN}
-        # IAM statements for pageviewcollector
-        - Effect: "Allow"
-          Action:
-            - "s3:ListBucket"
-          Resource: ${cf:raf-tech-website-stack.TechWebsiteAccessLogsBucketARN}
-        - Effect: "Allow"
-          Action:
-            - "s3:GetObject"
-          Resource:
-            - Fn::Join:
-              - ''
-              - - ${cf:raf-tech-website-stack.TechWebsiteAccessLogsBucketARN}
-                - "/logs/*"
-        - Effect: "Allow"
-          Action:
-            - "s3:PutObject"
-            - "s3:GetObject"
-          Resource:
-            - Fn::Join:
-              - ''
-              - - ${cf:raf-tech-website-stack.TechWebsiteAccessLogsBucketARN}
-                - "/*"
-        - Effect: "Deny"
-          Action:
-            - "s3:PutObject"
-          Resource:
-            - Fn::Join:
-              - ''
-              - - ${cf:raf-tech-website-stack.TechWebsiteAccessLogsBucketARN}
-                - "/logs/*"
-        # IAM statements for contact form lambda
+        # IAM statements for contactformemail lambda
         - Effect: "Allow"
           Action:
             - 'SES:SendEmail'
@@ -104,24 +72,6 @@ package:
 
 
 functions:
-  pageviewcollector:
-    handler: handlers.run_pageviews
-    logRetentionInDays: 30
-    timeout: 20
-    events:
-      - schedule: rate(12 hours)
-    onError: ${cf:raf-tech-website-stack.TechWebsiteFailureNotificationTopicARN}
-    maximumRetryAttempts: 0
-    # - s3:
-    #   bucket: ${self:custom.accessLogBucket}
-    #   event: s3:ObjectCreated:Put
-    #   rules:
-    #     - prefix: logs/
-    environment:
-      LOGS_BUCKET_NAME: ${self:custom.accessLogBucket}
-      WWW_BUCKET_NAME: ${self:custom.wwwBucketName}
-      PATH_PREFIX: blog/
-
   statuschecker:
     handler: handlers.run_health
     logRetentionInDays: 30
