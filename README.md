@@ -63,3 +63,9 @@ Note that you need to provide:
  * Dynamo
 
 # The Blog
+
+# Dynamo Queries
+
+dynamodb query --table-name PageTrackTable --key-condition-expression "UserPages = :pk AND begins_with(SortKey, :sk)" --expression-attribute-values '{ ":pk": { "S": "Richard#INDEX" }, ":sk": { "S": "Richard#blog/articles" } }' --return-consumed-capacity TOTAL
+
+dynamodb query --table-name PageTrackTable --key-condition-expression "UserPages = :pk" --expression-attribute-values '{ ":pk": { "S": "Richard#blog/articles/2022-10-On-Technical-Debt/" } }' --select COUNT --return-consumed-capacity TOTAL
