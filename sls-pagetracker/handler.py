@@ -64,6 +64,11 @@ def handle_s3_view_log(event, context):
     }
     table_data = parse_s3_logs_to_dynamo(log_data, DYNAMO_FIELDS_TUPLE, **parse_config)
 
+    # Add custom field
+    for item in table_data:
+        # Add in an attribute for the key source
+        item['SourceObject'] = {'S': object_key}
+
     matched_pages = []
     if len(table_data):
         matched_pages = [item['UserPages']['S'] for item in table_data]
@@ -73,17 +78,13 @@ def handle_s3_view_log(event, context):
         print(f'No items from {object_key} were matched')
 
     # Write to dynamo. Currently one call per item.
-    dynamo_client = boto3.client('dynamodb')
-    for item in table_data:
-        # Add in an attribute for the key source
-        item['SourceObject'] = {'S': object_key}
-        try:
-            dynamo_client.put_item(TableName=dynamo_table_name, Item=item)
-        except Exception as e:
-            print(f"Failed to write {item['UserPages']} record to Dynamo")
-            print(e)
+    if len(table_data) < 4:
+        dynamo_write_simple_items(dynamo_table_name, table_data)
+    else:
+        dynamo_write_batched_items(dynamo_table_name, table_data)
 
     # Write page index to Dynamo
+    dynamo_client = boto3.client('dynamodb')
     for page in set(matched_pages):
         item = { 'UserPages': {'S': 'Richard#INDEX'}, 'SortKey': {'S': page} }
         try:
@@ -120,6 +121,27 @@ def read_strings_from_s3_object(bucket_name, object_key):
         data = str(data, 'utf-8', 'ignore')
     return data.splitlines()
 
+def dynamo_write_simple_items(table_name, item_list):
+    dynamo_client = boto3.client('dynamodb')
+    for item in item_list:
+        try:
+            dynamo_client.put_item(TableName=table_name, Item=item)
+        except Exception as e:
+            print(f"Failed to write {item['UserPages']} record to Dynamo")
+            print(e)
+
+def dynamo_write_batched_items(table_name, item_list):
+    dynamodb = boto3.resource('dynamodb')
+    table = dynamodb.Table(table_name)
+    with table.batch_writer(overwrite_by_pkeys=['UserPages', 'SortKey']) as batch:
+        print(f"Batch-writing {len(item_list)} items...")
+        for item in item_list:
+            # So, using this method, there is no need to us the {'Type': Value } notation...
+            # so we can undo it here
+            raw_item = { k: list(v.values())[0] for k, v in item.items() }
+            batch.put_item(Item=raw_item)
+
+    print("Done...")
 
 def parse_log_string_to_dynamo(log_string, fields_tuples, pk_format=None, translations={}):
     ''' Parse an AWS log string to a dynamo dictionary.
