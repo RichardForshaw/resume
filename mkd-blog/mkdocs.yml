@@ -13,6 +13,10 @@ theme:
 # extra_css:
 #     - "css/extra.css"
 
+# custom scripts
+extra_javascript:
+    - "js/pageviews-api.js"
+
 nav:
     - 'index.md'
     - All Articles: 'articles.md'
