@@ -182,13 +182,14 @@ Resources:
           PolicyDocument:
             Version: 2012-10-17
             Statement:
-              - Effect: Allow   # Allow all operations to API gateway to APIs prefixed with service
+              - Effect: Allow   # Allow all operations to API gateway
                 Action:
                   - 'apigateway:*'
                 Resource:
                   - !Sub 'arn:aws:apigateway:ap-southeast-1:${AWS::AccountId}:/*'
                   - 'arn:aws:apigateway:ap-southeast-1::/tags/*'
                   - 'arn:aws:apigateway:ap-southeast-1::/apis/*'
+                  - 'arn:aws:apigateway:ap-southeast-1::/apis'
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess

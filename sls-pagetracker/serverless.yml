@@ -18,6 +18,10 @@ provider:
   region: ap-southeast-1
   memorySize: 128
 
+  # Enable cors so we can post contact info from the web page
+  httpApi:
+    cors: true
+
 # you can overwrite defaults here
 #  stage: dev
 
@@ -46,6 +50,7 @@ provider:
             - "dynamodb:PutItem"
             - "dynamodb:UpdateItem"
             - "dynamodb:BatchWriteItem"
+            - "dynamodb:Query"
           Resource:
             - Fn::GetAtt: [PageTrackTable, Arn]
 
@@ -74,18 +79,26 @@ functions:
           event: s3:ObjectCreated:*
           rules:
             - prefix: logs/
-#    The following are a few example events you can configure
-#      - httpApi:
-#          path: /users/create
-#          method: get
-#      - schedule: rate(10 minutes)
-#      - sns: greeter-topic
 
 #    Define function environment variables here
     environment:
       WWW_BUCKET_NAME: www.${cf:raf-tech-website-stack.TechWebsiteRootDomainURL}
       PATH_PREFIX: blog/
       TARGET_DYNAMO_TABLE: ${self:resources.Resources.PageTrackTable.Properties.TableName}
+
+  pagecounttotals:
+    handler: handler.handle_blog_page_count_totals
+    logRetentionInDays: 30
+    timeout: 10
+    events:
+      - httpApi:
+          path: /pagetotals
+          method: get
+    environment:
+      TARGET_DYNAMO_TABLE: ${self:resources.Resources.PageTrackTable.Properties.TableName}
+
+
+  # TODO: pagecounthistory
 
 # you can add CloudFormation resource templates here
 resources:

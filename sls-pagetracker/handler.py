@@ -226,3 +226,61 @@ def parse_s3_logs_to_dynamo(log_data, field_tuples, bucket_name='', folder_prefi
 
     # Call parsing function
     return [parse_log_string_to_dynamo(entry, field_tuples, **kwargs) for entry in valid_strings]
+
+def handle_blog_page_count_totals(event, context):
+    # Handler which parses the content of the new object and writes to Dynamo
+    # Important fields (Note there could be multiple records):
+    print(event)
+    # print(f"Event has {len(event['Records'])} record(s)")
+
+    # Parameters from environment
+    try:
+        dynamo_table_name = os.environ['TARGET_DYNAMO_TABLE']
+    except KeyError:
+        print("IMPROPERLY CONFIGURED: Could not access expected environment variables BUCKET_NAME and PATH_PREFIX")
+        return False
+
+    # Query the indexes from Dynamo
+    client = boto3.client('dynamodb')
+    result = client.query(TableName=dynamo_table_name,
+                    ProjectionExpression="UserPages,SortKey",
+                    KeyConditionExpression="UserPages = :pk AND begins_with(SortKey, :sk)",
+                    ExpressionAttributeValues={ ":pk": {"S": "Richard#INDEX"}, ":sk": {"S": "Richard#blog/articles/2022" }},
+                    ReturnConsumedCapacity='TOTAL')
+
+    print(result['ConsumedCapacity'])
+
+    # Now we must query for the items
+    result_dict = {}
+    total_consumed = result['ConsumedCapacity']['CapacityUnits']
+    for item in result['Items']:
+        page_name = item['SortKey']['S']
+        page_result = client.query(TableName=dynamo_table_name,
+                    Select='COUNT',
+                    KeyConditionExpression="UserPages = :pk",
+                    ExpressionAttributeValues={ ":pk": {"S": page_name}},
+                    ReturnConsumedCapacity='TOTAL')
+
+        print(page_result)
+        if page_result['Count']:
+            page_name = page_name.split("#")[1]
+            print(f"{page_name}: {page_result['Count']}")
+            result_dict[page_name] = page_result['Count']
+
+        total_consumed += page_result['ConsumedCapacity']['CapacityUnits']
+
+    # Also get the blog access
+    page_result = client.query(TableName=dynamo_table_name,
+                Limit=1,
+                KeyConditionExpression="UserPages = :pk",
+                ExpressionAttributeValues={ ":pk": {"S": "Richard#blog/"}},
+                ReturnConsumedCapacity='TOTAL')
+
+    total_consumed += page_result['ConsumedCapacity']['CapacityUnits']
+
+    result_dict['DynamoConsumedCapacity'] = total_consumed
+    result_dict['ResultsStartTime'] = page_result['Items'][0]['SortKey']['S']
+    time_string = datetime.utcfromtimestamp(int(page_result['Items'][0]['SortKey']['S'])).strftime(S3_LOG_TS_FORMAT)
+    result_dict['ResultsStartTimeString'] = time_string
+
+    return result_dict
