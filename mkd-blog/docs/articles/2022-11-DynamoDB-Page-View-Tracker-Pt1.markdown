@@ -151,5 +151,5 @@ The solution in my case was to allow `iam:PassRole` to be performed by my deploy
 
 So you have a database table and a lambda that is triggered by an S3 event but doesn't really do anything, but if you watch logs come in to the logging bucket (or write a file there yourself), you will be able to verify that the lambda does indeed get triggered.
 
-So what next? We will look at fleshing out the Lambda function in the next post.
+So what next? We will look at fleshing out the Lambda function in the [next part](../articles/2022-11-DynamoDB-Page-View-Tracker-Pt2.markdown).
 
