@@ -6,8 +6,7 @@ title: Forshaw.Tech Blog
 
 A collection of articles on Software, Software Management, Technology and Self-Development.
 
-### Latest Articles:
-
+### Latest Articles | [All Articles](articles.md)
 
 {{ blog_content }}
 

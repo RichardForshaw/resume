@@ -17,11 +17,16 @@ theme:
 extra_javascript:
     - "js/pageviews-api.js"
 
+
 nav:
     - 'index.md'
     - All Articles: 'articles.md'
     - Article Tags: 'tags.md'
     - 'about.md'
+    - Contact: 'http://www.forshaw.tech/#ContactForm'
+
+# For the sidebar message under nav items
+sidebar_info_message: "Available in Vietnam! For any consultancy or speaking opportunities, please contact me using the contact form."
 
 plugins:
     - search

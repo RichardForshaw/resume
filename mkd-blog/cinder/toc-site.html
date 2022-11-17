@@ -4,5 +4,15 @@
             <li class="first-level active"><a href="{{ nav_item.url | url }}">{{ nav_item.title }}</a></li>
         {% endfor %}
     </ul>
+    {% if config['sidebar_info_message'] %}
+    <div style="background-color: lightblue">
+        <hr>
+        <p style="margin: 15px 15px 0px 15px">
+            <i class="fas fa-info-circle" style="color: darkblue; padding-right: 5px"></i>
+            {{ config['sidebar_info_message'] }}
+        </p><br>
+    </div>
+    {% endif %}
 </div>
+
 
