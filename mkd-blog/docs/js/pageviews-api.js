@@ -23,7 +23,7 @@ function get_page_views() {
         console.log(result);
 
         // Extract top 5 pages from results
-        isBlogPage = i => i[0].startsWith("Richard#")
+        isBlogPage = i => i[0].startsWith("blog/")
         top5_pages = Object.entries(result).filter(isBlogPage).sort((a, b) => b[1] - a[1]).slice(0,5)
 
         // Format and add to page

@@ -4,7 +4,7 @@ disable_toc: true
 
 {{ blog_content all }}
 
-## Most popular
+## Most popular:
 
 <div id="_popularity_table">
 
