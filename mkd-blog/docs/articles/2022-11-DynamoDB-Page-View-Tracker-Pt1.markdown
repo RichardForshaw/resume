@@ -7,6 +7,7 @@ tags:
     - Serverless
     - AWS
     - DynamoDB
+    - Databases
 author: Richard Forshaw
 ---
 
