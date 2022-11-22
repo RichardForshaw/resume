@@ -230,8 +230,6 @@ def parse_s3_logs_to_dynamo(log_data, field_tuples, bucket_name='', folder_prefi
 def handle_blog_page_count_totals(event, context):
     # Handler which parses the content of the new object and writes to Dynamo
     # Important fields (Note there could be multiple records):
-    print(event)
-    # print(f"Event has {len(event['Records'])} record(s)")
 
     # Parameters from environment
     try:
@@ -253,6 +251,7 @@ def handle_blog_page_count_totals(event, context):
     # Now we must query for the items
     result_dict = {}
     total_consumed = result['ConsumedCapacity']['CapacityUnits']
+    total_page_views = 0
     for item in result['Items']:
         page_name = item['SortKey']['S']
         page_result = client.query(TableName=dynamo_table_name,
@@ -263,13 +262,18 @@ def handle_blog_page_count_totals(event, context):
 
         print(page_result)
         if page_result['Count']:
+            # Remove the user prefix
             page_name = page_name.split("#")[1]
             print(f"{page_name}: {page_result['Count']}")
             result_dict[page_name] = page_result['Count']
+            total_page_views += page_result['Count']
 
         total_consumed += page_result['ConsumedCapacity']['CapacityUnits']
 
-    # Also get the blog access
+    # Show the total
+    result_dict['TotalPageViews'] = total_page_views
+
+    # Also get the earliest blog access time
     page_result = client.query(TableName=dynamo_table_name,
                 Limit=1,
                 KeyConditionExpression="UserPages = :pk",
@@ -284,3 +288,39 @@ def handle_blog_page_count_totals(event, context):
     result_dict['ResultsStartTimeString'] = time_string
 
     return result_dict
+
+def handle_blog_page_access_list(event, context):
+    ''' Handler which returns a list of UTC access timestamps for a given page name request '''
+    print(event)
+    # print(f"Event has {len(event['Records'])} record(s)")
+
+    # Parameters from environment
+    try:
+        dynamo_table_name = os.environ['TARGET_DYNAMO_TABLE']
+    except KeyError:
+        print("IMPROPERLY CONFIGURED: Could not access expected environment variables BUCKET_NAME and PATH_PREFIX")
+        return False
+
+    # This function expects at least one parameter
+    params = event.get('queryStringParameters')
+    print(params)
+    if not params:
+        return {
+            "isBase64Encoded": False,
+            "statusCode": 400,
+            "body": "Request missing required parameter(s)"
+        }
+
+    page_param = next(iter(params.keys()))
+
+    # Query dynamo to return list of timestamps
+    client = boto3.client('dynamodb')
+    result = client.query(TableName=dynamo_table_name,
+                    ProjectionExpression="UserPages,SortKey",
+                    KeyConditionExpression="UserPages = :pk",
+                    ExpressionAttributeValues={ ":pk": {"S": f"Richard#{page_param}"} },
+                    ReturnConsumedCapacity='TOTAL')
+
+    # Return only timestamps with page as key
+    timestamp_list = [ item['SortKey']['S'] for item in result['Items'] ]
+    return { page_param: timestamp_list, 'DynamoConsumedCapacity': result['ConsumedCapacity']['CapacityUnits'] }
