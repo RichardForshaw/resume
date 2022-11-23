@@ -18,10 +18,9 @@ phases:
       - if [[ "${INJECT_BUILD_FAILURE}" ]]; then exit 1; fi
       - cd mkd-blog
       - sed -i "s/##sed_date_here##/`date +"%Y-%m-%d %H:%M"`/" docs/index.md
-      - sed -i "s;localhost.*;www.forshaw.tech/blog/;" mkdocs.yml
-      - chmod 755 ../bin/insert-article-dates.sh && ../bin/insert-article-dates.sh
+      - sed -i "s;localhost.*;www.developdeploydeliver.com/;" mkdocs.yml
       - mkdocs build -d ../blog
-      - cd .. && rm -r mkd-blog && rm -r sls && rm -r aws-cf    # Un-needed dirs
+  #     - cd .. && rm -r mkd-blog && rm -r sls && rm -r aws-cf    # Un-needed dirs
   post_build:
     commands:
       - echo Build completed on `date`

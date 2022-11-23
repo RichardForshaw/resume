@@ -1,4 +1,4 @@
-site_name: Forshaw.Tech
+site_name: Develop Deploy Deliver
 site_url: http://localhost:8000/
 
 site_author: Richard Forshaw
@@ -19,7 +19,6 @@ extra_javascript:
 
 
 nav:
-    - 'index.md'
     - All Articles: 'articles.md'
     - Article Tags: 'tags.md'
     - 'about.md'
@@ -35,7 +34,7 @@ plugins:
         time_format: '%Y-%m-%d'
         meta_time_format: '%Y-%m-%d'
         dirs:
-          - articles
+          - blog/articles
         paging: false
         size: 5
         features:
@@ -47,7 +46,7 @@ plugins:
             time_format: '%Y-%m-%d'
             meta_time_format: '%Y-%m-%d'
             dirs:
-              - articles
+              - blog/articles
             paging: true
 
 markdown_extensions:
