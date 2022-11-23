@@ -10,8 +10,10 @@ phases:
         - echo Installing requirements
         - pip3 install -r requirements.txt
   pre_build:
+    # Temporary fix for git history
     commands:
       - echo Nothing to do in the pre_build phase...
+      - sed -i "/diff_filter/s/$/, follow=True/" `python3 libloc.py`/mkdocs_blogging_plugin/util.py
   build:
     commands:
       - echo Build started on `date`
