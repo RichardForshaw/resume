@@ -1,6 +1,12 @@
+# About This Blog
+
+I have over 20 years of experience with developing and delivering software. I still love doing that, but I also love helping and mentoring the next generation of coders to become better. Software is everywhere and is developed everywhere; I believe it is important to build the talents of the new programming generations on the experience of the last.
+
+This blog seeks to provide tips on developing, deploying and delivering software well, whether that be writing robust and efficient code, automating your deployment pipelines or embracing agile delivery methods the right way.
+
 # About this site
 
-In the interest of keeping things simple, and to eat a bit of my own dogfood, this site is hosted on an AWS serverless bucket and generated using CodePipeline and a static site generator [MKDocs](https://www.mkdocs.org).
+In the interest of keeping things simple, and to eat a bit of my own dogfood, this site is hosted on an AWS serverless bucket and generated using CodePipeline and a static site generator [MKDocs](https://www.mkdocs.org). Page visits are tracked using DynamoDB and stats are provided using lambda.
 
 An overview is presented here.
 
