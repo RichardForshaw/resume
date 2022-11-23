@@ -28,6 +28,16 @@ Parameters:
     MinLength: 7
     MaxLength: 40
     AllowedPattern: '[a-zA-Z0-9\-\.]*'
+  WebsiteCertificateCNAMEValue:
+    Type: String
+    Description: Certificate value from AWS for the WWW CNAME record
+    MinLength: 20
+    AllowedPattern: '_[a-zA-Z0-9\.]+-validations.aws\.'
+  WebsiteAPICertificateCNAMEValue:
+    Type: String
+    Description: Certificate value from AWS for the API CNAME record
+    MinLength: 20
+    AllowedPattern: '_[a-zA-Z0-9\.]+-validations.aws\.'
   WebsiteContactFormSourceAddress:
     Type: String
     Description: The source email address for sending emails from the contact form
@@ -154,8 +164,52 @@ Resources:
       Comment: Alias 'www' records for S3 website bucket
       Type: A
       AliasTarget:
-        DNSName: s3-website-ap-southeast-1.amazonaws.com  # From AWS Service Endpoint Documentation
-        HostedZoneId: Z3O0J2DXBE1FTB                      # From AWS Service Endpoint Documentation
+        DNSName: s3-website-ap-southeast-1.amazonaws.com  # Singapore ID: From AWS Service Endpoint Documentation
+        HostedZoneId: Z3O0J2DXBE1FTB                      # Singapore ID: From AWS Service Endpoint Documentation
+
+  # DO I NEED THIS???
+  BlogWebsiteHostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      HostedZoneConfig:
+        Comment: "Blog Domain: registered at hover.com"
+      Name: !Ref BlogWebsiteBaseURL
+
+  BlogWebsiteRouting:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId:
+        Ref: BlogWebsiteHostedZone
+      Name: !Join [ '', [ 'www.', !Ref BlogWebsiteBaseURL]]   # For 'www' lookup
+      Comment: Alias 'www' records for S3 website bucket
+      Type: A
+      AliasTarget:
+        DNSName: s3-website-ap-southeast-1.amazonaws.com  # Singapore ID: From AWS Service Endpoint Documentation
+        HostedZoneId: Z3O0J2DXBE1FTB                      # Singapore ID: From AWS Service Endpoint Documentation
+
+  TechWebsiteCertificateRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId:
+        Ref: TechWebsiteHostedZone
+      Name: _0fd0c4d871989bbcc210841250213ecc.www.forshaw.tech.
+      Comment: Certificate for 'www' access
+      Type: CNAME
+      TTL: 900
+      ResourceRecords:
+        - !Ref WebsiteCertificateCNAMEValue
+
+  TechWebsiteAPICertificateRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId:
+        Ref: TechWebsiteHostedZone
+      Name: _28af7db909f74dd2f0f2241e27820bbf.api.forshaw.tech.
+      Comment: Certificate for 'api' access
+      Type: CNAME
+      TTL: 900
+      ResourceRecords:
+        - !Ref WebsiteAPICertificateCNAMEValue
 
   TechWebsiteContactFormEmailSourceIdentity:
     Type: AWS::SES::EmailIdentity
@@ -363,6 +417,12 @@ Outputs:
     Value: !Ref WebsiteBaseURL
     Export:
         Name: !Sub "${AWS::StackName}-RootDomainURL"
+
+  BlogWebsiteRootDomainURL:
+    Description: Cross-Stack export of Route53 root domain for blog
+    Value: !Ref BlogWebsiteBaseURL
+    Export:
+        Name: !Sub "${AWS::StackName}-BlogRootDomainURL"
 
   TechWebsiteContactFormSourceEmail:
     Description: The source email for sending an email from a contact form submission
