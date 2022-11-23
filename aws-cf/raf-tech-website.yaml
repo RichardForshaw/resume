@@ -243,8 +243,8 @@ Resources:
               InputArtifacts:
                 - Name: WebsiteSource
               OutputArtifacts:
-                - Name: codebuild-forshaw-tech-artifacts
-                - Name: codebuild-ddd-blog-artifacts
+                - Name: codebuildForshawTechArtifacts
+                - Name: codebuildBlogArtifacts
               Configuration:
                 ProjectName:
                   Ref: CodeBuildProjectName
@@ -260,7 +260,7 @@ Resources:
                 Provider: S3
                 Version: '1'
               InputArtifacts:
-                - Name: codebuild-forshaw-tech-artifacts
+                - Name: codebuildForshawTechArtifacts
               Configuration:
                 BucketName:
                   Ref: TechWebsiteS3Bucket
@@ -277,7 +277,7 @@ Resources:
                 Provider: S3
                 Version: '1'
               InputArtifacts:
-                - Name: codebuild-ddd-blog-artifacts
+                - Name: codebuildBlogArtifacts
               Configuration:
                 BucketName:
                   Ref: BlogWebsiteS3Bucket
