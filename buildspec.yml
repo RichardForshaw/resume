@@ -27,4 +27,13 @@ phases:
       - echo Build completed on `date`
 artifacts:
   files:
-    - '**/*'
+   - '*/**'
+  # Define two artifacts here so we can deploy to 2 buckets
+  secondary-artifacts:
+    codebuild-forshaw-tech-artifacts:
+      files:
+        - 'index.html'
+        - 'assets/**'
+    codebuild-ddd-blog-artifacts:
+      files:
+        - 'blog/**'

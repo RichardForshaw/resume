@@ -16,6 +16,18 @@ Parameters:
     MinLength: 7
     MaxLength: 40
     AllowedPattern: '[a-zA-Z0-9\-\.]*'
+  BlogWebsiteName:
+    Type: String
+    Description: The canonical name of the blog website, used to prefix all associated infrastructure.
+    MinLength: 5
+    MaxLength: 20
+    AllowedPattern: '[a-zA-Z0-9\-]*'
+  BlogWebsiteBaseURL:
+    Type: String
+    Description: The intended URL of the blog website. This is required for accessing S3 website with custom domains.
+    MinLength: 7
+    MaxLength: 40
+    AllowedPattern: '[a-zA-Z0-9\-\.]*'
   WebsiteContactFormSourceAddress:
     Type: String
     Description: The source email address for sending emails from the contact form
@@ -38,10 +50,15 @@ Parameters:
     AllowedPattern: '[a-zA-Z0-9\-]*'
 
 Resources:
+
+  # Two buckets are configured because of two domains
+  # One for forshaw.tech (simple resume place-holder)
+  # One for developdeploydeliver.com (Blog website)
+  # This is done for domain and SEO purposes
   TechWebsiteS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Join [ '', [ 'www.', !Ref WebsiteBaseURL]]
+      BucketName: !Join [ '.', [ 'www', !Ref WebsiteBaseURL]]
       LoggingConfiguration:
         DestinationBucketName: !Ref TechWebsiteS3LogsBucket
         LogFilePrefix: 'logs/'
@@ -74,6 +91,7 @@ Resources:
             Principal: "*"
             Action:
               - "s3:GetObject"
+            # Change this to only access root folder items
             Resource: !Join [ '', [!GetAtt TechWebsiteS3Bucket.Arn, '/*']]
 
   TechWebsiteS3ForwardingBucket:
@@ -84,12 +102,47 @@ Resources:
         RedirectAllRequestsTo:
           HostName: !Join [ '', [ 'www.', !Ref WebsiteBaseURL]]
 
+  # Configuration for the blog website bucket.
+  BlogWebsiteS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Join [ '.', [ 'www', !Ref BlogWebsiteBaseURL]]
+      LoggingConfiguration:
+        # Log to same location as other logs
+        DestinationBucketName: !Ref TechWebsiteS3LogsBucket
+        LogFilePrefix: 'logs/'
+      WebsiteConfiguration:
+        IndexDocument: index.html
+
+  BlogWebsiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: BlogWebsiteS3Bucket
+      PolicyDocument:
+        Statement:
+          -
+            Sid: "PublicReadGetObject"
+            Effect: "Allow"
+            Principal: "*"
+            Action:
+              - "s3:GetObject"
+            Resource: !Join [ '', [!GetAtt BlogWebsiteS3Bucket.Arn, '/*']]
+
+  BlogWebsiteS3ForwardingBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BlogWebsiteBaseURL
+      WebsiteConfiguration:
+        RedirectAllRequestsTo:
+          HostName: !Join [ '', [ 'www.', !Ref BlogWebsiteBaseURL]]
+
   # DO I NEED THIS???
   TechWebsiteHostedZone:
     Type: AWS::Route53::HostedZone
     Properties:
       HostedZoneConfig:
-        Comment: "Domain registered at hover.com"
+        Comment: "Primary Domain: registered at hover.com"
       Name: !Ref WebsiteBaseURL
 
   TechWebsiteRouting:
@@ -190,26 +243,44 @@ Resources:
               InputArtifacts:
                 - Name: WebsiteSource
               OutputArtifacts:
-                - Name: WebsiteBuild
+                - Name: codebuild-forshaw-tech-artifacts
+                - Name: codebuild-ddd-blog-artifacts
               Configuration:
                 ProjectName:
                   Ref: CodeBuildProjectName
               RunOrder: 1
         -
-          Name: Deploy
+          Name: Deploy-TechWebsite
           Actions:
             -
-              Name: S3DeploymentAction
+              Name: TechWebsiteS3DeploymentAction
               ActionTypeId:
                 Category: Deploy
                 Owner: AWS
                 Provider: S3
                 Version: '1'
               InputArtifacts:
-                - Name: WebsiteBuild
+                - Name: codebuild-forshaw-tech-artifacts
               Configuration:
                 BucketName:
                   Ref: TechWebsiteS3Bucket
+                Extract: true
+              RunOrder: 1
+        -
+          Name: Deploy-BlogWebsite
+          Actions:
+            -
+              Name: BlogWebsiteS3DeploymentAction
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: S3
+                Version: '1'
+              InputArtifacts:
+                - Name: codebuild-ddd-blog-artifacts
+              Configuration:
+                BucketName:
+                  Ref: BlogWebsiteS3Bucket
                 Extract: true
               RunOrder: 1
 
