@@ -21,7 +21,7 @@ extra_javascript:
 nav:
     - All Articles: 'articles.md'
     - Article Tags: 'tags.md'
-    - 'about.md'
+    - About This Blog: 'about.md'
     - Contact: 'http://www.forshaw.tech/#ContactForm'
 
 # For the sidebar message under nav items

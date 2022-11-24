@@ -1,4 +1,6 @@
-# About This Blog
+---
+revision_date: "2022/11/24"
+---
 
 I have over 20 years of experience with developing and delivering software. I still love doing that, but I also love helping and mentoring the next generation of coders to become better. Software is everywhere and is developed everywhere; I believe it is important to build the talents of the new programming generations on the experience of the last.
 
