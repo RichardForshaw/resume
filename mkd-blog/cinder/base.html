@@ -69,12 +69,6 @@
 
     <div class="container">
         {% block content %}
-        {% if page.meta.disable_toc %}
-        <div class="col-md-12" role="main">{% include "content.html" %}</div>
-        {% else %}
-        <div class="col-md-3">{% include "toc.html" %}</div>
-        <div class="col-md-9" role="main">{% include "content.html" %}</div>
-        {% endif %}
         {% endblock %}
     </div>
 
@@ -92,7 +86,7 @@
         {% endif %}
         {% endblock %}
     </footer>
-    
+
     {%- block scripts %}
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="{{ 'js/bootstrap-3.0.3.min.js'|url }}"></script>

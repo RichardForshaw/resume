@@ -8,9 +8,15 @@
 
 <h1>{{ page.title }}</h1>
 
+{% if page.is_homepage %}
+    {% if config['custom_sidebar']['text'] %}
+        <p>{{ config['custom_sidebar']['text'] }}</p>
+    {% endif %}
+{% endif %}
+
 {% if page.meta.revision_date %}
-    {% if page.meta.disable_toc %}
-        {# Likely to be main landing page #}
+    {% if page.is_homepage %}
+        {# Main landing page #}
         Last deployed: {{ page.meta.revision_date }}
     {% else %}
         Last Updated: {{ page.meta.revision_date }}

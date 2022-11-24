@@ -1,16 +1,25 @@
 <div class="bs-sidebar hidden-print affix well" role="complementary">
-    <ul class="nav bs-sidenav">
+    <!-- ul class="nav bs-sidenav">
         {% for nav_item in nav %}
             <li class="first-level active"><a href="{{ nav_item.url | url }}">{{ nav_item.title }}</a></li>
         {% endfor %}
-    </ul>
-    {% if config['sidebar_info_message'] %}
-    <div style="background-color: lightblue">
-        <hr>
-        <p style="margin: 15px 15px 0px 15px">
-            <i class="fas fa-info-circle" style="color: darkblue; padding-right: 5px"></i>
-            {{ config['sidebar_info_message'] }}
-        </p><br>
+    </ul -->
+    {% if config['custom_sidebar'] %}
+    <div class="navbar-default extra-nav-container">
+        {% if config['custom_sidebar']['image'] %}
+        <img src="/{{ config['custom_sidebar']['image'] }}" alt="sidebar-image" />
+        <br>
+        <h4>{{ config['site_author'] }}</h4>
+        {% endif %}
+        {% if config['custom_sidebar']['text'] %}
+            <p>{{ config['custom_sidebar']['text'] }}</p>
+        {% endif %}
+        {% if config['custom_sidebar']['announcement_text'] %}
+            <p><i class="fas fa-info-circle" style="color: lightblue; padding-right: 5px"></i>
+            {{ config['custom_sidebar']['announcement_text'] }}
+            </p>
+        {% endif %}
+        <br>
     </div>
     {% endif %}
 </div>
