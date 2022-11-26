@@ -70,4 +70,8 @@ dynamodb query --table-name PageTrackTable --key-condition-expression "UserPages
 
 dynamodb query --table-name PageTrackTable --key-condition-expression "UserPages = :pk" --expression-attribute-values '{ ":pk": { "S": "Richard#blog/articles/2022-10-On-Technical-Debt/" } }' --select COUNT --return-consumed-capacity TOTAL
 
+## jq parsing
+
+List all sort key results from dynamo response: `jq ".Items[].SortKey.S"`
+
 curl -v <url>

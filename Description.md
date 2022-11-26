@@ -25,9 +25,9 @@ You will also need a role with which to execute the pipeline, but that is covere
 
 ## Pipeline Creation
 
-The Pipeline is the most complicated part, even though its parts are simple. You need to define two stages in the pipeline, one to get the source from gitHub, and one to deploy it.
+The Pipeline is the most complicated part, even though its parts are simple. You need to define three stages in the pipeline, one to get the source from gitHub, one to build it and one to deploy it.
 
-Pipelines are defined in 'Stages'. Our pipeline has 2 simple stages: a 'source' stage (to checkout the repository) and a 'Deploy' stage to deploy it. The source stage needs to be configured with the correct GitHub owner and repository, and the deploy stage needs to know where the outputs from that stage are together with information on the target (in this case S3). Because the code obtained from GitHub is a zip file, the Deploy stage also needs to specify `extract: true`.
+Pipelines are defined in 'Stages'. Our pipeline has 3 simple stages: a 'Source' stage (to checkout the repository), a 'Build' stage and a 'Deploy' stage to deploy it. The source stage needs to be configured with the correct GitHub owner and repository, the build stage needs to perform the build (in this case an MKDocs build) and the deploy stage needs to know where the outputs from that stage are together with information on the target (in this case S3). Because the code obtained from GitHub is a zip file, the Deploy stage also needs to specify `extract: true`.
 
 This also requires us to grant AWS CodePipeline permission to access our GitHub repo for the Source stage. This is done using the [GitHub V2 source action](https://docs.aws.amazon.com/codepipeline/latest/userguide/update-github-action-connections.html) (See also "Detecting Updates" Below). This is better than Version1, because although you need to go through a manual authentication step (as opposed to a manually-generated token), there is no token to keep track of and to accidentally save in a repo somewhere. (Coincidentally, if you do check a file into GitHub that has a string that matches an OAuth token that it has generated, it will delete the OAuth token. This is a good demonstration of DevSecOps).
 
@@ -58,6 +58,7 @@ This is where things became a bit unstuck... Firstly the documentation is a bit 
 
 Fortunately, because everything is code, I just added a parameter and referenced it through the CloudFormation, and then ran update-stack. After some messing about with deleting a non-empty bucket (gotcha) then everything was fine.
 
+You also need to specify some hard-coded values in the hosted zone routing record. This is available at: https://docs.aws.amazon.com/general/latest/gr/s3.html#s3_website_region_endpoints
 ### Routing both sites
 
 This is a simple method of having one bucket that routes to another. The root domain appears to try to route to an S3 bucket that is called the same as the domain (but I'm not sure why this happens). Since there isn't one, we just have to create one which redirects everything to the `www` bucket, which does have the website content.

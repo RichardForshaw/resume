@@ -181,5 +181,5 @@ So there we have it...:
 
 We can now deploy our service with a simple `sls deploy`.
 
-Once deployed, it will happily chug away and push data into your DynamoDB table. What do we do with it then? Check out Part 3, coming soon...
+Once deployed, it will happily chug away and push data into your DynamoDB table. What do we do with it then? Continue in [Part 3](../articles/2022-11-DynamoDB-Page-View-Tracker-Pt3.markdown)
 
