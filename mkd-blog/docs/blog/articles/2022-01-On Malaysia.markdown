@@ -3,6 +3,7 @@ layout: post
 title:  "On Malaysia"
 revision_date: "2022-08-25"
 tags:
+    - Non-technical
     - Personal
     - Travel
 author: Richard Forshaw

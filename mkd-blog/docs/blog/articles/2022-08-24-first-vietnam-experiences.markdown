@@ -2,6 +2,7 @@
 layout: post
 title:  "Vietnam: First Months"
 tags:
+    - Non-technical
     - Personal
     - Travel
 author: Richard Forshaw

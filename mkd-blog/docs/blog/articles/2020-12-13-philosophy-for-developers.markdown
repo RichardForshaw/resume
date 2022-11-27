@@ -4,6 +4,7 @@ title:  "Philosophy for Developers"
 revision_date: "2020-12-13"
 date: "2020-12-13"
 tags:
+    - Non-technical
     - Personal Development
 author: Richard Forshaw
 ---
