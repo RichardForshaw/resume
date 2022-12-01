@@ -7,7 +7,10 @@ function to_blog_list_entry(page_pair, views) {
     return `<tr><td>${header_item}</a></td></tr>`
 }
 
-function get_page_views() {
+function get_page_views(target_div) {
+    // Only run this function if the target div exists
+    if ( $(target_div).length == 0 ) return;
+
     const COMPARE_LENGTH = 30
 
     // Make a map of all the pages listed on this page
@@ -28,12 +31,12 @@ function get_page_views() {
 
         // Format and add to page
         top5_html = top5_pages.map(i => to_blog_list_entry(page_map.get(i[0].slice(-COMPARE_LENGTH)), i[1])).join('\n')
-        $("#_popularity_table").html("<table>" + top5_html + "</table>");
+        $(target_div).html("<table>" + top5_html + "</table>");
     })
     .catch((error) => {
         console.error("Failed to fetch page view data.", error)
-        $("#_popularity_table").html("Data not available... :(");
+        $(target_div).html("Data not available... :(");
     })
 }
 
-$(document).ready(get_page_views())
+$(document).ready(get_page_views("#_popularity_table"))
