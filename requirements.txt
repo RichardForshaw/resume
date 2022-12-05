@@ -1,3 +1,4 @@
 mkdocs==1.4.1
 mkdocs-awesome-pages-plugin==2.8.0
-mkdocs-blogging-plugin==2.2.1
+mkdocs-blogging-plugin==2.2.2
+

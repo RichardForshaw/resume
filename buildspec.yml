@@ -5,15 +5,11 @@ phases:
     runtime-versions:
       python: 3.9
     commands:
-        - echo Installing mkdocs
-        - pip3 install mkdocs
         - echo Installing requirements
         - pip3 install -r requirements.txt
   pre_build:
-    # Temporary fix for git history
     commands:
       - echo Nothing to do in the pre_build phase...
-      - sed -i "/diff_filter/s/$/, follow=True/" `python3 libloc.py`/mkdocs_blogging_plugin/util.py
   build:
     commands:
       - echo Build started on `date`
@@ -22,7 +18,6 @@ phases:
       - sed -i "s/##sed_date_here##/`date +"%Y-%m-%d %H:%M"`/" docs/index.md
       - sed -i "s;localhost.*;www.developdeploydeliver.com/;" mkdocs.yml
       - mkdocs build -d ../blog
-  #     - cd .. && rm -r mkd-blog && rm -r sls && rm -r aws-cf    # Un-needed dirs
   post_build:
     commands:
       - echo Build completed on `date`
