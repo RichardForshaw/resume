@@ -9,6 +9,11 @@ import boto3
 
 S3_LOG_TS_FORMAT = '[%d/%b/%Y:%H:%M:%S %z]'
 
+# SortKey prefix for indicating a specific metric
+# IMPORTANT: This must come AFTER the digits in the ascii table
+SK_CLASS_PREFIX = ":"
+SK_SHARE_PREFIX = SK_CLASS_PREFIX + "SHARE#"
+
 # The tuple defining what to get from the aws s3 log string
 DYNAMO_FIELDS_TUPLE = (
     (7, 'UserPages', 'S'),      # PartitionKey: User and Page
@@ -260,8 +265,8 @@ def handle_blog_page_count_totals(event, context):
         page_name = item['SortKey']['S']
         page_result = client.query(TableName=dynamo_table_name,
                     Select='COUNT',
-                    KeyConditionExpression="UserPages = :pk",
-                    ExpressionAttributeValues={ ":pk": {"S": page_name}},
+                    KeyConditionExpression="UserPages = :pk AND SortKey < :sk",
+                    ExpressionAttributeValues={ ":pk": {"S": page_name}, ":sk": {"S": SK_CLASS_PREFIX}},
                     ReturnConsumedCapacity='TOTAL')
 
         print(page_result)
@@ -296,7 +301,6 @@ def handle_blog_page_count_totals(event, context):
 def handle_blog_page_access_list(event, context):
     ''' Handler which returns a list of UTC access timestamps for a given page name request '''
     print(event)
-    # print(f"Event has {len(event['Records'])} record(s)")
 
     # Parameters from environment
     try:
@@ -328,3 +332,63 @@ def handle_blog_page_access_list(event, context):
     # Return only timestamps with page as key
     timestamp_list = [ item['SortKey']['S'] for item in result['Items'] ]
     return { page_param: timestamp_list, 'DynamoConsumedCapacity': result['ConsumedCapacity']['CapacityUnits'] }
+
+def handle_page_share(event, context):
+    ''' Handler which reports a sharing event to Dynamo '''
+    print(event)
+
+    try:
+        dynamo_table_name = os.environ['TARGET_DYNAMO_TABLE']
+    except KeyError:
+        print("IMPROPERLY CONFIGURED: Could not access expected environment variables BUCKET_NAME and PATH_PREFIX")
+        return False
+
+    # This function expects at least one parameter
+    params = event.get('queryStringParameters')
+    print(params)
+    if not params:
+        return {
+            "isBase64Encoded": False,
+            "statusCode": 400,
+            "body": "Request missing required parameter(s)"
+        }
+
+    share_service = params.get('share_service')
+    share_page = params.get('share_url')
+
+    if not share_service or not share_page:
+        return {
+            "isBase64Encoded": False,
+            "statusCode": 400,
+            "body": "Request missing required parameter(s)"
+        }
+
+    # Prefix the page with the user
+    share_key = "Richard#" + share_page
+
+    # Check that page exists, to prevent spam or mistakes
+    # TODO: Refactor with similar code
+    client = boto3.client('dynamodb')
+    result = client.query(TableName=dynamo_table_name,
+                    ProjectionExpression="UserPages,SortKey",
+                    KeyConditionExpression="UserPages = :pk AND begins_with(SortKey, :sk)",
+                    ExpressionAttributeValues={ ":pk": {"S": "Richard#INDEX"}, ":sk": {"S": "Richard#blog/articles/20" }},
+                )
+    page_names = [page['SortKey']['S'] for page in result['Items']]
+    if share_key not in page_names:
+        # TODO: Refactor with similar code
+        return {
+            "isBase64Encoded": False,
+            "statusCode": 400,
+            "body": f"Provided page name {share_page} is not a recognised page"
+        }
+
+    # Report to Dynamo
+    share_entry = {
+        'UserPages': { 'S': share_key },
+        'SortKey': { 'S': SK_SHARE_PREFIX + str(int(datetime.utcnow().timestamp())) },
+        'Service': { 'S': share_service }
+    }
+    dynamo_write_simple_items(dynamo_table_name, [share_entry,])
+
+    return True
