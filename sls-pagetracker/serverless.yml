@@ -82,8 +82,8 @@ functions:
 
 #    Define function environment variables here
     environment:
-      WWW_BUCKET_NAME: www.${cf:raf-tech-website-stack.TechWebsiteRootDomainURL}
-      PATH_PREFIX: blog/
+      WWW_BUCKET_NAME: www.${cf:raf-tech-website-stack.BlogWebsiteRootDomainURL}
+      # PATH_PREFIX: blog/
 
   pagecounttotals:
     handler: handler.handle_blog_page_count_totals

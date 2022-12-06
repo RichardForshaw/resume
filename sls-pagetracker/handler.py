@@ -31,11 +31,15 @@ def handle_s3_view_log(event, context):
     # Parameters from environment
     try:
         expected_www_bucket = os.environ['WWW_BUCKET_NAME']
-        expected_path = os.environ['PATH_PREFIX']
         dynamo_table_name = os.environ['TARGET_DYNAMO_TABLE']
     except KeyError:
-        print("IMPROPERLY CONFIGURED: Could not access expected environment variables BUCKET_NAME and PATH_PREFIX")
+        print("IMPROPERLY CONFIGURED: Could not access expected environment variables BUCKET_NAME and TARGET_DYNAMO_TABLE")
         return False
+
+    # PATH_PREFIX is optional
+    expected_path = os.environ.get('PATH_PREFIX','')
+    if expected_path == '':
+        print("No PATH_PREFIX variable found. Not using path prefix.")
 
     # open and parse
     # TODO: Multiple files
@@ -243,7 +247,7 @@ def handle_blog_page_count_totals(event, context):
     result = client.query(TableName=dynamo_table_name,
                     ProjectionExpression="UserPages,SortKey",
                     KeyConditionExpression="UserPages = :pk AND begins_with(SortKey, :sk)",
-                    ExpressionAttributeValues={ ":pk": {"S": "Richard#INDEX"}, ":sk": {"S": "Richard#blog/articles/2022" }},
+                    ExpressionAttributeValues={ ":pk": {"S": "Richard#INDEX"}, ":sk": {"S": "Richard#blog/articles/20" }},
                     ReturnConsumedCapacity='TOTAL')
 
     print(result['ConsumedCapacity'])
