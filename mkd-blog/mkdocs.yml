@@ -17,7 +17,6 @@ extra_css:
 extra_javascript:
     - "js/pageviews-api.js"
 
-
 nav:
     - All Articles: 'articles.md'
     - Article Tags: 'tags.md'
@@ -34,6 +33,16 @@ custom_sidebar:
 plugins:
     - search
     - awesome-pages
+    - social-buttons:
+        default_message: "I found this interesting post on the Develop Deploy Deliver blog...\n"
+        button_class: "share-button"
+        apply_to_paths:
+          - blog/articles
+        exclude_hashtags:
+          - nontechnical
+          - personal
+        linked_in: {}
+        twitter: {}
     - blogging:
         time_format: '%Y-%m-%d'
         meta_time_format: '%Y-%m-%d'
