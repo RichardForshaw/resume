@@ -16,6 +16,7 @@ extra_css:
 # custom scripts
 extra_javascript:
     - "js/pageviews-api.js"
+    - "js/share-click-handler.js"
 
 nav:
     - All Articles: 'articles.md'
@@ -42,7 +43,8 @@ plugins:
           - nontechnical
           - personal
         linked_in: {}
-        twitter: {}
+        twitter:
+          button_share_callback: record_share
     - blogging:
         time_format: '%Y-%m-%d'
         meta_time_format: '%Y-%m-%d'
