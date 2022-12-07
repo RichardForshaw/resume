@@ -20,7 +20,8 @@ DYNAMO_FIELDS_TUPLE = (
     (2, 'SortKey', 'S'),        # Sort Key: Timestamp
     (16, 'AgentString', 'S'),   # Agent Access String
     (13, 'ServiceTime', 'N'),   # Page Access Time
-    (3, 'RemoteAddress', 'S')
+    (3, 'RemoteAddress', 'S'),
+    (15, 'Referrer', 'S')        # The page that referred this request
 )
 
 def handle_s3_view_log(event, context):
@@ -363,8 +364,8 @@ def handle_page_share(event, context):
             "body": "Request missing required parameter(s)"
         }
 
-    # Prefix the page with the user
-    share_key = "Richard#" + share_page
+    # Prefix the page with the user. Strip any leading '/', to conform with the storage structure.
+    share_key = "Richard#" + share_page.lstrip('/')
 
     # Check that page exists, to prevent spam or mistakes
     # TODO: Refactor with similar code
