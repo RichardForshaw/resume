@@ -3,7 +3,7 @@
 # python 3.9.7
 # yarn
 # serverless
-FROM amaysim/serverless:3.22.0
+FROM amaysim/serverless:3.23.0
 
 # Setup working directory
 WORKDIR /opt/project
