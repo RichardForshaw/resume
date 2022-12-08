@@ -16,6 +16,10 @@
     padding-left: 15px;
 }
 
+.book-cover img {
+    width: 20%;
+}
+
 .share-button {
     padding-left: 20px;
     padding-top:6px;
