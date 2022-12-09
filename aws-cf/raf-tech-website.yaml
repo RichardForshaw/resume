@@ -28,6 +28,12 @@ Parameters:
     MinLength: 7
     MaxLength: 40
     AllowedPattern: '[a-zA-Z0-9\-\.]*'
+  BlogWebsiteMailServer:
+    Type: String
+    Description: The email handling service for the blog website domain.
+    MinLength: 7
+    MaxLength: 50
+    AllowedPattern: '[a-zA-Z0-9\-\.]*'
   WebsiteCertificateCNAMEValue:
     Type: String
     Description: Certificate value from AWS for the WWW CNAME record
@@ -85,7 +91,7 @@ Resources:
           - Id: DeleteLogsRule
             Prefix: 'logs/'
             Status: Enabled
-            ExpirationInDays: 90
+            ExpirationInDays: 180
 
 
   TechWebsiteBucketPolicy:
@@ -110,7 +116,7 @@ Resources:
       BucketName: !Ref WebsiteBaseURL
       WebsiteConfiguration:
         RedirectAllRequestsTo:
-          HostName: !Join [ '', [ 'www.', !Ref WebsiteBaseURL]]
+          HostName: !Join [ '.', [ 'www', !Ref WebsiteBaseURL]]
 
   # Configuration for the blog website bucket.
   BlogWebsiteS3Bucket:
@@ -145,8 +151,9 @@ Resources:
       BucketName: !Ref BlogWebsiteBaseURL
       WebsiteConfiguration:
         RedirectAllRequestsTo:
-          HostName: !Join [ '', [ 'www.', !Ref BlogWebsiteBaseURL]]
+          HostName: !Join [ '.', [ 'www', !Ref BlogWebsiteBaseURL]]
 
+  ####  DNS Settings
   # DO I NEED THIS???
   TechWebsiteHostedZone:
     Type: AWS::Route53::HostedZone
@@ -186,6 +193,18 @@ Resources:
       AliasTarget:
         DNSName: s3-website-ap-southeast-1.amazonaws.com  # Singapore ID: From AWS Service Endpoint Documentation
         HostedZoneId: Z3O0J2DXBE1FTB                      # Singapore ID: From AWS Service Endpoint Documentation
+
+  BlogWebsiteEmailRouting:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId:
+        Ref: BlogWebsiteHostedZone
+      Name: !Ref BlogWebsiteBaseURL
+      Comment: MX Record to handle email routing
+      Type: MX
+      TTL: 300
+      ResourceRecords:
+        - !Join [ ' ', [ '10', !Ref BlogWebsiteMailServer ]]
 
   TechWebsiteCertificateRecord:
     Type: AWS::Route53::RecordSet
