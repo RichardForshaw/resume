@@ -104,7 +104,7 @@ functions:
           method: get
 
   pagecounthistory:
-    handler: handler.handle_blog_page_access_list
+    handler: handler.handle_blog_page_visits
     logRetentionInDays: 30
     timeout: 10
     events:

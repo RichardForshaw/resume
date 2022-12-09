@@ -2,10 +2,11 @@ import json
 import os
 import re
 from datetime import datetime
-from itertools import chain
 
 from botocore.exceptions import ClientError
 import boto3
+
+from dynamo_helpers import query_page_index_params, count_page_visits_params, query_page_visits_params
 
 S3_LOG_TS_FORMAT = '[%d/%b/%Y:%H:%M:%S %z]'
 
@@ -237,6 +238,13 @@ def parse_s3_logs_to_dynamo(log_data, field_tuples, bucket_name='', folder_prefi
     # Call parsing function
     return [parse_log_string_to_dynamo(entry, field_tuples, **kwargs) for entry in valid_strings]
 
+def return_400(reason):
+    return {
+        "isBase64Encoded": False,
+        "statusCode": 400,
+        "body": reason
+    }
+
 def handle_blog_page_count_totals(event, context):
     # Handler which parses the content of the new object and writes to Dynamo
     # Important fields (Note there could be multiple records):
@@ -250,11 +258,8 @@ def handle_blog_page_count_totals(event, context):
 
     # Query the indexes from Dynamo
     client = boto3.client('dynamodb')
-    result = client.query(TableName=dynamo_table_name,
-                    ProjectionExpression="UserPages,SortKey",
-                    KeyConditionExpression="UserPages = :pk AND begins_with(SortKey, :sk)",
-                    ExpressionAttributeValues={ ":pk": {"S": "Richard#INDEX"}, ":sk": {"S": "Richard#blog/articles/20" }},
-                    ReturnConsumedCapacity='TOTAL')
+    result = client.query(**query_page_index_params(dynamo_table_name, "Richard", "blog/articles/20"),
+                        ReturnConsumedCapacity="TOTAL")
 
     print(result['ConsumedCapacity'])
 
@@ -263,17 +268,15 @@ def handle_blog_page_count_totals(event, context):
     total_consumed = result['ConsumedCapacity']['CapacityUnits']
     total_page_views = 0
     for item in result['Items']:
-        page_name = item['SortKey']['S']
-        page_result = client.query(TableName=dynamo_table_name,
-                    Select='COUNT',
-                    KeyConditionExpression="UserPages = :pk AND SortKey < :sk",
-                    ExpressionAttributeValues={ ":pk": {"S": page_name}, ":sk": {"S": SK_CLASS_PREFIX}},
-                    ReturnConsumedCapacity='TOTAL')
+        # Remove the user prefix
+        page_name = item['SortKey']['S'].split("#")[1]
+        page_result = client.query(**count_page_visits_params(dynamo_table_name, "Richard", page_name),
+                                ReturnConsumedCapacity="TOTAL")
 
         print(page_result)
         if page_result['Count']:
             # Remove the user prefix
-            page_name = page_name.split("#")[1]
+            #### page_name = page_name.split("#")[1]
             print(f"{page_name}: {page_result['Count']}")
             result_dict[page_name] = page_result['Count']
             total_page_views += page_result['Count']
@@ -299,7 +302,7 @@ def handle_blog_page_count_totals(event, context):
 
     return result_dict
 
-def handle_blog_page_access_list(event, context):
+def handle_blog_page_visits(event, context):
     ''' Handler which returns a list of UTC access timestamps for a given page name request '''
     print(event)
 
@@ -314,21 +317,14 @@ def handle_blog_page_access_list(event, context):
     params = event.get('queryStringParameters')
     print(params)
     if not params:
-        return {
-            "isBase64Encoded": False,
-            "statusCode": 400,
-            "body": "Request missing required parameter(s)"
-        }
+        return_400("Request missing required parameter(s)")
 
     page_param = next(iter(params.keys()))
 
     # Query dynamo to return list of timestamps
     client = boto3.client('dynamodb')
-    result = client.query(TableName=dynamo_table_name,
-                    ProjectionExpression="UserPages,SortKey",
-                    KeyConditionExpression="UserPages = :pk",
-                    ExpressionAttributeValues={ ":pk": {"S": f"Richard#{page_param}"} },
-                    ReturnConsumedCapacity='TOTAL')
+    result = client.query(**query_page_visits_params(dynamo_table_name, "Richard", page_param),
+                        ReturnConsumedCapacity="TOTAL")
 
     # Return only timestamps with page as key
     timestamp_list = [ item['SortKey']['S'] for item in result['Items'] ]
@@ -348,41 +344,25 @@ def handle_page_share(event, context):
     params = event.get('queryStringParameters')
     print(params)
     if not params:
-        return {
-            "isBase64Encoded": False,
-            "statusCode": 400,
-            "body": "Request missing required parameter(s)"
-        }
+        return_400("Request missing required parameter(s)")
 
     share_service = params.get('share_service')
     share_page = params.get('share_url')
 
     if not share_service or not share_page:
-        return {
-            "isBase64Encoded": False,
-            "statusCode": 400,
-            "body": "Request missing required parameter(s)"
-        }
+        return_400("Request missing required parameter(s)")
 
     # Prefix the page with the user. Strip any leading '/', to conform with the storage structure.
     share_key = "Richard#" + share_page.lstrip('/')
 
     # Check that page exists, to prevent spam or mistakes
-    # TODO: Refactor with similar code
     client = boto3.client('dynamodb')
-    result = client.query(TableName=dynamo_table_name,
-                    ProjectionExpression="UserPages,SortKey",
-                    KeyConditionExpression="UserPages = :pk AND begins_with(SortKey, :sk)",
-                    ExpressionAttributeValues={ ":pk": {"S": "Richard#INDEX"}, ":sk": {"S": "Richard#blog/articles/20" }},
-                )
-    page_names = [page['SortKey']['S'] for page in result['Items']]
-    if share_key not in page_names:
-        # TODO: Refactor with similar code
-        return {
-            "isBase64Encoded": False,
-            "statusCode": 400,
-            "body": f"Provided page name {share_page} is not a recognised page"
-        }
+    result = client.query(**query_page_index_params(dynamo_table_name, "Richard", "blog/articles/20"))
+    result2 = client.query(**query_page_index_params(dynamo_table_name, "Richard", "blog/books"))
+
+    valid_page_names = [page['SortKey']['S'] for page in result['Items'] + result2['Items']]
+    if share_key not in valid_page_names:
+        return_400(f"Provided page name {share_page} is not a recognised page")
 
     # Report to Dynamo
     share_entry = {
