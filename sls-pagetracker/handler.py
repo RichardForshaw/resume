@@ -8,7 +8,7 @@ import boto3
 
 from dynamo_helpers import query_page_index_params, count_page_visits_params, query_page_visits_params
 
-S3_LOG_TS_FORMAT = '[%d/%b/%Y:%H:%M:%S %z]'
+S3_LOG_TS_FORMAT = '[%d/%b/%Y:%H:%M:%S%z]'
 
 # SortKey prefix for indicating a specific metric
 # IMPORTANT: This must come AFTER the digits in the ascii table
@@ -256,9 +256,21 @@ def handle_blog_page_count_totals(event, context):
         print("IMPROPERLY CONFIGURED: Could not access expected environment variables BUCKET_NAME and PATH_PREFIX")
         return False
 
+    # Get root query filter from environment
+    path_filter = os.environ.get('DEFAULT_INDEX_PATH_QUERY', None)
+
+    # This function has an optional parameter
+    params = event.get('queryStringParameters')
+    print(params)
+    if params:
+        # Assume that the first parameter is a user-requested path query for the count
+        path_filter = next(iter(params.keys()))
+    elif not path_filter:
+        return_400("No path filter parameter given and no default path filter configured")
+
     # Query the indexes from Dynamo
     client = boto3.client('dynamodb')
-    result = client.query(**query_page_index_params(dynamo_table_name, "Richard", "blog/articles/20"),
+    result = client.query(**query_page_index_params(dynamo_table_name, "Richard", path_filter),
                         ReturnConsumedCapacity="TOTAL")
 
     print(result['ConsumedCapacity'])

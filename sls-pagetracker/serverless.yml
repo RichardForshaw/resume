@@ -102,6 +102,9 @@ functions:
       - httpApi:
           path: /pagetotals
           method: get
+    environment:
+      # Default to querying for blog articles this century
+      DEFAULT_INDEX_PATH_QUERY: "blog/articles/20"
 
   pagecounthistory:
     handler: handler.handle_blog_page_visits
