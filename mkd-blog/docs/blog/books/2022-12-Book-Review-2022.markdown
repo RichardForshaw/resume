@@ -2,6 +2,7 @@
 layout: post
 title:  "5 Favourite Books in 2022"
 description: "In the last year or so I have embraced the opportunity to read more and learn more. With the end of the year upon us, I thought I would share some of my favourite books I have read this year."
+revision_date: "2022-12-10"
 tags:
     - Books
 author: Richard Forshaw
@@ -9,7 +10,7 @@ author: Richard Forshaw
 
 In the middle of 2021, mid-pandemic, I decided that I should make the most of the travel restrictions and start to read more. Since then I have managed to improve my reading ability and get through more and more books, which I didn't think I would be able to. This year I set a target for 40 books (using goodreads.com) and I am about to finish my 50th.
 
-Sure, you can say that I've had a good 6 months off in the past year once we finished moving to vietnam, but I have been trying to put my spare time to good use (such as developing this blog), so I haven't been completely devoid of things to fill up my day. I would like to think that with my new habits I would still have read 40 books even with a typical working lifestyle.
+It's true that I've had a few months off in the past year once we finished moving to Vietnam, but I have been trying to put my spare time to good use (such as developing this blog), so I haven't been completely devoid of things to fill up my day. I would like to think that with my new habits I would still have read 40 books even with a typical working lifestyle.
 
 Since it is the end of the year, I thought I would highlight my favourite 5 books of 2022. They are given in the order I finished them. If you want to know more, go to [my Goodreads profile](https://www.goodreads.com/user/show/123987656-richard-f).
 
@@ -29,7 +30,7 @@ A sci-fi classic. I thought I would go back to one of the foundations of the gen
 
 ## Seven and a Half Lessons About The Brain
 
-This was a well-written and fascinating journey through what is known about how the brain works and how it sets our behaviour. But it is more than that - it reveals how we are shaped by our environment but how we can change who we are. The book uses the brain's complex behaviours to dip into the topics of nature v nurture, the nature of reality and how these things affect society as a whole, not to lay the topics bare but enough to cause you to rest at the end of each chapter and ponder.
+This was a well-written and fascinating journey through what is known about how the brain works and how it sets our behaviour. But it is more than that - it reveals how we are shaped by our environment but how we can change who we are. The book uses the brain's complex behaviours to dip into the topics of nature v nurture, the nature of reality and how these things affect society as a whole, not to lay the topics bare but enough to cause you to rest at the end of each chapter and begin to think a little deeper.
 
 <span class="book-cover">
 [![Book Cover](https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1388462711i/4806.jpg)](https://www.goodreads.com/book/show/4806.Longitude)
@@ -37,7 +38,7 @@ This was a well-written and fascinating journey through what is known about how 
 
 ## Longitude
 
-This is a fascinating story of the race to discover how to reliably calculate your longitude, thus solving decades, possibly centuries of nautical mishaps. The book starts with how important this problem was at the time, something I knew nothing about. History is littered with stories of ships unable to navigate to their destination resulting not only in lost time but also starvation of the crew, and lost vessels, being unable to safely avoid dangerous reefs.
+This is a fascinating story of the race to discover how to reliably calculate your longitude, thus solving decades, possibly centuries of nautical mishaps. The book starts with how important this problem was at the time, something I knew nothing about. History is littered with stories of ships unable to navigate to their destination resulting not only in lost time but also starvation of the crew and vessels being lost to otherwise avoidable dangerous reefs.
 
 The problem was so big that the British Government put out a huge reward to solve the problem, and thus started a race between the astronomers and the clockmakers. Although it needn't have been; John Harrison, master clockmaker, had such a head-start on the astronomers that there should have been no contest, however he was such a perfectionist that the star-finding solution slowly caught up, resulting in a frantic dash to the finish line and years of controversy.
 
@@ -51,11 +52,11 @@ There are a lot of lessons to take from the book about science, art and mastery 
 
 I have been learning Vietnamese for the last few months, and it is true what they say about its difficulty. However I would say the same thing about anyone from Vietnam learning English, given the two languages are so far apart. But in either of those cases, and to anyone learning a language, I would recommend this book.
 
-The central theme is the Spaced Repetition System (SRS) which is a popular but seemingly under-??? leaning system using the technique of "it's best to learn something when you are about to forget it". If I had have known this system back when I was learning French and German at school I think I would have been grateful.
+The central theme is the Spaced Repetition System (SRS) which is a popular but seemingly under-recognised learning system using the technique of "it's best to learn something when you are about to forget it". If I had have known this system back when I was learning French and German at school I think I would have been grateful.
 
-Surprisingly, there were some parts of the book that I could speed through because they weren't relevant to me - namely how to learn verb conjugations. The European languages love their past, future and present perfect tenses, each with their own conjugations (I caught, I will catch, I am catching), but vietnam has none of that; just a simple addition to mean present, future and past. And many times you don't even need them because of context already in the sentence.
+Surprisingly, there were some parts of the book that I could speed through because they weren't relevant to me - namely how to learn verb conjugations. The European languages love their past, future and present perfect tenses, each with their own conjugations (I caught, I will catch, I am catching), but Vietnamese has none of that, but I can see how this section would be useful otherwise.
 
-But I digress. If you want to learn a language, read this book. In fact, if you want to learn anything, read the first few chapters.
+But I digress. If you want to learn a language, read this book. In fact, if you want to learn anything, I recommend reading the first few chapters.
 
 <span class="book-cover">
 [![Book Cover](https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1647403235i/6667514.jpg)](https://www.goodreads.com/book/show/6667514-the-checklist-manifesto)
@@ -65,5 +66,5 @@ But I digress. If you want to learn a language, read this book. In fact, if you 
 
 Atul Gawande's book seems to be a simple tale of how he set out to improve global surgery outcomes by implementing a basic checklist. But if you take the time to read it, it is much more than this. The book delves into why it is that we fail, especially at complex tasks. Is it ignorance or ineptitude? Is it solved by a chain of command or decentralization? How can simple ideas have powerful impacts.
 
-If you have an interest in team and corporate performance and cultural change, you will find insight in this book, some of which may be surprising. The most profound take-away for me is that it is possible to find solutions which "improve their outcomes with no increase in skill". Perhaps you can find out how in this book.
+If you have an interest in team and corporate performance and cultural change, you will find insight in this book, some of which may be surprising. The most profound take-away for me is that it is possible to tackle problems in a way which "improve their outcomes with no increase in skill". Perhaps you can find out how in this book.
 
