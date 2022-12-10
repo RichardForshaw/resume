@@ -275,8 +275,6 @@ def handle_blog_page_count_totals(event, context):
 
         print(page_result)
         if page_result['Count']:
-            # Remove the user prefix
-            #### page_name = page_name.split("#")[1]
             print(f"{page_name}: {page_result['Count']}")
             result_dict[page_name] = page_result['Count']
             total_page_views += page_result['Count']
