@@ -5,7 +5,7 @@ description: "After deep-diving into Scrum, I became aware of how some of the ro
 tags:
     - Scrum
     - Agile
-author: Richard Forshaw
+author: Richard Forshaw, Chris Kruppa
 ---
 
 Recently I performed a 'Deep Dive' into Scrum: its machinery, its purpose and its goals. Not long after, I was fortunate enough to have some conversations with an Agile Coach in Vietnam, Chris Kruppa of [Semdi](https://www.semdi.vn/), and we both agreed that there were a few things that are often mis-understood about Scrum or running agile teams. This post describes two of them. Check out the other two misconceptions on the [Semdi Blog](https://www.semdi.vn/2022/12/making-the-most-of-scrum-avoid-these-misconceptions/)!
