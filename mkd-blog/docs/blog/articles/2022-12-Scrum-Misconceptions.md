@@ -1,14 +1,14 @@
 ---
 layout: post
 title:  "Making the Most Of Scrum: Avoid These Misconceptions"
-description: "After deep-diving into Scrum, I became aware of how some of the roles and events may be mis-conceived. A discussion with an Agile Coach then revealed more evidence that some things sometimes aren't done to get the most out of Scrum. Read about them here."
+description: "After deep-diving into Scrum, I became aware of how some of the roles and events may be mis-conceived. A discussion with an Agile Coach then revealed more evidence that some things sometimes aren't being done to get the most out of Scrum. Read about them here."
 tags:
     - Scrum
     - Agile
 author: Richard Forshaw, Chris Kruppa
 ---
 
-Recently I performed a 'Deep Dive' into Scrum: its machinery, its purpose and its goals. Not long after, I was fortunate enough to have some conversations with an Agile Coach in Vietnam, Chris Kruppa of [Semdi](https://www.semdi.vn/), and we both agreed that there were a few things that are often mis-understood about Scrum or running agile teams. This post describes two of them. Check out the other two misconceptions on the [Semdi Blog](https://www.semdi.vn/2022/12/making-the-most-of-scrum-avoid-these-misconceptions/)!
+Recently I performed a 'Deep Dive' into Scrum: its machinery, its purpose and its goals. Not long after, I was fortunate enough to have some conversations with an Agile Coach in Vietnam, Chris Kruppa of [semdi](https://www.semdi.vn/), and we both agreed that there were a few things that are often mis-understood about Scrum or running agile teams. This post describes two of them. Check out the other two misconceptions on the [semdi Blog](https://www.semdi.vn/2022/12/making-the-most-of-scrum-avoid-these-misconceptions/)!
 
 
 ## The Daily Scrum is for Reporting
@@ -56,7 +56,7 @@ How is it best to describe this?  Every one of us lives inside bubble, a bubble 
 
 Scrum intends to change the bubble. A good Scrum Master is able to observe the team and communicate what opportunities there are and how to grasp them. They help the team to discover and fix what is in their way. Sometimes they will do activities themselves - perhaps they make connections that are important to the team, or suggest changing the team structure to be more cross-functional. But ultimately the team also has to learn how this is valuable.
 
-I talked about this with Chris at Semdi and he told me he was fortunate enough to witness the same team with two different Scrum Masters. In the first instance, the Sprint Review and Planning meetings were dry and devoid of communication. Through use of a simple metric, it was obvious that only a few days after starting a sprint the team was lacking confidence in completing it. Then the Scrum Master changed. "It was like seeing a different team" he told me; the meetings were lively with the developers leading the discussion and debating amongst themselves, even though the Scrum master was silent in the meeting. Confidence in the team went up. This is the secret sauce that lives in the Scrum Master.
+I talked about this with Chris at semdi and he told me he was fortunate enough to witness the same team with two different Scrum Masters. In the first instance, the Sprint Review and Planning meetings were dry and devoid of communication. Through use of a simple metric, it was obvious that only a few days after starting a sprint the team was lacking confidence in completing it. Then the Scrum Master changed. "It was like seeing a different team" he told me; the meetings were lively with the developers leading the discussion and debating amongst themselves, even though the Scrum master was silent in the meeting. Confidence in the team went up. This is the secret sauce that lives in the Scrum Master.
 
 ## Conclusion
 
