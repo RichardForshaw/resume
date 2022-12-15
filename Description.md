@@ -11,6 +11,10 @@ The purpose of this project was to demonstrate how a static website could be hos
 The website is hosted on AWS S3. This is straightforward to do in CloudFormation, however you need to remember to assign a Bucket Policy in order to allow the public to access it (but not modify it).
 The bucket also needs to be put into 'WebSite' configuration mode so that it can serve the index.html file.
 
+## Handling Email
+
+Note that in the case that the domain is managed outside of AWS (i.e. in this case), if there are any email addresses that are handled by the management service then an MX record must be put into the Route53 HostedZone. This can be done in Cloudformation. The MX record should be obtained from the email service provider (in this case Hover)
+
 ## IAM/Role Setup
 
 The first thing to do is create a role that is designed to access (and only access) this project. Using your root account (or preferably a power-user account that you have already created), make a new group with the appropriate permissions for managing the S3 bucket and the deployment pipeline (from the set of standard AWS managed policies). You can then add a user to this group, and use that user to access that project.
@@ -32,6 +36,22 @@ Pipelines are defined in 'Stages'. Our pipeline has 3 simple stages: a 'Source' 
 This also requires us to grant AWS CodePipeline permission to access our GitHub repo for the Source stage. This is done using the [GitHub V2 source action](https://docs.aws.amazon.com/codepipeline/latest/userguide/update-github-action-connections.html) (See also "Detecting Updates" Below). This is better than Version1, because although you need to go through a manual authentication step (as opposed to a manually-generated token), there is no token to keep track of and to accidentally save in a repo somewhere. (Coincidentally, if you do check a file into GitHub that has a string that matches an OAuth token that it has generated, it will delete the OAuth token. This is a good demonstration of DevSecOps).
 
 One of the odd things is that the pipeline needs a place to store the checked-out artifacts. This is typically an S3 bucket. At the moment this means that we need to create a second bucket to do this, and also means that in the future we will need to come up with a method of cleaning this bucket up. (TODO)
+
+### 2022 update: double deploys
+
+In 2022, I purchased the domain developdeploydeliver.com, so I needed to transfer the domain over from forshaw.tech. I wanted the ability to support a newsletter, and so I needed to choose a service based on the ease of handling email. Because of this I purchased the domain from Hover.
+
+In order to keep the forshaw.tech website up, I needed to deploy to 2 buckets, one for the forshaw.tech landing page and one for the blog. This involved:
+
+ - Adding a second bucket set (one for hosting and one for forwarding) and policy to the cloudformation
+ - Splitting the CodeBuild to output two artifacts, one for deployment to each bucket
+ - Modifying the CodePipeline deployment action to deploy a specific artifact
+ - Adding a second CodePipeline deployment action to deploy the second artifact.
+
+Tips:
+ - the names given to the 'secondary-artifacts' must follow a specific naming convention which does not allow hyphens
+ - the names need to be referenced in both the 'OutputArtifacts' of the CodePipeline build stage and the 'InputArtifacts' of the deploy stages
+ - You can do funky things to modify the paths so the URL paths on your deployment target are nicer
 
 ## Detecting updates
 
@@ -62,6 +82,8 @@ You also need to specify some hard-coded values in the hosted zone routing recor
 ### Routing both sites
 
 This is a simple method of having one bucket that routes to another. The root domain appears to try to route to an S3 bucket that is called the same as the domain (but I'm not sure why this happens). Since there isn't one, we just have to create one which redirects everything to the `www` bucket, which does have the website content.
+
+The gotcha here is that you _still need a DNS record which routes to your redirection bucket_. If you don't do this then DNS will not find the bucket that handles the redirection, and you may be fooled into thinking that the redirection isn't working, but really its the missing DNS record.
 
 ## Contact Form Implementation
 
