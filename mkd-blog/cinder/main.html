@@ -15,7 +15,7 @@ the blocks defined in base.html and its included child templates.
     {# Use the toc of the nav structure instead #}
     {% if page.is_homepage or page.meta.is_root_page %}{% include "toc-site.html" %}{% else %}{% include "toc.html" %}{% endif %}
 </div>
-<div class="col-md-9" role="main">
+<div class="col-md-8" role="main">
     {% include "content.html" %}
 </div>
 {% endblock %}
