@@ -24,13 +24,13 @@ The other area that AI has been popularised is self-driving cars. I remember bet
 
 ## The New Disruptor
 
-Freelancing websites like Fiverr.com have thrived on small tasks that require targetted skill. These skills are generally things which are not difficult to learn and includes some creativity. For example I know how to use basic drawing packages, and I can create simple pictures myself, but I don't really want to put hours of effort into designing a logo (such as for this site). But for hundreds of people out there, they have learned this skill and can apply it quickly and repetitively in many contexts. Other examples may be making collages in Photoshop, generating icon sets for websites or proofreading and writing copy.
+Freelancing websites like Fiverr.com have thrived on small tasks that require targetted skill. These skills are generally things which are not difficult to learn and include some creativity. For example I know how to use basic drawing packages, and I can create simple pictures myself, but I don't really want to put hours of effort into designing a logo. But for hundreds of people out there, they have learned this skill and can apply it quickly and repetitively in many contexts. Other examples may be making collages in Photoshop, generating icon sets for websites or proofreading and writing copy.
 
 ![NVidia AI models](images/ai/nvidia-ai-models.jpg)
 
-These narrow-skilled services are square in the sights of upcoming AI models. I have recently seen an AI model which not only generates 3D rendered graphics, it actually generates the underlying models and textures, which means that you can then continue to fine-tune them yourself and integrate them more easily into the project you required them for. On YouTube there is a mini-industry to provide thumbnail pictures for YouTube Videos. There are also background soundtracks and titles for videos. Content creators often want to focus on the content itself, and so outsource these tasks to others. But the new creative AI is on the verge of changing all that.
+These narrow-skilled services are square in the sights of upcoming AI models. I have recently seen an AI model which not only generates 3D rendered graphics, it actually generates the underlying models and textures, which means that you can then continue to fine-tune them yourself and integrate them more easily into the project you required them for. On YouTube there is a mini-industry to provide thumbnail pictures for Videos. There are also background soundtracks and title design. Content creators often want to focus on the content itself, and so outsource these tasks to others. But the new creative AI is on the verge of changing all that.
 
-What other industries are in AI's sights? You can use AI to generate photo-realistic random faces, potentially doing away the need for a model or stock photo site. There is AI-generated music, including a [whole album](https://artsandculture.google.com/story/12-songs-created-by-ai-barbican-centre/VwVhbAD7QslgLA?hl=en) from artist Brian Eno. All of these industries and their creators will soon face a very important choice - position your service somehow between the customer and the AI, or face unwinnable competition of never-sleeping systems that can replicate the service in a matter of minutes, day or night.
+What other industries are in AI's sights? You can use AI to generate [photo-realistic random faces](https://www.pnas.org/doi/10.1073/pnas.2120481119), potentially doing away the need for a model or stock photo site. There is AI-generated music, including a [whole album](https://artsandculture.google.com/story/12-songs-created-by-ai-barbican-centre/VwVhbAD7QslgLA?hl=en) from artist Brian Eno. All of these industries and their creators will soon face a very important choice - position your service somehow between the customer and the AI, or face unwinnable competition of never-sleeping systems that can replicate the service in a matter of minutes, day or night.
 
 ## The Importance of Understanding
 
@@ -51,7 +51,7 @@ But data accuracy is only one side of another important problem.
 
 ### Bias
 
-Bias in intelligent systems is not new, and once again it comes down to how the system is designed or trained. In 2019 an incident in a bathroom briefly went viral on social media: Could a [soap dispenser be racist](https://reporter.rit.edu/tech/bigotry-encoded-racial-bias-technology)? The simple answer is "no, it was bad engineering", but the more nuanced answer is "why was the technology engineered without sufficient thought about diversity?". Perhaps the biggest oversight in diversity is that between genders, as the book [Invisible Women](https://www.goodreads.com/book/show/41104077-invisible-women) explores.
+Bias in intelligent systems is not new, and once again it comes down to how the system is designed or trained. In 2019 an incident in a bathroom briefly went viral on social media: Could a [soap dispenser be racist](https://reporter.rit.edu/tech/bigotry-encoded-racial-bias-technology)? The simple answer is "no, it was bad engineering", but the more nuanced answer is "why was the technology engineered without sufficient thought about diversity?". Perhaps the biggest oversight in diversity is that between genders, which is further explored in the book [Invisible Women](https://www.goodreads.com/book/show/41104077-invisible-women).
 
 There are also more subtle biases. In a conversation with a Danish friend, he revealed that there is a word in Danish ('kæreste', which is a gender-neutral word for 'romantic partner'). However if you associated this with different adjectives or actions it was [translated to either boyfriend or girlfriend](https://twitter.com/ThomasTelving/status/1600395912055910401), apparently depending on the context.
 
@@ -75,7 +75,7 @@ So where do we go from here? What are the positives? Assuming the issues above a
 
 The most obvious example is Tesla and self-driving cars (vehicles + AI). Self-driving trucks are already under development, and could present a revolution for freight and haulage. One exciting prospect I am watching closely is at NVIDIA: while DeepFake technology is treading the line between entertainment and propaganda, NVIDIA are adapting the technology and [combining it with Video Conferencing](https://blogs.nvidia.com/blog/2021/06/24/vid2vid-cameo-ai-research-video-conferencing/) to allow people to conduct remote meetings with 10x less bandwidth. The current results are amazing.
 
-What other combinations can be thought of? What combinations will unlock the most benefit for humans? And what combinations should we avoid (I'm looking at you Neuralink)?
+What other combinations can be thought of? What combinations will unlock the most benefit for humans? And what combinations should we avoid? (I'm looking at you Neuralink.)
 
 ![The Transition](images/ai/the_transition.jpg)
 
@@ -85,4 +85,6 @@ We are indeed on the verge of a revolution in the field of artificial intelligen
 
 And yes, that last paragraph was written by ChatGPT.
 
-[* The only one which isn't is the assortment of 3D models, which was taken from NVIDIA]
+___
+
+_[* The only one which isn't is the assortment of 3D models, which was taken from NVIDIA]_
