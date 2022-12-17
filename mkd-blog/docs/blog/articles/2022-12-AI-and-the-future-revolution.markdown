@@ -2,6 +2,7 @@
 layout: post
 title:  "The Coming AI Revolution"
 description: "The release of ChatGPT, Dall-E 2 and Stable Diffusion has revealed how far AI has come, especially in the creative industry. Are we on the verge of an 'intelligent revolution'? How much do we really know about it? And how should we approach it?"
+revision_date: "2022-12-17"
 tags:
     - Technology
     - AI
@@ -16,9 +17,9 @@ With the release of ChatGPT, on the back of Dall-E and Stable Diffusion, the int
 
 AI began mainstream life most recognisably as Siri and Google Assistant, although it was already powering things like recommendation engines and language translation. Recommendation engines were a mixed bag however as some were large data models driven by graph-algorithms designed to pick out trends and not really AI, although it looked like AI on the surface.
 
-Siri and Google Assistant showed that AI could be used to understand the intent of a question and then construct a suitable response. These assistants had a good 'wow' factor but anecdotal evidence around the web suggested that Siri was only really good at unlocking your iPad, setting a timer and telling a few bad jokes. I vitally important component of these was the language comprehension, which also powers many language translators around the web. These have provided a benefit to millions, and I use a Vietnamese-English translator quite regularly.
+Siri and Google Assistant showed that AI could be used to understand the intent of a question and then construct a suitable response. These assistants had a good 'wow' factor but anecdotal evidence around the web suggested that Siri was only really good at unlocking your iPad, setting a timer and telling a few bad jokes. A vitally important component of these was the language comprehension, which also powers many language translators around the web. These have provided a benefit to millions, and I use a Vietnamese-English translator quite regularly.
 
-Since then, 'New' AI was bubbling away in labs and has targetted the creative world. OpenAI is probably at the forefront: [Dall-E](https://en.wikipedia.org/wiki/DALL-E) (a play on Dali and Wall-e) was released in 2021 and the world probably didn't know what to make of it - it was mostly used to generate quirky mash-ups and fantastical images. ChatGPT is the generalisation of AI encapsulated in an 'ultimate chatbot'. I have seen examples for ChatGPT to explain the origins of the solar system, to write poems, to write code and to write an email to [contest a parking ticket](https://notesbylex.com/disputing-a-parking-fine-with-chatgpt.html).
+Since then, 'New' AI was bubbling away in labs and has targetted the creative world. OpenAI is probably at the forefront: [Dall-E](https://en.wikipedia.org/wiki/DALL-E) (a play on Dali and Wall-e) was released in 2021 and the world probably didn't know what to make of it - it was mostly used to generate quirky mash-ups and fantastical images. ChatGPT is the generalisation of AI encapsulated in an 'ultimate chatbot'. I have seen examples of using ChatGPT to explain the origins of the solar system, to write poems, to write code and even to write an email to [contest a parking ticket](https://notesbylex.com/disputing-a-parking-fine-with-chatgpt.html).
 
 The other area that AI has been popularised is self-driving cars. I remember betting with my friends that I think at least one of my children (currently 7 and 11) probably won't need a driving license to get around, and will instead be driven by some kind of automated service. I think for my 7-year-old this is still a pretty good bet.
 
@@ -34,7 +35,7 @@ What other industries are in AI's sights? You can use AI to generate [photo-real
 
 ## The Importance of Understanding
 
-This new AI is amazing, no doubt. But is it right to say that these systems are intelligent? Dall-E and ChatGPT are trained on vast collections of data, and at their essence they are good at two things: Understanding your commands (which in itself is amazing), and knowing how to respond with correct and relevant information in a human-like way. But underneath, it still responds based on how it is trained. There are three things which I think need to be understood about AI: that AI is a product of training data; that poor data control introduces biases; and the ethical consequences of these.
+This new AI is amazing, no doubt. But is it right to say that these systems are truly intelligent? Dall-E and ChatGPT are trained on vast collections of data, and at their essence they are good at two things: Understanding your commands (which in itself is amazing), and knowing how to respond with correct and relevant information in a human-like way. But underneath, it still responds based on how it is trained. There are three things which I think need to be understood about AI: that AI is a product of training data; that poor data control introduces biases; and the ethical consequences of these.
 
 ### It's About the Data
 
@@ -42,10 +43,11 @@ The bottom line is: A model is only as good as its data. One major reason that t
 
 Simply put, no. Just like a human, it must first be taught, and if it isn't taught it doesn't know. When I got a chance to play with ChatGPT I threw it a few questions and I realised that it was probably able to regurgitate anything I asked it that could be found, say, on Wikipedia. It did pretty well but then I asked it what the [relationship between e, i and pi](https://en.wikipedia.org/wiki/Euler%27s_identity) was. Should be a breeze, I thought? Nope. It was happy to tell me about each component, but it was stumped to know how they are related. However when I specifically asked it about Euler's relationship it answered without hesitation.
 
-
 The other thing we need to understand about this AI is whether we can be sure that the information is correct or not. In its early years, and sometimes still today, the information on Wikipedia was erroneous or at least had doubtful or debated accuracy. As such, it is actively policed, checked and corrected. AI training data is no different, but is possibly more impactful because by attaching the word "intelligence" to it may influence our level of trust. This may not be a problem with things like AI-generated images or music, but it is important for factual queries.
 
-But data accuracy is only one side of another important problem.
+Some journalists have recently asked ChatGPT to [make predictions](https://www.forbes.com/sites/alexlazarow/2022/12/10/the-future-of-fintech-according-to-ai/), and the articles have been framed around the software's ability to do such a thing. But the main ability on display here is the way that the answers are returned in such an incredibly human-like manner. Combined with the nature of the question, it is easy to fall into the trap that the software is indeed making a prediction, much like an expert could. But it is not an expert, even if it seems to sound like one.
+
+But data accuracy and limitations are only one side of another important issue.
 
 ![Confused Magnets](images/ai/confused_magnets.png)
 
