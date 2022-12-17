@@ -162,6 +162,19 @@ Resources:
         Comment: "Primary Domain: registered at hover.com"
       Name: !Ref WebsiteBaseURL
 
+  # Note that we need TWO routing records, one for each bucket, so that the S3 forwarding works.
+  TechWebsiteApexRouting:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId:
+        Ref: TechWebsiteHostedZone
+      Name: !Ref WebsiteBaseURL
+      Comment: Apex domain record for S3 website bucket
+      Type: A
+      AliasTarget:
+        DNSName: s3-website-ap-southeast-1.amazonaws.com  # Singapore ID: From AWS Service Endpoint Documentation
+        HostedZoneId: Z3O0J2DXBE1FTB                      # Singapore ID: From AWS Service Endpoint Documentation
+
   TechWebsiteRouting:
     Type: AWS::Route53::RecordSet
     Properties:
@@ -181,6 +194,18 @@ Resources:
       HostedZoneConfig:
         Comment: "Blog Domain: registered at hover.com"
       Name: !Ref BlogWebsiteBaseURL
+
+  BlogWebsiteApexRouting:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId:
+        Ref: BlogWebsiteHostedZone
+      Name: !Ref BlogWebsiteBaseURL
+      Comment: Apex domain record for S3 website bucket
+      Type: A
+      AliasTarget:
+        DNSName: s3-website-ap-southeast-1.amazonaws.com  # Singapore ID: From AWS Service Endpoint Documentation
+        HostedZoneId: Z3O0J2DXBE1FTB                      # Singapore ID: From AWS Service Endpoint Documentation
 
   BlogWebsiteRouting:
     Type: AWS::Route53::RecordSet
