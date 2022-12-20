@@ -18,7 +18,7 @@ function get_page_views(target_div) {
     $.map($(".blog-post-title a"), item => page_map.set(item.href.slice(-COMPARE_LENGTH), [item.href, item.text]))
 
     // Fetch data with fetch
-    fetch("https://rf7t1ex0f9.execute-api.ap-southeast-1.amazonaws.com/pagetotals")
+    fetch("https://api.forshaw.tech/pagetotals")
     .then( (response) => {
         // Weird that this function returns a promise...
         return response.json()

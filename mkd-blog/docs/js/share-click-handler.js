@@ -10,7 +10,7 @@ async function record_share(shared_url, share_type) {
     }
 
     // Compose the POST url
-    share_tracking_url = "https://rf7t1ex0f9.execute-api.ap-southeast-1.amazonaws.com/pageshare"
+    share_tracking_url = "https://api.forshaw.tech/pageshare"
     url = `${share_tracking_url}?share_service=${share_type}&share_url=${shared_url}`
 
     if (document.URL.includes('developdeploydeliver.com')) {
