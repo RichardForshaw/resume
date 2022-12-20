@@ -21,6 +21,7 @@ provider:
   # Enable cors so we can post contact info from the web page
   httpApi:
     cors: true
+    disableDefaultEndpoint: true
 
 # you can overwrite defaults here
 #  stage: dev
@@ -145,3 +146,10 @@ resources:
           WriteCapacityUnits: 3
         SSESpecification:
           SSEEnabled: True
+
+    # TODO: Can this be automated?
+    # TechWebsiteAPIMapping:
+    #   Type: AWS::ApiGateway::BasePathMapping
+    #   Properties:
+    #     DomainName: ${cf:${self:custom.projectStackName}.TechWebsiteAPICustomDomain}
+    #     RestApiId: !Ref HttpApi

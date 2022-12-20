@@ -218,6 +218,36 @@ Integration with CodePipeline is simple; you just have to change the `Source` an
 
 The service role becomes slightly simpler in this case as CodeBuild no longer needs to access anything other than the artifact bucket.
 
+## More Stuff
+
+### Https certificates
+
+ * Follow instructions here: https://www.serverless.com/framework/docs/providers/aws/events/http-api. In a nutshell:
+   - Request a certificate from Amazon Certificate Manager. I requested one for both api.forshaw.tech and www.forshaw.tech. (I need to do this for DDD as well)
+   - I chose DNS validation in order to be able to put the reference in CloudFormation
+ * Add records into Hosted Zone DNS settings (via cloudformation)
+ * Wait for cert to be recognised
+
+### Custom Domains for API Endpoints
+
+Some info is here: https://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-custom-domains.html
+
+After getting the certificate, deploy the custom domain:
+ * Add APIGateway domain to cloudformation (Note this requires extra ApiGateway permissions)
+ * (Note this takes a while... a problem perhaps? In the end it created the resource but the cloudformation failed. I'm not sure if this is possible. I continued manually.)
+ * Add the endpoint mapping to the new domain (can probably be done in cloudformation)
+ * Add a DNS record (via cloudformation), using the "API Gateway domain name" and the given Hosted Zone ID from the custom domain (Note this is a bit of a gotcha)
+ * Disable the default endpoint in the serverless file (`disableDefaultEndpoint: true`)
+
+Things to do differently next time...
+ * Can the certificate be created in CloudFormation? It looks like maybe yes? Then you won't have to pass around certificate ARNs etc
+ * Where to put the records?
+   - The certificate is needed by the ApiGateway custom domain name, but can be used by many things
+   - A reference to the custom domain is needed by the API mapping. The domain name could be used by many things and so should be an independent component.
+   - The API Mapping needs the http endpoint name, which is created by serverless. This could be available in the serverless file, but is exported by the stack so could be accessed by a 3rd cloudformation file.
+   - The routing alias needs the custom domain endpoint AND the hosted zone ID. Not sure how to get this yet.
+
+
 ## Future:
 
 ### Trigger pipeline run on bucket creation, in case you have to recreate the bucket.

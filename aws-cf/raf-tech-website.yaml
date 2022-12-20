@@ -34,6 +34,11 @@ Parameters:
     MinLength: 7
     MaxLength: 50
     AllowedPattern: '[a-zA-Z0-9\-\.]*'
+  WebsiteAPICertificateArn:
+    Type: String
+    Description: ARN of certificate to be used for the API custom domain endpoint
+    MinLength: 50
+    AllowedPattern: 'arn:aws:acm:[a-z0-9\-]+:[0-9]+:certificate/[a-f0-9\-]+'
   WebsiteCertificateCNAMEValue:
     Type: String
     Description: Certificate value from AWS for the WWW CNAME record
@@ -186,6 +191,29 @@ Resources:
       AliasTarget:
         DNSName: s3-website-ap-southeast-1.amazonaws.com  # Singapore ID: From AWS Service Endpoint Documentation
         HostedZoneId: Z3O0J2DXBE1FTB                      # Singapore ID: From AWS Service Endpoint Documentation
+
+  TechWebsiteAPIRouting:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId:
+        Ref: TechWebsiteHostedZone
+      Name: !Join [ '', [ 'api.', !Ref WebsiteBaseURL]]   # For 'www' lookup
+      Comment: Alias 'api' records for ApiGateway Endpoint
+      Type: A
+      AliasTarget:
+        # TODO: Should this live in here? It is tied to the serverless lifecycle.
+        DNSName: d-6t82y2s10a.execute-api.ap-southeast-1.amazonaws.com  # From custom domain info
+        HostedZoneId: ZL327KTPIQFUL                      # From custom domain info
+
+  # TODO: Can this be done in cloudformation?
+  # TechWebsiteAPICustomDomain:
+  #   Type: AWS::ApiGateway::DomainName
+  #   Properties:
+  #     DomainName: !Join [ '', [ 'api.', !Ref WebsiteBaseURL]]
+  #     EndpointConfiguration:
+  #       Types:
+  #         - REGIONAL
+  #     RegionalCertificateArn: !Ref WebsiteAPICertificateArn
 
   # DO I NEED THIS???
   BlogWebsiteHostedZone:
@@ -454,31 +482,38 @@ Outputs:
     Description: Cross-Stack export of Hosted Zone ID of this Route53 Stack
     Value: !Ref TechWebsiteHostedZone
     Export:
-        Name: !Sub "${AWS::StackName}-HostedZoneID"
+      Name: !Sub "${AWS::StackName}-HostedZoneID"
 
   TechWebsiteRootDomainURL:
     Description: Cross-Stack export of Route53 root domain
     Value: !Ref WebsiteBaseURL
     Export:
-        Name: !Sub "${AWS::StackName}-RootDomainURL"
+      Name: !Sub "${AWS::StackName}-RootDomainURL"
 
   BlogWebsiteRootDomainURL:
     Description: Cross-Stack export of Route53 root domain for blog
     Value: !Ref BlogWebsiteBaseURL
     Export:
-        Name: !Sub "${AWS::StackName}-BlogRootDomainURL"
+      Name: !Sub "${AWS::StackName}-BlogRootDomainURL"
+
+  # TODO: Can this be done in cloudformation?
+  # TechWebsiteAPICustomDomain:
+  #   Description: The custom domain for the API endpoints
+  #   Value: !Ref TechWebsiteAPICustomDomain
+  #   Export:
+  #     Name: !Sub "${AWS::StackName}-APICustomDomain"
 
   TechWebsiteContactFormSourceEmail:
     Description: The source email for sending an email from a contact form submission
     Value: !Ref WebsiteContactFormSourceAddress
     Export:
-        Name: !Sub "${AWS::StackName}-ContactFormSourceEmail"
+      Name: !Sub "${AWS::StackName}-ContactFormSourceEmail"
 
   TechWebsiteContactFormTargetEmail:
     Description: The target email for sending an email from a contact form submission
     Value: !Ref WebsiteContactFormTargetAddress
     Export:
-        Name: !Sub "${AWS::StackName}-ContactFormTargetEmail"
+      Name: !Sub "${AWS::StackName}-ContactFormTargetEmail"
 
   TechWebsiteCodeStarConnectionARN:
     Description: ARN of codestar connection to GitHub repository
