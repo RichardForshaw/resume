@@ -81,7 +81,8 @@ functions:
     events:
       - schedule: rate(30 minutes)
     environment:
-      EXPECTED_WEBSITE_SIZE_KB: 20
+      EXPECTED_WEB_SITE_SIZE_KB: www.forshaw.tech,20
+      EXPECTED_BLOG_SITE_SIZE_KB: www.developdeploydeliver.com,15
       HEALTH_ALERT_SNS_ARN: ${cf:raf-tech-website-stack.TechWebsiteFailureNotificationTopicARN}
 
   contactformemail:

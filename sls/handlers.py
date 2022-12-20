@@ -55,25 +55,39 @@ def s3_renaming_example(event, context):
 
 def run_health(event, context):
     ''' Handler to check website health by ensuring it meets a certain size '''
-    response = webpage_size_test("http://www.forshaw.tech", int(os.environ.get('EXPECTED_WEBSITE_SIZE_KB', 10)))
-    if not response["health"]:
-        # This will throw if it does not exist, so hopefully raise a cloudwatch error
-        topic_arn = os.environ['HEALTH_ALERT_SNS_ARN']
+    # Extract the sites from the environment
+    sites = None
+    try:
+        sites = {url: size for url, size in (v.split(',') for k, v in os.environ.items() if k.startswith("EXPECTED_") and k.endswith("_SIZE_KB"))}
+    except Exception as e:
+        print("Failed to get site data from environment")
+        print(e)
 
-        message = "Unexpected error with forshaw.tech website. " + str(response)
-        sns = boto3.client('sns')
-        sns.publish(TopicArn=topic_arn, Message=message)
+    if not sites:
+        print("No sites were defined in the environment.")
+        return False
 
-    # Next: Test blog site
+    results = []
+    for site, size in sites.items():
+        print(f"Testing site: {site}")
+        response = webpage_size_test(site, int(size))
+        results.append(response)
+        if not response["health"]:
+            # This will throw if it does not exist, so hopefully raise a cloudwatch error
+            topic_arn = os.environ['HEALTH_ALERT_SNS_ARN']
 
-    return response
+            message = f"Unexpected error checking {site} website. " + str(response)
+            sns = boto3.client('sns')
+            sns.publish(TopicArn=topic_arn, Message=message)
+
+    return results
 
 
 def webpage_size_test(url, expected_size_kb):
     ''' Retrieve a website and make sure it is no less than the given expected size.
         Return a dict indicating the health and http status
     '''
-    r = urllib.request.urlopen(url)
+    r = urllib.request.urlopen("http://" + url)
 
     # Get the expected 'good' length from the environment. Default to 10k
     good_length = expected_size_kb * 1024
