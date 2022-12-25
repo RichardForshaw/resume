@@ -8,7 +8,7 @@ import boto3
 
 from dynamo_helpers import query_page_index_params, count_page_visits_params, query_page_visits_params
 
-S3_LOG_TS_FORMAT = '[%d/%b/%Y:%H:%M:%S%z]'
+S3_LOG_TS_FORMAT = '[%d/%b/%Y:%H:%M:%S %z]'
 
 # SortKey prefix for indicating a specific metric
 # IMPORTANT: This must come AFTER the digits in the ascii table
@@ -83,7 +83,7 @@ def handle_s3_view_log(event, context):
     matched_pages = []
     if len(table_data):
         matched_pages = [item['UserPages']['S'] for item in table_data]
-        print(f"Matched data for pages:\n" + ('\n').join(matched_pages))
+        print(f"Matched data in {object_key} for pages:\n" + ('\n').join(matched_pages))
         print(table_data[0])
     else:
         print(f'No items from {object_key} were matched')
