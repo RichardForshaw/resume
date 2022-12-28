@@ -15,7 +15,7 @@ function get_page_views(target_div) {
 
     // Make a map of all the pages listed on this page
     page_map = new Map()
-    $.map($(".blog-post-title a"), item => page_map.set(item.href.slice(-COMPARE_LENGTH), [item.href, item.text]))
+    $.map($(".blog-post-title a"), item => page_map.set(item.href.slice(-COMPARE_LENGTH).toLowerCase(), [item.href, item.text]))
 
     // Fetch data with fetch
     fetch("https://api.forshaw.tech/pagetotals")
@@ -30,7 +30,7 @@ function get_page_views(target_div) {
         top5_pages = Object.entries(result).filter(isBlogPage).sort((a, b) => b[1] - a[1]).slice(0,5)
 
         // Format and add to page
-        top5_html = top5_pages.map(i => to_blog_list_entry(page_map.get(i[0].slice(-COMPARE_LENGTH)), i[1])).join('\n')
+        top5_html = top5_pages.map(i => to_blog_list_entry(page_map.get(i[0].slice(-COMPARE_LENGTH).toLowerCase()), i[1])).join('\n')
         $(target_div).html("<table>" + top5_html + "</table>");
     })
     .catch((error) => {
