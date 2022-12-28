@@ -64,7 +64,23 @@ Note that you need to provide:
 
 # The Blog
 
-# Dynamo Queries
+# Dynamo:
+
+## Updates
+
+Set many attributes - best to do in a file with:
+
+dynamodb put-item --table-name PageTrackTable --item file://totals.json
+
+Increment an attribute:
+
+dynamodb update-item --table-name PageTrackTable --key '{ "UserPages": {"S": "Richard"}, "SortKey": {"S": "PAGES"} }' --update-expression "ADD #page :incr" --expression-attribute-names '{ "#page": "blog/articles/2021-11-16-understanding-scrum/"}' --expression-attribute-values '{":incr": {"N": "1" }}' --return-values UPDATED_NEW
+
+Remove an attribute:
+
+dynamodb update-item --table-name PageTrackTable --key '{ "UserPages": {"S": "Richard"}, "SortKey": {"S": "PAGES"} }' --update-expression "REMOVE #attr" --expression-attribute-names '{ "#attr": "<attrname>"}'
+
+## Queries
 
 dynamodb query --table-name PageTrackTable --key-condition-expression "UserPages = :pk AND begins_with(SortKey, :sk)" --expression-attribute-values '{ ":pk": { "S": "Richard#INDEX" }, ":sk": { "S": "Richard#blog/articles" } }' --return-consumed-capacity TOTAL
 
