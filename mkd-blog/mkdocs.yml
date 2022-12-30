@@ -54,7 +54,7 @@ plugins:
           - blog/articles
           - blog/books
         paging: false
-        size: 5
+        size: 6
         features:
           tags:
             insert: bottom
