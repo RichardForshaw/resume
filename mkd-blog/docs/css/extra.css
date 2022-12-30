@@ -16,6 +16,17 @@
     padding-left: 15px;
 }
 
+.bs-sidebar.well {
+    border: 1px solid #343838;
+}
+
+.sidebar-subscribe-section {
+    padding: 10px;
+    background-color: #343838;
+    color: #FFF;
+    font-weight: 300;
+}
+
 .book-cover img {
     width: 20%;
 }

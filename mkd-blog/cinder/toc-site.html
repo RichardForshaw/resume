@@ -11,15 +11,25 @@
         <br>
         <h4>{{ config['site_author'] }}</h4>
         {% endif %}
+
+        <!-- Custom sidebar text section -->
         {% if config['custom_sidebar']['text'] %}
             <p>{{ config['custom_sidebar']['text'] }}</p>
         {% endif %}
+
+        <!-- Newsletter section -->
+        <p>
+        We have a newsletter!
+        <button class="ml-onclick-form" onclick="ml('show', 'C2KJ2q', true)"><i class="fas fa-envelope-open" style="color: darkslategray; padding-right: 5px;"></i>Subscribe here!</button>
+        </p>
+
+        <!-- Custom announcement section -->
         {% if config['custom_sidebar']['announcement_text'] %}
-            <p><i class="fas fa-info-circle" style="color: lightblue; padding-right: 5px"></i>
+            <p style="margin-bottom: 10px"><i class="fas fa-info-circle" style="color: lightblue; padding-right: 5px"></i>
             {{ config['custom_sidebar']['announcement_text'] }}
             </p>
         {% endif %}
-        <br>
+
     </div>
     {% endif %}
 </div>
