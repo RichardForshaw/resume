@@ -9,18 +9,24 @@ function to_blog_list_entry(page_pair, views) {
 
 function normalise_key(str) {
     // Trim and transform key to be able to compare consistently
+    const COMPARE_LENGTH = 30
     return str.slice(-COMPARE_LENGTH).toLowerCase()
+}
+
+function generate_blog_post_map(selector) {
+    // Use 'selector' to generate a map of normalised article href => [href, text]
+    // This is used to lookup the matching items from the view leader-board
+    page_map = new Map()
+    $.map($(selector), item => page_map.set(normalise_key(item.href), [item.href, item.text]))
+    return page_map
 }
 
 function get_page_views(target_div) {
     // Only run this function if the target div exists
     if ( $(target_div).length == 0 ) return;
 
-    const COMPARE_LENGTH = 30
-
     // Make a map of all the pages listed on this page
-    page_map = new Map()
-    $.map($(".blog-post-title a"), item => page_map.set(normalise_key(item.href), [item.href, item.text]))
+    page_map = generate_blog_post_map(".blog-post-title a")
 
     // Fetch data with fetch
     fetch("https://api.forshaw.tech/pagetotals")
