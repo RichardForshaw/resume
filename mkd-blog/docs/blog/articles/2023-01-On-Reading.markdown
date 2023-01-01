@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "Better Reading"
-description: "I didn't used to like reading. It felt like a chore. I liked buying books and so my bookshelf was full but unloved. But then with the arrival of pandemic lockdowns, together with a few tips, I tried to change that. Here are some thoughts on getting better at reading."
+title:  "On Better Reading"
+description: "I didn't used to like reading much, but I liked buying books and so my bookshelf was full but unloved. But then with the arrival of pandemic lockdowns, together with a few tips, I tried to change that. Here are some thoughts on getting better at reading."
 tags:
     - Non-technical
 author: Richard Forshaw
