@@ -59,4 +59,4 @@ This is more relevant with a book because the hours that are given to you are no
 
 So there you have it. Hopefully this will help someone out there to become a better reader, because it is worth it. Sometimes we don't need to stand on the shoulders of giants, we just to read a few of the right books.
 
-You can check out my GoodReads profile here: https://www.goodreads.com/user/show/123987656-richard-f. I'm also aiming to publish some book reviews [on my blog](../../books.md), so keep an eye on that!
+You can check out my [GoodReads profile here](https://www.goodreads.com/user/show/123987656-richard-f). I'm also aiming to publish some book reviews [on my blog](../../books.md), so keep an eye on that!
