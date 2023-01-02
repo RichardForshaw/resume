@@ -2,6 +2,7 @@ import json
 import os
 import re
 from datetime import datetime
+from collections import Counter
 
 from botocore.exceptions import ClientError
 import boto3
@@ -94,16 +95,36 @@ def handle_s3_view_log(event, context):
     else:
         dynamo_write_batched_items(dynamo_table_name, table_data)
 
-    # Write page index to Dynamo
+    # Increment the page count
     dynamo_client = boto3.client('dynamodb')
-    for page in set(matched_pages):
-        item = { 'UserPages': {'S': 'Richard#INDEX'}, 'SortKey': {'S': page} }
+    key = { 'UserPages': {'S': 'Richard'}, 'SortKey': {'S': 'PAGES'} }
+    for user_page, count in Counter(matched_pages).items():
+        page = user_page.split('#')[1].lower()
+        if len(page):
+            try:
+                result = dynamo_client.update_item(
+                    TableName=dynamo_table_name,
+                    Key=key,
+                    UpdateExpression='ADD #attr :val',
+                    ExpressionAttributeNames={ "#attr": page },
+                    ExpressionAttributeValues={ ":val": {"N": str(count)} },
+                    ReturnValues="UPDATED_NEW"
+                )
+                new_val = result['Attributes'][page]['N']
+                print(f"Updated {page} count for {item['UserPages']['S']} (value: {new_val})")
+            except Exception as e:
+                print(f"Failed to increment page attribute {item['UserPages']['S']}/{page} in to Dynamo")
+                print(e)
+
+    # Write page index to Dynamo - is this legacy now? Should use a set?
+    for user_page in set(matched_pages):
+        item = { 'UserPages': {'S': 'Richard#INDEX'}, 'SortKey': {'S': user_page} }
         try:
             dynamo_client.put_item(
                 TableName=dynamo_table_name,
                 Item=item,
                 ConditionExpression="attribute_not_exists(SortKey)")
-            print(f"Wrote new INDEX record: {page}")
+            print(f"Wrote new INDEX record: {user_page}")
         except ClientError as ce:
             # Probably means that the record already exists
             if ce.response['Error']['Code'] =='ConditionalCheckFailedException':
@@ -259,44 +280,64 @@ def handle_blog_page_count_totals(event, context):
     # Get root query filter from environment
     path_filter = os.environ.get('DEFAULT_INDEX_PATH_QUERY', None)
 
-    # This function has an optional parameter
+    # This function has two optional parameters
+    full_scan = False
     params = event.get('queryStringParameters')
     print(params)
     if params:
         # Assume that the first parameter is a user-requested path query for the count
-        path_filter = next(iter(params.keys()))
+        for param in iter(params.keys()):
+            if param == "FULLSCAN":
+                full_scan = True
+            else:
+                path_filter = param
     elif not path_filter:
-        return_400("No path filter parameter given and no default path filter configured")
+        return return_400("No path filter parameter given and no default path filter configured")
 
     # Query the indexes from Dynamo
     client = boto3.client('dynamodb')
-    result = client.query(**query_page_index_params(dynamo_table_name, "Richard", path_filter),
-                        ReturnConsumedCapacity="TOTAL")
+    if not full_scan:
+        # Query the pages item
+        result = client.query(
+            TableName=dynamo_table_name,
+            KeyConditionExpression="UserPages = :pk AND SortKey = :sk",
+            ExpressionAttributeValues={ ":pk": { "S": "Richard"}, ":sk": {"S": "PAGES"}},
+            ReturnConsumedCapacity="TOTAL"
+        )
 
-    print(result['ConsumedCapacity'])
+        # Construct results according to the path filter
+        result_dict = {k: int(v['N']) for k, v in result['Items'][0].items() if k.startswith(path_filter)}
+        total_consumed = result['ConsumedCapacity']['CapacityUnits']
 
-    # Now we must query for the items
-    result_dict = {}
-    total_consumed = result['ConsumedCapacity']['CapacityUnits']
-    total_page_views = 0
-    for item in result['Items']:
-        # Remove the user prefix
-        page_name = item['SortKey']['S'].split("#")[1]
-        page_result = client.query(**count_page_visits_params(dynamo_table_name, "Richard", page_name),
-                                ReturnConsumedCapacity="TOTAL")
+        result_dict['TotalPageViews'] = sum(result_dict.values())
 
-        print(page_result)
-        if page_result['Count']:
-            print(f"{page_name}: {page_result['Count']}")
-            result_dict[page_name] = page_result['Count']
-            total_page_views += page_result['Count']
+    else:
+        # Perform a full scan and count for views
+        result = client.query(**query_page_index_params(dynamo_table_name, "Richard", path_filter),
+                            ReturnConsumedCapacity="TOTAL")
 
-        total_consumed += page_result['ConsumedCapacity']['CapacityUnits']
+        # Now we must query for the items
+        result_dict = {}
+        total_consumed = result['ConsumedCapacity']['CapacityUnits']
+        total_page_views = 0
+        for item in result['Items']:
+            # Remove the user prefix
+            page_name = item['SortKey']['S'].split("#")[1]
+            page_result = client.query(**count_page_visits_params(dynamo_table_name, "Richard", page_name),
+                                    ReturnConsumedCapacity="TOTAL")
 
-    # Show the total
-    result_dict['TotalPageViews'] = total_page_views
+            print(page_result)
+            if page_result['Count']:
+                print(f"{page_name}: {page_result['Count']}")
+                result_dict[page_name] = page_result['Count']
+                total_page_views += page_result['Count']
 
-    # Also get the earliest blog access time
+            total_consumed += page_result['ConsumedCapacity']['CapacityUnits']
+
+        # Show the total
+        result_dict['TotalPageViews'] = total_page_views
+
+    # Final results: also get the earliest blog access time
     page_result = client.query(TableName=dynamo_table_name,
                 Limit=1,
                 KeyConditionExpression="UserPages = :pk",
@@ -327,7 +368,7 @@ def handle_blog_page_visits(event, context):
     params = event.get('queryStringParameters')
     print(params)
     if not params:
-        return_400("Request missing required parameter(s)")
+        return return_400("Request missing required parameter(s)")
 
     page_param = next(iter(params.keys()))
 
@@ -354,13 +395,13 @@ def handle_page_share(event, context):
     params = event.get('queryStringParameters')
     print(params)
     if not params:
-        return_400("Request missing required parameter(s)")
+        return return_400("Request missing required parameter(s)")
 
     share_service = params.get('share_service')
     share_page = params.get('share_url')
 
     if not share_service or not share_page:
-        return_400("Request missing required parameter(s)")
+        return return_400("Request missing required parameter(s)")
 
     # Prefix the page with the user. Strip any leading '/', to conform with the storage structure.
     share_key = "Richard#" + share_page.lstrip('/')
@@ -372,7 +413,7 @@ def handle_page_share(event, context):
 
     valid_page_names = [page['SortKey']['S'] for page in result['Items'] + result2['Items']]
     if share_key not in valid_page_names:
-        return_400(f"Provided page name {share_page} is not a recognised page")
+        return return_400(f"Provided page name {share_page} is not a recognised page")
 
     # Report to Dynamo
     share_entry = {
