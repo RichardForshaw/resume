@@ -49,6 +49,7 @@ provider:
         - Effect: "Allow"
           Action:
             - "dynamodb:PutItem"
+            - "dynamodb:GetItem"
             - "dynamodb:UpdateItem"
             - "dynamodb:BatchWriteItem"
             - "dynamodb:Query"
@@ -113,7 +114,7 @@ functions:
     timeout: 10
     events:
       - httpApi:
-          path: /pagevisitlist
+          path: /pagehistory
           method: get
 
 

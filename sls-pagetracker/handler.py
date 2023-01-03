@@ -11,10 +11,12 @@ from dynamo_helpers import query_page_index_params, count_page_visits_params, qu
 
 S3_LOG_TS_FORMAT = '[%d/%b/%Y:%H:%M:%S %z]'
 
-# SortKey prefix for indicating a specific metric
+# SortKey values and prefixes for indicating a specific metrics
 # IMPORTANT: This must come AFTER the digits in the ascii table
 SK_CLASS_PREFIX = ":"
 SK_SHARE_PREFIX = SK_CLASS_PREFIX + "SHARE#"
+SK_PAGE_COUNT_KEY = "PAGES"
+SK_PAGE_VISITS_KEY = "VISITS"
 
 # The tuple defining what to get from the aws s3 log string
 DYNAMO_FIELDS_TUPLE = (
@@ -88,6 +90,7 @@ def handle_s3_view_log(event, context):
         print(table_data[0])
     else:
         print(f'No items from {object_key} were matched')
+        return
 
     # Write to dynamo. Currently one call per item.
     if len(table_data) < 4:
@@ -97,7 +100,7 @@ def handle_s3_view_log(event, context):
 
     # Increment the page count
     dynamo_client = boto3.client('dynamodb')
-    key = { 'UserPages': {'S': 'Richard'}, 'SortKey': {'S': 'PAGES'} }
+    key = { 'UserPages': {'S': 'Richard'}, 'SortKey': {'S': SK_PAGE_COUNT_KEY} }
     for user_page, count in Counter(matched_pages).items():
         page = user_page.split('#')[1].lower()
         if len(page):
@@ -112,8 +115,37 @@ def handle_s3_view_log(event, context):
                 )
                 new_val = result['Attributes'][page]['N']
                 print(f"Updated {page} count for {item['UserPages']['S']} (value: {new_val})")
+
             except Exception as e:
                 print(f"Failed to increment page attribute {item['UserPages']['S']}/{page} in to Dynamo")
+                print(e)
+
+    # Increment the page access list
+    key = { 'UserPages': {'S': 'Richard'}, 'SortKey': {'S': SK_PAGE_VISITS_KEY} }
+    for user_page in set(matched_pages):
+        page = user_page.split('#')[1].lower()
+
+        # Convert all accesses to a number type
+        if len(page):
+            update_list = [{"N": item['SortKey']['S']} for item in table_data if item['UserPages']['S'] == user_page ]
+            print(f"Updating new {page} visits: {update_list}")
+            try:
+                result = dynamo_client.update_item(
+                    TableName=dynamo_table_name,
+                    Key=key,
+                    # This will create a new empty list if the attribute is not present yet
+                    UpdateExpression='SET #attr = list_append(if_not_exists(#attr, :empty), :val)',
+                    ExpressionAttributeNames={ "#attr": page },
+                    ExpressionAttributeValues={ ":empty": { "L": [] }, ":val": { "L": update_list } },
+                    ReturnValues="UPDATED_NEW"
+                )
+
+                # Logging if necessary
+                # new_val = result['Attributes'][page]['L']
+                # print(f"Updated {page} count for {item['UserPages']['S']} (value: {new_val})")
+
+            except Exception as e:
+                print(f"Failed to add page visits {page} in to Dynamo")
                 print(e)
 
     # Write page index to Dynamo - is this legacy now? Should use a set?
@@ -266,6 +298,13 @@ def return_400(reason):
         "body": reason
     }
 
+def return_404(reason):
+    return {
+        "isBase64Encoded": False,
+        "statusCode": 404,
+        "body": reason
+    }
+
 def handle_blog_page_count_totals(event, context):
     # Handler which parses the content of the new object and writes to Dynamo
     # Important fields (Note there could be multiple records):
@@ -298,15 +337,16 @@ def handle_blog_page_count_totals(event, context):
     client = boto3.client('dynamodb')
     if not full_scan:
         # Query the pages item
-        result = client.query(
+        result = client.get_item(
             TableName=dynamo_table_name,
-            KeyConditionExpression="UserPages = :pk AND SortKey = :sk",
-            ExpressionAttributeValues={ ":pk": { "S": "Richard"}, ":sk": {"S": "PAGES"}},
+            Key={ "UserPages": { "S": "Richard"}, "SortKey": {"S": SK_PAGE_COUNT_KEY}},
+            # KeyConditionExpression="UserPages = :pk AND SortKey = :sk",
+            # ExpressionAttributeValues={ ":pk": { "S": "Richard"}, ":sk": {"S": SK_PAGE_COUNT_KEY}},
             ReturnConsumedCapacity="TOTAL"
         )
 
         # Construct results according to the path filter
-        result_dict = {k: int(v['N']) for k, v in result['Items'][0].items() if k.startswith(path_filter)}
+        result_dict = {k: int(v['N']) for k, v in result['Item'].items() if k.startswith(path_filter)}
         total_consumed = result['ConsumedCapacity']['CapacityUnits']
 
         result_dict['TotalPageViews'] = sum(result_dict.values())
@@ -370,15 +410,51 @@ def handle_blog_page_visits(event, context):
     if not params:
         return return_400("Request missing required parameter(s)")
 
-    page_param = next(iter(params.keys()))
+    # Construct parameters
+    full_scan = False
+    page_param = None
+    if params:
+        # Assume that the first parameter is a user-requested path query for the count
+        for param in iter(params.keys()):
+            if param == "FULLSCAN":
+                full_scan = True
+            else:
+                page_param = param
+
+    if not page_param:
+        return return_400("Request missing required parameter(s)")
 
     # Query dynamo to return list of timestamps
     client = boto3.client('dynamodb')
-    result = client.query(**query_page_visits_params(dynamo_table_name, "Richard", page_param),
+    if full_scan:
+        # This is the legacy method, which queries the matching key and returns the list of sortkey values
+        result = client.query(**query_page_visits_params(dynamo_table_name, "Richard", page_param),
                         ReturnConsumedCapacity="TOTAL")
 
-    # Return only timestamps with page as key
-    timestamp_list = [ item['SortKey']['S'] for item in result['Items'] ]
+        # Return only timestamps with page as key
+        timestamp_list = [ item['SortKey']['S'] for item in result['Items'] ]
+    else:
+        # Query the page history item, selecting the appropriate attribute
+        # Remember these attributes are stored as lower-case.
+        page_param = page_param.lower()
+        result = client.get_item(
+            TableName=dynamo_table_name,
+            Key={ "UserPages": { "S": "Richard"}, "SortKey": {"S": SK_PAGE_VISITS_KEY}},
+            # We have to use a projection expression placeholder because the attribute will contain
+            # funny characters.
+            ProjectionExpression="#page",
+            ExpressionAttributeNames={"#page": page_param},
+            ReturnConsumedCapacity="TOTAL"
+        )
+
+        # Return only timestamps with page as key
+        ts_list = result['Item'].get(page_param, {"L": []})["L"]
+        print(ts_list)
+        timestamp_list = [ item['N'] for item in ts_list ]
+
+    if not timestamp_list:
+        return return_404(f"Page not found: {page_param}")
+
     return { page_param: timestamp_list, 'DynamoConsumedCapacity': result['ConsumedCapacity']['CapacityUnits'] }
 
 def handle_page_share(event, context):
