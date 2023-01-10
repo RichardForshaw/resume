@@ -49,6 +49,21 @@ Parameters:
     Description: Certificate value from AWS for the API CNAME record
     MinLength: 20
     AllowedPattern: '_[a-zA-Z0-9\.]+-validations.aws\.'
+  ThirdPartyMailerDomainSPFValue:
+    Type: String
+    Description: DNS value for SPF TXT record to authenticate domain
+    MinLength: 20
+    AllowedPattern: 'v=spf.*?all'
+  ThirdPartyMailerDomainDKIMName:
+    Type: String
+    Description: DNS name for DKIM record to authenticate domain
+    MinLength: 20
+    AllowedPattern: '[a-z\-\_\.]+'
+  ThirdPartyMailerDomainDKIMValue:
+    Type: String
+    Description: DNS value for DKIM record to authenticate domain
+    MinLength: 20
+    AllowedPattern: '[a-z\-\_\.]+'
   WebsiteContactFormSourceAddress:
     Type: String
     Description: The source email address for sending emails from the contact form
@@ -282,6 +297,30 @@ Resources:
       TTL: 900
       ResourceRecords:
         - !Ref WebsiteAPICertificateCNAMEValue
+
+  BlogWebsiteThirdPartySPFRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId:
+        Ref: BlogWebsiteHostedZone
+      Name: !Ref BlogWebsiteBaseURL
+      Comment: SPF Record for MailerLite
+      Type: TXT
+      TTL: 900
+      ResourceRecords:
+        - !Join ['', ['"', !Ref ThirdPartyMailerDomainSPFValue, '"']]
+
+  BlogWebsiteThirdPartyDKIMRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId:
+        Ref: BlogWebsiteHostedZone
+      Name: !Ref ThirdPartyMailerDomainDKIMName
+      Comment: DKIM Record for MailerLite
+      Type: CNAME
+      TTL: 900
+      ResourceRecords:
+        - !Ref ThirdPartyMailerDomainDKIMValue
 
   TechWebsiteContactFormEmailSourceIdentity:
     Type: AWS::SES::EmailIdentity
