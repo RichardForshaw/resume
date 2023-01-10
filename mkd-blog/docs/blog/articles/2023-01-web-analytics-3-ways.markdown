@@ -2,6 +2,7 @@
 layout: post
 title:  "Web Analytics 3-Ways"
 description: "I recently used AWS DynamoDB to demonstrate how to build a simple web analytics tool. In this post I consider using Redis and AWS Athena as alternatives. I look at which may the most suitable and how they differ."
+revision_date: "2023-01-10"
 tags:
     - Cloud Development
     - AWS
