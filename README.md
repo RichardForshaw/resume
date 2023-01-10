@@ -74,11 +74,15 @@ dynamodb put-item --table-name PageTrackTable --item file://totals.json
 
 Increment an attribute:
 
-dynamodb update-item --table-name PageTrackTable --key '{ "UserPages": {"S": "Richard"}, "SortKey": {"S": "PAGES"} }' --update-expression "ADD #page :incr" --expression-attribute-names '{ "#page": "blog/articles/2021-11-16-understanding-scrum/"}' --expression-attribute-values '{":incr": {"N": "1" }}' --return-values UPDATED_NEW
+`dynamodb update-item --table-name PageTrackTable --key '{ "UserPages": {"S": "Richard"}, "SortKey": {"S": "PAGES"} }' --update-expression "ADD #page :incr" --expression-attribute-names '{ "#page": "blog/articles/2021-11-16-understanding-scrum/"}' --expression-attribute-values '{":incr": {"N": "1" }}' --return-values UPDATED_NEW`
+
+Add to a list and create new list if not present:
+
+`dynamodb update-item --table-name PageTrackTable --update-expression "SET #key = list_append(if_not_exists(#key, :empty), :val)" --expression-attribute-names '{"#key": "blog/books/2022-12-book-review-2022/"}' --expression-attribute-values '{ ":val": { "L": [...] }, ":empty": { "L": [] } }' --key '{"UserPages": {"S": "Richard"}, "SortKey": {"S": "VISITS"}}'`
 
 Remove an attribute:
 
-dynamodb update-item --table-name PageTrackTable --key '{ "UserPages": {"S": "Richard"}, "SortKey": {"S": "PAGES"} }' --update-expression "REMOVE #attr" --expression-attribute-names '{ "#attr": "<attrname>"}'
+`dynamodb update-item --table-name PageTrackTable --key '{ "UserPages": {"S": "Richard"}, "SortKey": {"S": "PAGES"} }' --update-expression "REMOVE #attr" --expression-attribute-names '{ "#attr": "<attrname>"}'`
 
 ## Queries
 
@@ -90,4 +94,11 @@ dynamodb query --table-name PageTrackTable --key-condition-expression "UserPages
 
 List all sort key results from dynamo response: `jq ".Items[].SortKey.S"`
 
-curl -v <url>
+Magic script to push all timestamps for a page into a named attribute list, including handling case
+
+```
+for k in `curl -s https://api.forshaw.tech/pagetotals?FULLSCAN | jq 'keys[]' | grep articles | tr -d '"'`;
+   do echo $k;   curl -s https://api.forshaw.tech/pagevisitlist?${k} | jq -c 'keys_unsorted[0] as $k | { ":empty": { "L": [] }, ":val": { "L": .[$k] | map({"N": .}) }}' > values.json;
+   aws --profile raf-tech dynamodb update-item --table-name PageTrackTable --key '{"UserPages": {"S": "Richard"}, "SortKey": {"S": "VISITS"}}' --update-expression "SET #key = list_append(if_not_exists(#key, :empty), :val)" --expression-attribute-names '{"#key": "'${k@L}'"}' --expression-attribute-values file://values.json;
+  done
+```
