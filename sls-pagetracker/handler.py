@@ -1,6 +1,8 @@
 import json
 import os
 import re
+import base64
+from urllib import parse
 from datetime import datetime
 from collections import Counter
 
@@ -471,7 +473,18 @@ def handle_page_share(event, context):
     params = event.get('queryStringParameters')
     print(params)
     if not params:
-        return return_400("Request missing required parameter(s)")
+        # Check for encoded form parameters
+        form_body = event.get('body')
+        if form_body:
+            print("Extracting parameters from POST body")
+            if event.get('isBase64Encoded', False):
+                form_body = base64.b64decode(form_body)
+
+            # Need to unquote (results in a string) then parse
+            params = dict(parse.parse_qsl(parse.unquote(form_body)))
+            print(params)
+        else:
+            return return_400("Request missing required parameter(s)")
 
     share_service = params.get('share_service')
     share_page = params.get('share_url')
