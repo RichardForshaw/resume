@@ -2,7 +2,7 @@
 layout: post
 title:  "AWS CLI and Docker Essentials"
 description: "Over a few years I have built up a small library of home projects deployed on AWS. When I need to revisit them it is easy to forget many of the key CLI commands and configuration items that I need most often to get back up and running."
-revision_date: "2022-11-10"
+revision_date: "2023-01-31"
 tags:
     - Cloud Development
     - AWS
@@ -60,6 +60,58 @@ _(Note this list assumes you are familiar with setting up CLI credentials for yo
  1. The profile name in `config` must match the config section name in `credentials`. Don't get mixed up using `source_profile` parameters - this is used for IAM assume role, not as a link between profiles and credentials.
  2. The config section in the `credentials` supports some of the fields used in the `config` file, and takes precedence over them. So if you are using `config` profiles in a simple way (e.g. just setting a region), there may not be much point in using them at all since the same configuration can be stored in the `credentials` file.
  3. The `config` file can be used for simple separation of sensitive data (e.g. you can probably get away with checking your `config` file into source control or putting less security around it, but DON'T put less security around your `credentials` file!), but it is probably best used for configuring IAM assume-role operations, since the previous 2 points basically make trivial profile configuration a bit clumsy. The corollary to this is that if a framework or tool you use in turn uses the AWS CLI and thus requires one or both of these to be present (check your tool's documentation!)
+
+### Networking Tips
+
+By default, if you run multiple containers, they should be able to talk to each other. Generally any container you start will connect to the default 'bridge' network. If you inspect this network with:
+
+`docker network inspect bridge`
+
+You will see what containers are connected to it and what their IP addresses are, for example:
+
+```
+[
+    {
+        // ...
+        "Containers": {
+            "3978ee54a4517e...0a7cdd3c4c649e": {
+                "Name": "my_redis",
+                "EndpointID": "36e06b4...d258d5598068c012",
+                "MacAddress": "02:42:ac:11:00:02",
+                "IPv4Address": "172.17.0.2/16",
+                "IPv6Address": ""
+            },
+            "dc746d52534793...66ff756dcce146c": {
+                "Name": "my_service",
+                "EndpointID": "a5bb314e...33dc486d9381093e",
+                "MacAddress": "02:42:ac:11:00:03",
+                "IPv4Address": "172.17.0.3/16",
+                "IPv6Address": ""
+            }
+        },
+    }
+]
+```
+
+In this example I was playing around with Redis, and I could connect to it from my service container at `172.17.0.2`.
+
+If you are doing more deliberate networking things then you should create and connect to a defined network. This is most easily done in a docker-compose file as follows (again using Redis as an example):
+
+```
+version: '3.6'
+
+services:
+  redis:
+    image: redis:6.0
+
+  myservice:
+    build: .
+    image: myservice
+
+    environment:
+      - REDIS_URL=redis://redis:6379  # <- The container can by accessed by its name
+
+```
 
 ## Maintaining Dependencies
 
@@ -144,8 +196,9 @@ You probably tend to run the same commands over and over. Here is a refresher fo
 |---------------------------------|----------------------------------|--------------------|
 |  List your stacks / projects    | `aws cloudformation list-stacks` | `sls info [--verbose]`  |
 |  List stack content / functions | `aws cloudformation list-stack-resources --stack-name <the stack name>` | `sls deploy list [functions]` |
-|  Deploy a stack / function      | `aws cloudformation create-stack --stack-name <the stack name> --template-body file://my-cf-file.json --parameters file://my-params-file.json `         | `sls deploy [-f function]`  |
-|  Update a stack / function      | `aws cloudformation update-stack <see above params>`         | `sls deploy [-f function]`      |
+|  Deploy a stack / function      | `aws cloudformation create-stack --stack-name <the stack name> --template-body file://my-file.json`  | `sls deploy [-f function]`  |
+|  Deploy with a parameters file  | `aws cloudformation create-stack <see above params> --parameters file://my-params-file.json `        | Parameters are handled differently  |
+|  Update a stack / function      | `aws cloudformation update-stack <see above params>`         | `sls deploy [function -f function]`      |
 
 _Extra notes: If your cloudformation file contains IAM specifications, you must append `--capabilities CAPABILITY_NAMED_IAM` on the end of the aws command._
 
@@ -175,7 +228,17 @@ Show stack name and ID for stacks whose name contains 'database':
 
 ### Dynamo examples
 
-Dynamo is a more complicated beast, but when your database gets big then server-side filtering will be helpful in saving bandwidth and increasing responsiveness. You should be very careful to note the difference between _querying_ and _filtering_, as there is a subtle distinction. I shall not attempt to explain it here, instead jump into [Alex Debrie's excellent article](https://www.alexdebrie.com/posts/dynamodb-filter-expressions/)
+Dynamo is a more complicated beast, but when your database gets big then server-side filtering will be helpful in saving bandwidth and increasing responsiveness. You should be very careful to note the difference between _querying_ and _filtering_, as there is a subtle distinction. I shall not attempt to explain it in full here, instead jump into [Alex Debrie's excellent article](https://www.alexdebrie.com/posts/dynamodb-filter-expressions/).
+
+**First, a warning.** What I will say here is that _some server-side filters don't look like filters_, and will incur costs on your Dynamo read capacity without you knowing it. I'm looking at you: `ProjectionExpression`.
+
+Any well-read DynamoDB enthusiast will know that using a filter-expression still means that many more items are read from the table than what is dictated by your filter expression, but you might not know that _this also happens at the item level_ with a projection expression. So, and this is worth highlighting:
+
+ > if you have structured your data as an item with many attributes and one of your access patterns is to retrieve a single attribute (this is quite common if using Redis), _Dynamo will read the entire item before applying the projection_.
+
+ This means that if your item takes up many Read Capacity Units (the unit of cost), then you will be charged the full amount to read the item even though you are only accessing one attribute.
+
+Be warned. Now, back to some Dynamo examples.
 
 Query database based on a partition key and sort key:
 
@@ -184,4 +247,107 @@ Query database based on a partition key and sort key:
 Query and then filter the fields to view:
 
 `aws dynamodb query --table-name mytable <query params> --projection-expression Attr1,Attr2,OtherAttributeNames`
+
+_Warning! The above query still reads whole items that match the query (see above)_
+
+### More Filtering
+
+I'm glad you want to know more about filtering - for more advanced filtering techniques, head over to [this post](./2023-01-31-aws-cli-advanced-tips.markdown)
+
+## Other Useful Things
+
+![Toolkit](images/toolkit.jpg)
+### S3 Globbing
+
+S3 is a wonderful storage system, especially because it can serve web content directly. I use it for storing web access logs (which I write about in [another project](./2022-11-DynamoDB-Page-View-Tracker-Pt1.markdown)). But some things it doesn't do well, like handling wildcard access for syncing files. So if you want to sync some files according to a simple pattern, do this:
+
+`aws s3 sync s3://<bucket-name>/<path> . --exclude * --include <pattern>`
+
+This processes the parameters in order, excluding everything and then including files based on your pattern. This is essentially doing the same as a typical `cp <pattern> .` command but written in a less obvious way.
+
+_Gotcha: It is best to wrap the patterns in quotes. This is because if it is not in quotes, the command shell will try to interpret it instead, and will try to replace the pattern with a list of local files._
+
+### CURL
+
+You can't write AWS-based web-services without knowing a bit of CURL. You just can't. It is likely that most serverless-oriented people will be deploying some kind of API which returns results as JSON, and the easiest way to test them is by calling the endpoint, and CURL is the easiest way to do that. Here are some basic CURL commands which you may use often, together with how to decode the AWS event in Python.
+
+<table>
+<thead><tr><th>Example<th>CURL Command<th style="width: 45%">Python decoding of Lambda event</tr></thead>
+<tbody>
+<tr>
+<td>Call an endpoint
+<td>
+
+<code>"curl http[s]://your.endpoint"</code>
+
+<td>
+[None]
+</tr>
+<tr>
+<td>Call an endpoint with parameters
+<td>
+
+<code>"curl http[s]://your.endpoint?your_param..."</code>
+
+<td>
+
+```
+event.get('queryStringParameters').get('your_param')
+```
+
+</tr>
+<tr>
+<td>POST with parameters
+<td>
+
+<code>"curl -X POST http[s]://your.endpoint?your_param=..."</code>
+
+<td>
+[Same as above]
+</tr>
+<tr>
+<td>POST with form data
+<td>
+
+<code>"curl -d "your_param=..." http[s]://your.endpoint"</code>
+
+<td>
+
+```
+from urllib import parse
+
+parse_qs(parse.unquote(event.get('body'))).get('your_param')
+```
+
+Note that this method interprets each parameter value as a list. If each value is a single item, you can instead do:
+
+```
+from urllib import parse
+
+dict(parse_qsl(parse.unquote(event.get('body'))).get('your_param'))
+```
+
+</tr>
+<tr>
+<td>POST with form data (base64 encoded)
+<td>
+
+<code>"curl -d "your_param=..." http[s]://your.endpoint"</code>
+
+<td>
+
+```
+import base64
+from urllib import parse
+
+body = base64.b64decode(event.get('body))
+parse_qs(parse.unquote(body)).get('your_param')
+```
+
+(The same caveat applies as above)
+
+</tr>
+
+</table>
+
 
