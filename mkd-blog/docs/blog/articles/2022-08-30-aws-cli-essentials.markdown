@@ -188,7 +188,7 @@ There is more than one way to deploy your stuff - historically I have mixed manu
 
 This also warrants a more detailed post!
 
-## Useful Commands
+### Useful Commands
 
 You probably tend to run the same commands over and over. Here is a refresher for the ones you will probably run the most.
 
