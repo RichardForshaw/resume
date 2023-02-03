@@ -147,6 +147,8 @@ resources:
           WriteCapacityUnits: 3
         SSESpecification:
           SSEEnabled: True
+        PointInTimeRecoverySpecification:
+          PointInTimeRecoveryEnabled: True
 
     # TODO: Can this be automated?
     # TechWebsiteAPIMapping:
