@@ -252,7 +252,7 @@ _Warning! The above query still reads whole items that match the query (see abov
 
 ### More Filtering
 
-I'm glad you want to know more about filtering - for more advanced filtering techniques, head over to [this post](./2023-01-31-aws-cli-advanced-tips.markdown)
+I'm glad you want to know more about filtering - for more advanced filtering techniques, head over to [this post](./2023-02-aws-cli-advanced-filtering.markdown)
 
 ## Other Useful Things
 
