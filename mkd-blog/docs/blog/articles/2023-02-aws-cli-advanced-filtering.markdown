@@ -31,7 +31,7 @@ This combination may mean that some examples below may not map exactly to your p
 
 ![JSON Header](./images/JSON_header.jpg)
 
-## Basic Formatting and Filtering Output
+## Basic JSON Formatting and Filtering
 
 I looked at basic formatting and filtering in my [AWS CLI essentials post](./2022-08-30-aws-cli-essentials.markdown). As a quick recap, you can use the `--query` command-line parameter to pass a string specifying a query expression on the JSON results, and sometimes these can get quite complex.
 
@@ -39,7 +39,7 @@ If you want a bit more power in your querying, it is worth looking at the [JQ to
 
 As a start, JQ is great for simply pretty-formatting JSON output from something like a lambda function, by just piping it into `jq '.'`. This isn't necessary with the AWS CLI because it already formats the JSON output.
 
-### CLI examples
+### AWS CLI examples
 
 The simplest use of the CLI filter is to print a reduced amount of data so that it is more manageable. This uses [JMES Path expressions](https://jmespath.org/tutorial.html) to process the JSON data in the output.
 
@@ -55,7 +55,7 @@ Here are some basic examples. Note that the query expression is added using the 
 
 (Note the final example only works because the date format in `LastUpdatedTime` is able to be compared as a string - more on that later.)
 
-### JQ
+### JQ Examples
 
 If you want to do serious local-processing of AWS or any other JSON output, you need to get familiar with [JQ](https://stedolan.github.io/jq/manual/), an awesome tool which lets you process JSON structures, not only filtering it like the AWS CLI, but also restructuring it.
 
@@ -135,7 +135,7 @@ bash-5.1$ aws cloudformation describe-stacks | jq '[.Stacks[] | select(.Tags[] |
 
 ### Getting more complex
 
-Let's do some sorting and use other functions. Yes, they can do that!
+Let's do some sorting. Yes, they can do that, and have many other functions built in!
 
 | Example          | AWS CLI query expression          | JQ Expression             |
 |-|-|-|
