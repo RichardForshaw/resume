@@ -3,7 +3,7 @@
 # python 3.9.7
 # yarn
 # serverless
-FROM amaysim/serverless:3.23.0
+FROM amaysim/serverless:3.27.0
 
 # Setup working directory
 WORKDIR /opt/project
@@ -15,11 +15,14 @@ RUN pip3 install --no-cache --upgrade boto3 pytest
 COPY requirements.txt .
 RUN pip3 install -r requirements.txt
 
-# Nnstall nodefiles for SLS
+# Install nodefiles for SLS
 COPY sls/package.json sls/package-lock.json sls/
 WORKDIR /opt/project/sls
 RUN npm install
 WORKDIR /opt/project
+
+# Set env variable for default AWS profile
+ENV AWS_PROFILE=raf-tech
 
 # For access to web testing
 EXPOSE 8000

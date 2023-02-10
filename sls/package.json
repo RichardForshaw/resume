@@ -1,5 +1,8 @@
 {
   "devDependencies": {
-    "serverless-python-requirements": "^6.0.0"
+    "serverless-python-requirements": "^6.0.0",
+    "cookiejar": "2.1.4",
+    "http-cache-semantics": "4.1.1",
+    "simple-git": "3.16.0"
   }
 }
