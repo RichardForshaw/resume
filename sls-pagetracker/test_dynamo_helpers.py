@@ -35,8 +35,39 @@ def test_query_page_visits():
     expected = {
         "TableName": "Table",
         "ProjectionExpression": "UserPages,SortKey",
-        "KeyConditionExpression": "UserPages = :pk AND SortKey < :sk",
-        "ExpressionAttributeValues": { ":pk": {"S": f"UserID#PageID"}, ":sk": {"S": ":"} },
+        "KeyConditionExpression": "UserPages = :pk AND SortKey < :sk_to",
+        "ExpressionAttributeValues": { ":pk": {"S": f"UserID#PageID"}, ":sk_to": {"S": ":"} },
     }
 
     assert query_page_visits_params("Table", "UserID", "PageID") == expected
+
+def test_query_page_visits_with_from_time():
+    expected = {
+        "TableName": "Table",
+        "ProjectionExpression": "UserPages,SortKey",
+        "KeyConditionExpression": "UserPages = :pk AND SortKey BETWEEN :sk_from AND :sk_to",
+        "ExpressionAttributeValues": { ":pk": {"S": f"UserID#PageID"}, ":sk_from": {"S": "12345"}, ":sk_to": {"S": ":"} },
+    }
+
+    assert query_page_visits_params("Table", "UserID", "PageID", from_ts=12345) == expected
+
+def test_query_page_visits_with_to_time():
+    expected = {
+        "TableName": "Table",
+        "ProjectionExpression": "UserPages,SortKey",
+        "KeyConditionExpression": "UserPages = :pk AND SortKey < :sk_to",
+        "ExpressionAttributeValues": { ":pk": {"S": f"UserID#PageID"}, ":sk_to": {"S": "12345"} },
+    }
+
+    assert query_page_visits_params("Table", "UserID", "PageID", to_ts=12345) == expected
+
+def test_query_page_visits_with_from_time_and_to_time():
+    expected = {
+        "TableName": "Table",
+        "ProjectionExpression": "UserPages,SortKey",
+        "KeyConditionExpression": "UserPages = :pk AND SortKey BETWEEN :sk_from AND :sk_to",
+        "ExpressionAttributeValues": { ":pk": {"S": f"UserID#PageID"}, ":sk_from": {"S": "12345"}, ":sk_to": {"S": "54321"} },
+    }
+
+    assert query_page_visits_params("Table", "UserID", "PageID", from_ts=12345, to_ts=54321) == expected
+

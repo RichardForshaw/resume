@@ -31,11 +31,21 @@ def count_page_visits_params(table_name, user_id, page_id):
 
     }
 
-def query_page_visits_params(table_name, user_id, page_id):
+def query_page_visits_params(table_name, user_id, page_id, from_ts=None, to_ts=None):
+    cond_expr = "< :sk_to"
+    from_key = {}
+    to_key = {":sk_to": { "S": SK_CLASS_PREFIX }}
+    if from_ts:
+        cond_expr = "BETWEEN :sk_from AND :sk_to"
+        from_key = {':sk_from': { "S": str(from_ts)}}
+    if to_ts:
+        to_key = {":sk_to": { "S": str(to_ts) }}
+
     return {
         "TableName": table_name,
         # Always use the same projection for this query
         "ProjectionExpression": "UserPages,SortKey",
-        "KeyConditionExpression": "UserPages = :pk AND SortKey < :sk",
-        "ExpressionAttributeValues": { ":pk": {"S": f"{user_id}#{page_id}"}, ":sk": { "S": SK_CLASS_PREFIX } },
+        # Alter the expression based on the filter arguments
+        "KeyConditionExpression": f"UserPages = :pk AND SortKey {cond_expr}",
+        "ExpressionAttributeValues": { ":pk": {"S": f"{user_id}#{page_id}"}} | to_key | from_key,
     }

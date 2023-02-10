@@ -395,8 +395,48 @@ def handle_blog_page_count_totals(event, context):
 
     return result_dict
 
-def handle_blog_page_visits(event, context):
-    ''' Handler which returns a list of UTC access timestamps for a given page name request '''
+def parse_date_string_or_timestamp(date_string, timestamp_string=''):
+    ''' Try to parse the given date_string. If it does not exist, return the timestamp from
+        the timestamp_string. If that fails, return None.'''
+    TIME_STRING_FMT = "%Y-%m-%d"
+    ts = None
+    if date_string:
+        # Try to parse the date
+        try:
+            ts = int(datetime.strptime(date_string, TIME_STRING_FMT).timestamp())
+        except Exception as e:
+            print(f"Unable to parse provided 'from_date' parameter: {date_string}")
+
+    if not ts:
+        # Try timestamp string
+        try:
+            ts = int(timestamp_string)
+        except (ValueError, TypeError) as e:
+            print(f"Invalid timestamp string given: {timestamp_string}")
+
+    return ts
+
+def between_fn(bottom_limit, top_limit):
+    ''' Returns a function which detects if input x is between bottom_limit and top_limit, or ignores the
+        limit if it is None
+    '''
+    def fn(x):
+        if x > bottom_limit:
+            if top_limit and x < top_limit:
+                return True
+
+        return False
+    return fn
+
+def handle_blog_page_visit_history(event, context):
+    ''' Handler which returns a list of UTC access timestamps for a given page name request.
+        Can take the following parameters:
+          - page (required): url-identifier of the page. If there is an unnamed parameter, it is assumed to be this.
+          - FULLSCAN: if there is an unnamed parameter with the key FULLSCAN, it will perform a full scan of the named page.
+          - from_date: a YYYY-MM-DD date taken to be midnight GMT before which timestamps are culled
+          - to_date: a YYYY-MM-DD date taken to be midnight GMT after which timestamps are culled
+          - from_time: a timestamp value before which timestamps are culled
+          - to_time: a timestamp value after which timestamps are culled'''
     print(event)
 
     # Parameters from environment
@@ -415,7 +455,14 @@ def handle_blog_page_visits(event, context):
     # Construct parameters
     full_scan = False
     page_param = None
+    from_param = None
+    to_param = None
     if params:
+        # Look for start and end times
+        from_param = parse_date_string_or_timestamp(params.pop('from_date', None), params.pop('from_time', None))
+        to_param   = parse_date_string_or_timestamp(params.pop('to_date', None), params.pop('to_time', None))
+
+        # Check remaining parameters
         # Assume that the first parameter is a user-requested path query for the count
         for param in iter(params.keys()):
             if param == "FULLSCAN":
@@ -426,15 +473,21 @@ def handle_blog_page_visits(event, context):
     if not page_param:
         return return_400("Request missing required parameter(s)")
 
+    # Log info
+    query_params = {}
+    if from_param or to_param:
+        print(f"Filtering timestamps between {from_param or 'earliest'} and {to_param or 'latest'}")
+        query_params = { 'FromTimestamp': from_param, 'ToTimeStamp': to_param}
+
     # Query dynamo to return list of timestamps
     client = boto3.client('dynamodb')
     if full_scan:
         # This is the legacy method, which queries the matching key and returns the list of sortkey values
-        result = client.query(**query_page_visits_params(dynamo_table_name, "Richard", page_param),
+        result = client.query(**query_page_visits_params(dynamo_table_name, "Richard", page_param, from_ts=from_param, to_ts=to_param),
                         ReturnConsumedCapacity="TOTAL")
 
         # Return only timestamps with page as key
-        timestamp_list = [ item['SortKey']['S'] for item in result['Items'] ]
+        timestamp_list = [ int(item['SortKey']['S']) for item in result['Items'] ]
     else:
         # Query the page history item, selecting the appropriate attribute
         # Remember these attributes are stored as lower-case.
@@ -452,12 +505,18 @@ def handle_blog_page_visits(event, context):
         # Return only timestamps with page as key
         ts_list = result['Item'].get(page_param, {"L": []})["L"]
         print(ts_list)
-        timestamp_list = [ item['N'] for item in ts_list ]
+
+        # Filter on the timestamps
+        timestamp_list = list( filter(between_fn(from_param, to_param), (int(item['N']) for item in ts_list)) )
 
     if not timestamp_list:
         return return_404(f"Page not found: {page_param}")
 
-    return { page_param: timestamp_list, 'DynamoConsumedCapacity': result['ConsumedCapacity']['CapacityUnits'] }
+    return {
+        'PageName': page_param,
+        'TimestampList': timestamp_list,
+        'QueryParameters': query_params,
+        'DynamoConsumedCapacity': result['ConsumedCapacity']['CapacityUnits'] }
 
 def handle_page_share(event, context):
     ''' Handler which reports a sharing event to Dynamo '''

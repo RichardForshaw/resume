@@ -109,7 +109,7 @@ functions:
       DEFAULT_INDEX_PATH_QUERY: "blog/articles/2"
 
   pagecounthistory:
-    handler: handler.handle_blog_page_visits
+    handler: handler.handle_blog_page_visit_history
     logRetentionInDays: 30
     timeout: 10
     events:

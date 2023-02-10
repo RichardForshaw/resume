@@ -84,6 +84,10 @@ Remove an attribute:
 
 `dynamodb update-item --table-name PageTrackTable --key '{ "UserPages": {"S": "Richard"}, "SortKey": {"S": "PAGES"} }' --update-expression "REMOVE #attr" --expression-attribute-names '{ "#attr": "<attrname>"}'`
 
+Retrieve an attribute:
+
+`dynamodb get-item --table-name PageTrackTable --key '{ "UserPages": { "S": "Richard"}, "SortKey": {"S": "VISITS"}}' --projection-expression "#page" --expression-attribute-names '{ "#page": "blog/articles/2023-02-aws-cli-advanced-filtering/" }'`
+
 ## Queries
 
 dynamodb query --table-name PageTrackTable --key-condition-expression "UserPages = :pk AND begins_with(SortKey, :sk)" --expression-attribute-values '{ ":pk": { "S": "Richard#INDEX" }, ":sk": { "S": "Richard#blog/articles" } }' --return-consumed-capacity TOTAL
