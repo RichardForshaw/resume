@@ -11,7 +11,7 @@ author: Richard Forshaw
 
 ![alt text](images/teacher.jpg "Re-Learning Scrum")
 
-Welcome back! We saw in the [previous article](../2021-11-16-understanding-scrum) that three big problems causing poor performance are:
+Welcome back! We saw in the [previous article](../articles/2021-11-16-understanding-scrum.markdown) that three big problems causing poor performance are:
 
  - not understanding the nature of complex problems,
  - decision latency, and
