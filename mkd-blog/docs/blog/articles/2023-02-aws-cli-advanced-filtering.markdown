@@ -297,7 +297,7 @@ Finally, the specifications of these tools are quite similar and are available i
 
 Does this satisfy your current JSON processing needs? Or do you want more? What if I told you that you can write a data processing/ETL pipeline only using the JSON parsing tools shown above?
 
-If you want to dive down this rabbit-hole then check out the second part...
+If you want to dive down this rabbit-hole then check out the [second part...](./2023-02-aws-cli-advanced-filtering-pt2.markdown)
 
 ### More Resources
 
