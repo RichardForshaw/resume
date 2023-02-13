@@ -79,7 +79,7 @@ In general, the `--query` filters using JMES are a little more concise than thei
 |             |  CLI --query expression           | JQ Expression           |
 |-|-|-|
 | Usage       | Only with AWS CLI commands      | With any output or file |
-| Output      | Only outputs filtered results   | Can restructure into new JSON |
+| Output      | Only outputs filtered results   | Can restructure and assign into JSON |
 | Types       | Does not handle dates natively  | Handles date conversions |
 | Scripting   | Expression must be entered on command-line | Expression can be store in file with comments |
 
@@ -149,10 +149,76 @@ In order to demonstrate one difference in capabilities, this is how you sort (as
 
 `aws cloudformation describe-stacks | jq '.Stacks | sort_by(.LastUpdatedTime | sub("\\.[0-9]*";"") | fromdate)'`
 
-Now, you may say that the CLI JMES filter can do this as well, and you are technically correct, but that is because the ISO date is set up in a way that allows for text-based sorting. There may be instances where this type of sorting is not sufficient. There are also instances where data may be returned to you as a timestamp, but you wish to convert it to human-readable text.
+Now, you may say that the CLI JMES filter can do this as well, and you are technically correct, but that is because the ISO date is set up in a way that allows for text-based sorting. There may be instances where this type of sorting is not sufficient. There are also instances where data may be returned to you as a timestamp, but you wish to convert it to human-readable text, such as converting a list of timestamps into a readable dates.
 
 _(The eagle-eyed amongst you will also note that you need to transform the update time with a regular expression substitution because the AWS date format does not confirm exactly to ISO8601)_
 
+### Modifying JSON In-Place
+
+The above examples are fine, but what about if you just want to modify data in-place, or even add to the JSON? In the example above what about if you wanted to transform the `cloudformation list-stacks` output so you get a count of all the stacks included with the results.
+
+JMES only lets you do this by creating a new object:
+
+`aws cloudformation list-stacks --query "{StackSummaries: StackSummaries, StackCount: length(@.StackSummaries)}"`
+
+This is awkward because it seems you will need to re-create the original object fields. However it does offer the `merge` function:
+
+`aws cloudformation list-stacks --query "merge(@, {StackCount: length(@.StackSummaries)})"`
+
+JQ is more powerful in this regard, because it offers an assignment operator (unsurprisingly the `=` sign) which can also be suffixed to other operators. The JMES example becomes:
+
+`jq '.StackCount = (.StackSummaries | length)'`
+
+This can also be done with the `+` operator, which acts like the JMES `merge` function when given two objects:
+
+`jq '. + {StackCount: .StackSummaries | length}'`
+
+All of the above commands produce the following:
+
+```
+{
+  "StackSummaries": [
+    {
+      "StackName": "my-website-stack",
+      "CreationTime": "2019-09-24T04:21:45.435Z",
+      "LastUpdatedTime": "2023-01-10T04:09:04.643Z",
+      "StackStatus": "UPDATE_COMPLETE",
+    },
+    ...
+  ],
+  "StackCount": 6
+}
+```
+
+But what about modifying fields in-place? Say we wanted to change the 'CreationTime' to a date without creating a new field? JMES cannot do this, partly because it is not good at modifying fields (or at least not easily), and also because the functions it offers are simple ones which don't modify the contents (like sum, min, abs, sort).
+
+It's at this point that JQ starts pulling away from JMES. JQ is able to do this with the assignment operator, and its provided functions are more powerful. It does offer a REGEX feature, but for this simple example we can use the division operator `/`. This operator is a bit quirky: in a string context, the divide operator acts like the 'split' function. JQ does overload it's operators to do certain things in certain contexts.
+
+```
+bash-5.1$ aws cloudformation list-stacks | jq '.StackSummaries[].CreationTime |= (./ "T" | .[0])'
+{
+  "StackSummaries": [
+    {
+      "StackName": "my-website-stack",
+      "CreationTime": "2019-09-24",
+      "LastUpdatedTime": "2023-01-10T04:09:04.643Z",
+      "StackStatus": "UPDATE_COMPLETE",
+    },
+    ...
+  ]
+}
+```
+
+To break this down:
+
+  - `|=` is a pipe-and-assignment, so each `StackSummaries.CreationTime` is sent to the following expression and the result is assigned back.
+  - `()` are needed because it contains an ambiguous expression
+  - `./ "T"` takes the received input and divides it (splits it) on 'T'
+  - `| .[0]` takes the output of the previous expression, which will be an array, and returns only the first element
+
+This can be very powerful if the JSON you receive requires a few data transformations rather than restructuring.
+
+![Customised](./images/customised.jpg)
 ### Handling 'custom' JSON
 
 Nearly all the CLI's JSON output is in a form which can be easily queried by JMESPath filter expressions. AWS have probably done this for a reason. What I mean by this is that key names are descriptive of the data that it holds, such as `"Name"` and `"LastUpdatedDate"`, and information like tags appear in a list of `{"Key": "MyKey", "Value": "MyVal"}` objects, instead of `{"MyKey": "MyValue"}`.
