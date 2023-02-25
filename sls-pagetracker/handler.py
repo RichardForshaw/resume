@@ -5,11 +5,19 @@ import base64
 from urllib import parse
 from datetime import datetime
 from collections import Counter
+from functools import reduce
 
 from botocore.exceptions import ClientError
 import boto3
 
-from dynamo_helpers import query_page_index_params, count_page_visits_params, query_page_visits_params
+from dynamo_helpers import (
+    query_page_index_params,
+    count_page_visits_params,
+    query_page_visits_params,
+    query_page_counters_params,
+    update_page_totals_counter_params,
+    update_page_visits_counter_params
+)
 
 S3_LOG_TS_FORMAT = '[%d/%b/%Y:%H:%M:%S %z]'
 
@@ -70,6 +78,7 @@ def handle_s3_view_log(event, context):
         'pk_format': 'Richard#{}'
     }
     print(f"Parsing config: {parse_config}")
+    print(f"Processing object: {object_key}")
 
     # Add translations here because it can't be printed
     parse_config['translations'] = {
@@ -100,57 +109,47 @@ def handle_s3_view_log(event, context):
     else:
         dynamo_write_batched_items(dynamo_table_name, table_data)
 
-    # Increment the page count
+    # Perform all increment operations
+    # This could be done as a batch transaction item, but it is all-or-nothing
     dynamo_client = boto3.client('dynamodb')
-    key = { 'UserPages': {'S': 'Richard'}, 'SortKey': {'S': SK_PAGE_COUNT_KEY} }
-    for user_page, count in Counter(matched_pages).items():
-        page = user_page.split('#')[1].lower()
-        if len(page):
-            try:
-                result = dynamo_client.update_item(
-                    TableName=dynamo_table_name,
-                    Key=key,
-                    UpdateExpression='ADD #attr :val',
-                    ExpressionAttributeNames={ "#attr": page },
-                    ExpressionAttributeValues={ ":val": {"N": str(count)} },
-                    ReturnValues="UPDATED_NEW"
-                )
-                new_val = result['Attributes'][page]['N']
-                print(f"Updated {page} count for {item['UserPages']['S']} (value: {new_val})")
-
-            except Exception as e:
-                print(f"Failed to increment page attribute {item['UserPages']['S']}/{page} in to Dynamo")
-                print(e)
-
-    # Increment the page access list
-    key = { 'UserPages': {'S': 'Richard'}, 'SortKey': {'S': SK_PAGE_VISITS_KEY} }
     for user_page in set(matched_pages):
         page = user_page.split('#')[1].lower()
 
-        # Convert all accesses to a number type
         if len(page):
-            update_list = [{"N": item['SortKey']['S']} for item in table_data if item['UserPages']['S'] == user_page ]
-            print(f"Updating new {page} visits: {update_list}")
+            # Increment the total page count
+            ts_list = [ int(item['SortKey']['S']) for item in table_data if item['UserPages']['S'] == user_page ]
+            print(f"Processing page stats for {user_page}: {ts_list}")
             try:
                 result = dynamo_client.update_item(
-                    TableName=dynamo_table_name,
-                    Key=key,
-                    # This will create a new empty list if the attribute is not present yet
-                    UpdateExpression='SET #attr = list_append(if_not_exists(#attr, :empty), :val)',
-                    ExpressionAttributeNames={ "#attr": page },
-                    ExpressionAttributeValues={ ":empty": { "L": [] }, ":val": { "L": update_list } },
+                    **update_page_totals_counter_params(dynamo_table_name, "Richard", page, ts_list),
+                    ReturnValues="UPDATED_NEW")
+
+                # Logging
+                new_val = result['Attributes']
+                print(f"Updated total count for (value: {new_val})")
+
+            except Exception as e:
+                print(f"Failed to increment total page counter for {page} in Dynamo")
+                print(e)
+
+            # Increment the daily page count
+            try:
+                result = dynamo_client.update_item(
+                    **update_page_visits_counter_params(dynamo_table_name, "Richard", page, ts_list),
                     ReturnValues="UPDATED_NEW"
                 )
 
-                # Logging if necessary
-                # new_val = result['Attributes'][page]['L']
-                # print(f"Updated {page} count for {item['UserPages']['S']} (value: {new_val})")
+                # Logging
+                new_val = result['Attributes']
+                print(f"Updated {page} access count (new value: {new_val})")
 
             except Exception as e:
-                print(f"Failed to add page visits {page} in to Dynamo")
+                print(f"Failed to update daily counter for {page} in Dynamo")
                 print(e)
 
     # Write page index to Dynamo - is this legacy now? Should use a set?
+    # TODO: No need to do this. Can get the PAGES list instead and use the key names. That is if we need
+    # to do this at all?
     for user_page in set(matched_pages):
         item = { 'UserPages': {'S': 'Richard#INDEX'}, 'SortKey': {'S': user_page} }
         try:
@@ -338,17 +337,19 @@ def handle_blog_page_count_totals(event, context):
     # Query the indexes from Dynamo
     client = boto3.client('dynamodb')
     if not full_scan:
-        # Query the pages item
-        result = client.get_item(
-            TableName=dynamo_table_name,
-            Key={ "UserPages": { "S": "Richard"}, "SortKey": {"S": SK_PAGE_COUNT_KEY}},
-            # KeyConditionExpression="UserPages = :pk AND SortKey = :sk",
-            # ExpressionAttributeValues={ ":pk": { "S": "Richard"}, ":sk": {"S": SK_PAGE_COUNT_KEY}},
+        # Query the pages counters
+        result = client.query(
+            **query_page_counters_params(dynamo_table_name, "Richard"),
             ReturnConsumedCapacity="TOTAL"
         )
 
         # Construct results according to the path filter
-        result_dict = {k: int(v['N']) for k, v in result['Item'].items() if k.startswith(path_filter)}
+        # User reduce with a counter to add up all the page totals
+        def acc_totals(acc, item):
+            acc.update({k: int(v['N']) for k, v in item.items() if k.startswith(path_filter)})
+            return acc
+        result_dict = dict(reduce(acc_totals, result['Items'], Counter()))
+
         total_consumed = result['ConsumedCapacity']['CapacityUnits']
 
         result_dict['TotalPageViews'] = sum(result_dict.values())
@@ -383,7 +384,7 @@ def handle_blog_page_count_totals(event, context):
     page_result = client.query(TableName=dynamo_table_name,
                 Limit=1,
                 KeyConditionExpression="UserPages = :pk",
-                ExpressionAttributeValues={ ":pk": {"S": "Richard#blog/"}},
+                ExpressionAttributeValues={ ":pk": {"S": "Richard#blog/"} },
                 ReturnConsumedCapacity='TOTAL')
 
     total_consumed += page_result['ConsumedCapacity']['CapacityUnits']
