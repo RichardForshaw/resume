@@ -44,9 +44,8 @@ def test_count_page_visits():
 def test_query_page_visits():
     expected = {
         "TableName": "Table",
-        "ProjectionExpression": "UserPages,SortKey",
-        "KeyConditionExpression": "UserPages = :pk AND SortKey < :sk_to",
-        "ExpressionAttributeValues": { ":pk": {"S": f"UserID#PageID"}, ":sk_to": {"S": ":"} },
+        "KeyConditionExpression": "UserPages = :pk AND begins_with(SortKey, :sk)",
+        "ExpressionAttributeValues": { ":pk": {"S": f"UserID#PageID"}, ":sk": {"S": "VISITS#"} },
     }
 
     assert query_page_visits_params("Table", "UserID", "PageID") == expected
@@ -54,32 +53,29 @@ def test_query_page_visits():
 def test_query_page_visits_with_from_time():
     expected = {
         "TableName": "Table",
-        "ProjectionExpression": "UserPages,SortKey",
         "KeyConditionExpression": "UserPages = :pk AND SortKey BETWEEN :sk_from AND :sk_to",
-        "ExpressionAttributeValues": { ":pk": {"S": f"UserID#PageID"}, ":sk_from": {"S": "12345"}, ":sk_to": {"S": ":"} },
+        "ExpressionAttributeValues": { ":pk": {"S": f"UserID#PageID"}, ":sk_from": {"S": "VISITS#12345"}, ":sk_to": {"S": "VISITS#MAX"} },
     }
 
-    assert query_page_visits_params("Table", "UserID", "PageID", from_ts=12345) == expected
+    assert query_page_visits_params("Table", "UserID", "PageID", from_month=12345) == expected
 
 def test_query_page_visits_with_to_time():
     expected = {
         "TableName": "Table",
-        "ProjectionExpression": "UserPages,SortKey",
-        "KeyConditionExpression": "UserPages = :pk AND SortKey < :sk_to",
-        "ExpressionAttributeValues": { ":pk": {"S": f"UserID#PageID"}, ":sk_to": {"S": "12345"} },
+        "KeyConditionExpression": "UserPages = :pk AND SortKey BETWEEN :sk_from AND :sk_to",
+        "ExpressionAttributeValues": { ":pk": {"S": f"UserID#PageID"}, ":sk_from": {"S": "VISITS#0"}, ":sk_to": {"S": "VISITS#12345"} },
     }
 
-    assert query_page_visits_params("Table", "UserID", "PageID", to_ts=12345) == expected
+    assert query_page_visits_params("Table", "UserID", "PageID", to_month=12345) == expected
 
 def test_query_page_visits_with_from_time_and_to_time():
     expected = {
         "TableName": "Table",
-        "ProjectionExpression": "UserPages,SortKey",
         "KeyConditionExpression": "UserPages = :pk AND SortKey BETWEEN :sk_from AND :sk_to",
-        "ExpressionAttributeValues": { ":pk": {"S": f"UserID#PageID"}, ":sk_from": {"S": "12345"}, ":sk_to": {"S": "54321"} },
+        "ExpressionAttributeValues": { ":pk": {"S": f"UserID#PageID"}, ":sk_from": {"S": "VISITS#12345"}, ":sk_to": {"S": "VISITS#54321"} },
     }
 
-    assert query_page_visits_params("Table", "UserID", "PageID", from_ts=12345, to_ts=54321) == expected
+    assert query_page_visits_params("Table", "UserID", "PageID", from_month=12345, to_month=54321) == expected
 
 def test_update_page_totals_counter():
     expected = {

@@ -43,22 +43,26 @@ def count_page_visits_params(table_name, user_id, page_id):
 
     }
 
-def query_page_visits_params(table_name, user_id, page_id, from_ts=None, to_ts=None):
-    cond_expr = "< :sk_to"
+def query_page_visits_params(table_name, user_id, page_id, from_month=None, to_month=None):
+    cond_expr = "begins_with(SortKey, :sk)"
     from_key = {}
-    to_key = {":sk_to": { "S": SK_CLASS_PREFIX }}
-    if from_ts:
-        cond_expr = "BETWEEN :sk_from AND :sk_to"
-        from_key = {':sk_from': { "S": str(from_ts)}}
-    if to_ts:
-        to_key = {":sk_to": { "S": str(to_ts) }}
+    to_key = {":sk": { "S": SK_PAGE_VISITS_KEY + "#" }}
+
+    # User provides parameters
+    if from_month or to_month:
+        # Use a BETWEEN expression. Set up the keys to handle the SortKey limits
+        cond_expr = "SortKey BETWEEN :sk_from AND :sk_to"
+
+        # Use "#0" as lower limit because it will capture all greater numbers
+        from_key = {':sk_from': { "S": f"{SK_PAGE_VISITS_KEY}#{from_month or 0}"}}
+
+        # Use "#MAX" as upper limit because it will capture all numbers and is a meaningful word
+        to_key = {":sk_to": { "S": f"{SK_PAGE_VISITS_KEY}#{to_month or 'MAX'}" }}
 
     return {
         "TableName": table_name,
-        # Always use the same projection for this query
-        "ProjectionExpression": "UserPages,SortKey",
         # Alter the expression based on the filter arguments
-        "KeyConditionExpression": f"UserPages = :pk AND SortKey {cond_expr}",
+        "KeyConditionExpression": f"UserPages = :pk AND {cond_expr}",
         "ExpressionAttributeValues": { ":pk": {"S": f"{user_id}#{page_id}"}} | to_key | from_key,
     }
 
