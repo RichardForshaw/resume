@@ -90,19 +90,61 @@ Retrieve an attribute:
 
 ## Queries
 
-dynamodb query --table-name PageTrackTable --key-condition-expression "UserPages = :pk AND begins_with(SortKey, :sk)" --expression-attribute-values '{ ":pk": { "S": "Richard#INDEX" }, ":sk": { "S": "Richard#blog/articles" } }' --return-consumed-capacity TOTAL
+Get all records partially matching a key
 
-dynamodb query --table-name PageTrackTable --key-condition-expression "UserPages = :pk" --expression-attribute-values '{ ":pk": { "S": "Richard#blog/articles/2022-10-On-Technical-Debt/" } }' --select COUNT --return-consumed-capacity TOTAL
+`dynamodb query --table-name PageTrackTable --key-condition-expression "UserPages = :pk AND begins_with(SortKey, :sk)" --expression-attribute-values '{ ":pk": { "S": "Richard#INDEX" }, ":sk": { "S": "Richard#blog/articles" } }' --return-consumed-capacity TOTAL`
+
+Get count of records matching a key
+
+`dynamodb query --table-name PageTrackTable --key-condition-expression "UserPages = :pk" --expression-attribute-values '{ ":pk": { "S": "Richard#blog/articles/2022-10-On-Technical-Debt/" } }' --select COUNT --return-consumed-capacity TOTAL`
+
+Get a single item match
+
+`dynamodb get-item --table-name PageTrackTable --key '{ "UserPages": { "S": "Richard#blog/articles/2022-10-On-Technical-Debt/" }, "SortKey": {"S": "VISITS#..."} }'`
+
+## Athena
+
+Get all the stored query names from athena
+
+```
+aws athena list-named-queries --query "NamedQueryIds | join(' ', @)" | tr -d '"' | xargs aws athena batch-get-named-query --query "NamedQueries[].[Name,Description || 'None'] | [*].join(':', @)" --named-query-ids | sed 's/:/:\t/'
+```
+
+Note the `sed` command is used to insert tabs for readability. I'm not sure how to do this in JMES.
 
 ## jq parsing
 
-List all sort key results from dynamo response: `jq ".Items[].SortKey.S"`
+ * List all sort key results from dynamo response: `jq '.Items[].SortKey.S'`
+ * Convert DynamoDB list into regular array: `jq '[.Item.L[] | .N]'`
+ * Convert DynamoDB map of lists into arrays: `jq '.Item | with_entries(.value |= [.L[]?.N])`
+ * Replace a list with its length: `jq '.Item.List.L |= length'`
+ * Replace all lists with lengths in an array: `jq '.Items |= [.[] | .List.L |= length]`
 
-Magic script to push all timestamps for a page into a named attribute list, including handling case
+## Using JQ ETL scripts
+
+In order to use the JQ scripts, use the command of the form:
+
+`jq -r -f <script-file>`
+
+`-r` will use 'raw' format which is compatible with piping the command to aws.
+
+The form for launching a query from athena is:
 
 ```
-for k in `curl -s https://api.forshaw.tech/pagetotals?FULLSCAN | jq 'keys[]' | grep articles | tr -d '"'`;
-   do echo $k;   curl -s https://api.forshaw.tech/pagevisitlist?${k} | jq -c 'keys_unsorted[0] as $k | { ":empty": { "L": [] }, ":val": { "L": .[$k] | map({"N": .}) }}' > values.json;
-   aws --profile raf-tech dynamodb update-item --table-name PageTrackTable --key '{"UserPages": {"S": "Richard"}, "SortKey": {"S": "VISITS"}}' --update-expression "SET #key = list_append(if_not_exists(#key, :empty), :val)" --expression-attribute-names '{"#key": "'${k@L}'"}' --expression-attribute-values file://values.json;
-  done
+aws athena list-named-queries --query "NamedQueryIds | join(' ', @)" | tr -d '"' \
+| xargs aws athena batch-get-named-query --query "NamedQueries[?Name=='<name_of_query>'].QueryString | [0]" --named-query-ids \
+| sed 's/\\n/ /g' \
+| xargs aws athena start-query-execution --work-group primary --query-execution-context Catalog=AwsDataCatalog,Database=ddd_s3_access_logs_db --query-string
 ```
+
+This can probably be put into a script. The `sed` command replaces the newlines with spaces.
+
+Retrieving and processing results:
+
+```
+aws athena get-query-results --query-execution-id 123-ABC | jq -r -f <script-file> \
+| xargs -n 1 -I data aws dynamodb batch-write-item --request-items 'data'
+```
+
+The `-n 1` is only needed if there is a lot of data grouped into lines, for example the daily page visits which groups each page into a new batch request line. Queries which don't do this can be passed in as a single request (that is, up to 25 requests in the batch request)
+
