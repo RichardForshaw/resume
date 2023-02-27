@@ -27,8 +27,7 @@ S3_LOG_TS_FORMAT = '[%d/%b/%Y:%H:%M:%S %z]'
 # IMPORTANT: This must come AFTER the digits in the ascii table
 SK_CLASS_PREFIX = ":"
 SK_SHARE_PREFIX = SK_CLASS_PREFIX + "SHARE#"
-SK_PAGE_COUNT_KEY = "PAGES"
-SK_PAGE_VISITS_KEY = "VISITS"
+
 
 # The tuple defining what to get from the aws s3 log string
 DYNAMO_FIELDS_TUPLE = (
