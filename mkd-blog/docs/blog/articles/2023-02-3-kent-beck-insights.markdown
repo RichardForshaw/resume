@@ -10,7 +10,7 @@ author: Richard Forshaw
 
 I recently read Kent Beck's book ['Implementation Patterns'](../books/2023-02-implementation-patterns-kent-beck.markdown). While most of it is focussed on Java and OO-programming, there is still much that he talks about which is relevant to programing and software development as a whole.
 
-Programming is hard, and developing large-scale software long-lived software is harder still as it involves disciplines and behaviours that aren't taught in most programming courses, or at least they weren't when I was at University. Perhaps now there is more importance given to them, but in case there isn't here are three things from Kent's book which I think every developer needs to consider.
+Programming is hard, and developing large-scale long-lived software is harder still as it involves disciplines and behaviours that aren't taught in most programming courses, or at least they weren't when I was at University. Perhaps now there is more importance given to them, but in case there isn't here are three things from Kent's book which I think every developer needs to consider.
 
 ![Lightbulb Idea](./images/lightbulb-idea.jpeg)
 
@@ -48,7 +48,7 @@ Communication is one of the most underrated properties of software programs, but
 
 One of my favourite quotes from Donald Knuth is this:
 
-> The best programs are written so that computing machines can perform them quickly and so that human beings can understand them clearly.
+> "The best programs are written so that computing machines can perform them quickly and so that human beings can understand them clearly."
 
 And personally, I would not lose too much sleep if the "computing machines" do not perform them quickly, since not all programs need to run fast but _they all need to be read by other programmers_.
 
