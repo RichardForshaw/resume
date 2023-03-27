@@ -58,7 +58,7 @@ Firstly, the fact that ChatGPT recognises the subject matter of the photo and wr
 
 ![Internet robot lilmiquela](images/lilmiquela.jpg)
 
-Finally, while it is true that the output did not mimic her exact style, we know already that different AI models can mimic not only writing styles but also voices and other characteristics if fed with the correct data. in the case of voice cloning, currently takes only a few minutes of original samples, but in a recent paper Microsoft claims to be able to do this [with only 3 seconds of samples](https://www.youtube.com/watch?v=F6HSsVIkqIU)! Once again, the video incorrectly substitutes 'ChatGPT' for 'AI' and does not delver further into what is really possible.
+Finally, while it is true that the output did not mimic her exact style, we know already that different AI models can mimic not only writing styles but also voices and other characteristics if fed with the correct data. in the case of voice cloning, currently takes only a few minutes of original samples, but in a recent paper Microsoft claims to be able to do this [with only 3 seconds of samples](https://www.youtube.com/watch?v=F6HSsVIkqIU)! Once again, the video incorrectly substitutes 'ChatGPT' for 'AI' and does not delve further into what is really possible.
 
 ### Fireman
 
