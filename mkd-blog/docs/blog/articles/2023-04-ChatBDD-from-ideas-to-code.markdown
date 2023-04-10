@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "ChatBDD: AI-assisted Behaviour-Driven Development"
+title:  "ChatBDD: AI-Assisted Behaviour-Driven Development"
 description: "AI such as ChatGPT can act as a highly productive assistant and may even help the way that you think. But can it help turn a customer idea into a piece of working software?"
 tags:
     - Programming Techniques
