@@ -243,7 +243,7 @@ Now the negative:
  - The carousel scenario is missing a test for 3 captions
  - The carousel scenario is missing a failure case for more than 3 captions
 
-Now, you can say that these are because it has not been given sufficient direction (again). In the first two points this is perhaps true, but in the final two I think there is enough information for a human to have undestood (like the rule for images). But this is often what is discussed in Eample Mapping meetings.
+Now, you can say that these are because it has not been given sufficient direction (again). In the first two points this is perhaps true, but in the final two I think there is enough information for a human to have understood (like the rule for images). But this is often what is discussed in Example Mapping meetings.
 
 Since this is an experiment with ChatGPT, let's try again with more direction, and answer some of the questions. Here is the updated request and rules:
 
