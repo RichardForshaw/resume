@@ -6,7 +6,6 @@ tags:
     - Programming Techniques
     - AI
 author: Richard Forshaw
-exclude_from_blog: true
 ---
 
 In the last post, I wrote about the first stage of transforming an idea into working code using ChatGPT as an assistant. I took an idea and put ChatGPT through a BDD process and an Example Mapping process.

@@ -291,5 +291,5 @@ Perhaps this is expected - after all LLMs do not 'think', they simply perform hi
 
 Overall, ChatGPT gets top marks as a productivity assistant. I suspect that the swift generation of output, with a little extra consideration on the inputs, would save a lot of time in the real world, if not simply for automating the output of boilerplate text. So I can see a huge benefit.
 
-That is enough for this post. What about translating the scenarios into code? Part 2 is coming soon. If you want early access, <a class="ml-onclick-form" href="javascript:void(0)" onclick="ml('show', 'Bw1Qb8', true)">subscribe to my newsletter!</a>
+That is enough for this post. What about translating the scenarios into code? Head over to [Part 2...](./2023-04-ChatTDD-pair-programming-with-ai.markdown)
 
