@@ -187,7 +187,7 @@ When I was introduced to Example Mapping I loved it. As a developer, if given a 
 
 Example Mapping seeks to change this, and involves stakeholders, developers and QA discussing the scenarios to define examples of what they mean. Usually this gets off to a rocky start simply because these people don't often talk to each other! But after a short while I often saw a flood of enthusiastic discussion pour forward.
 
-The scenarios from the first experiment may already look complete, but they use language such as 'an error message is returned' which is not specific or testable. In order to get more detail from ChatGPT, I decided to put it in an Example Mapping scenario instead. Since I could wear at least 2 of the caps from an Example Mapping meeting, I could direct ChatGPT to write some examples. I used the [rules for Example Mapping](link) together with the rules for BDD scenarios and pushed through the user story with some more request details.
+The scenarios from the first experiment may already look complete, but they use language such as 'an error message is returned' which is not specific or testable. In order to get more detail from ChatGPT, I decided to put it in an Example Mapping scenario instead. Since I could wear at least 2 of the caps from an Example Mapping meeting, I could direct ChatGPT to write some examples. I used the [rules for Example Mapping](https://cucumber.io/blog/bdd/example-mapping-introduction/) together with the rules for BDD scenarios and pushed through the user story with some more request details.
 
 ```txt
 You are a software product specialist with knowledge of BDD, User Stories and Example Mapping. You are participating in an Example Mapping session. This session follows these rules for a given user story:
