@@ -172,7 +172,7 @@ That looks like a pretty good bdd-style test to me.
 
 ### Implementing Code
 
-When I ran the code, I got the expected errors, as you would expect from real TDD:
+When I ran the code, I got the usual errors, as you would expect from real TDD:
 
  * No module
  * No function
@@ -386,19 +386,19 @@ Once again this is subjective, but I believe this code:
 
 ## Conclusion
 
-This was a valuable experiment with a many learnings. The most interesting thing I learnt was the transition from BDD to TDD. It is probably difficult to many developers to do, and directing ChatGPT to make this transition was far from smooth.
+This was a valuable experiment with many new things learnt about using ChatGPT in this way. The most interesting one was the transition from BDD to TDD. It is probably difficult for many developers to do, and directing ChatGPT to make this transition was far from smooth.
 
 The main benefit I found was that it prompted me to think more about design decisions - it did almost feel like I was 'pair programming'. However I was hoping that I would be able to continue thinking at a high level, but that didn't happen; because some of the output had mistakes or was poorly written (in my opinion), I had to jump between design-level and code-level thinking.
 
 This raised an interesting question though - does this in fact fit into the TDD 'Red-Green-Refactor' process? Maybe it does and I have just been executing the 'refactor' stage a bit too early? I admit I sometimes neglected to wait to see if the code that was produced passed, thus following the 'write the minimum code to turn the test green' rule.
 
-My other conclusion is that using this process to fulfil an entire BDD feature is tricky and potentially laborious, because the LLM has to maintain knowledge of existing code. Making frequent small tweaks to an existing function using an LLM may be more work than doing it yourself. Additionally, after further use I found that on occasion it would introduce errors into existing code, providing more work for the developer to do. As the function size increases, I think both of these will be exacerbated.
+My other conclusion is that using this process to complete an entire BDD feature is tricky and potentially laborious, because the LLM has to maintain knowledge of existing code. Making frequent small tweaks to an existing function using an LLM may be more work than doing it yourself. Additionally, after further use I found that on occasion it would introduce errors into existing code, providing more work for the developer to do. As the function size increases, I think both of these will be exacerbated.
 
 Other associated points are:
 
   - defining the expected inputs/outputs for unit tests is a bit laborious
   - Some responses introduced assumptions in the details (e.g. I asked it to use URL-encoded-strings and it used outdated formats which I had to fix)
-  - The output is often verbose, leading to lengthy, duplicated or redundant code. This was especially true when parameterizing tests.
+  - The output is often verbose, leading to lengthy, duplicated or redundant code. This was especially true when parametrizing tests.
 
 Some of these may be improved in GPT4, we will have to see.
 
