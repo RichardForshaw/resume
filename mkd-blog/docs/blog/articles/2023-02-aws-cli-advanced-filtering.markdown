@@ -8,6 +8,7 @@ tags:
     - CLI
     - JSON
 author: Richard Forshaw
+revision_date: "2023-04-24"
 ---
 
 Last year I published [AWS CLI and Docker Essentials](./2022-08-30-aws-cli-essentials.markdown), which was intended to get most people up and running, or possibly easily re-visiting their AWS cloud projects. After doing that for a few months, I found I was starting to use more advanced tools to deal with AWS, especially the JSON output.
@@ -221,9 +222,9 @@ This can be very powerful if the JSON you receive requires a few data transforma
 ![Customised](./images/customised.jpg)
 ### Handling 'custom' JSON
 
-Nearly all the CLI's JSON output is in a form which can be easily queried by JMESPath filter expressions. AWS have probably done this for a reason. What I mean by this is that key names are descriptive of the data that it holds, such as `"Name"` and `"LastUpdatedDate"`, and information like tags appear in a list of `{"Key": "MyKey", "Value": "MyVal"}` objects, instead of `{"MyKey": "MyValue"}`.
+Nearly all the CLI's JSON output is in a form which can be easily queried by JMESPath filter expressions. AWS have probably done this for a reason. What I mean by this is that key names are descriptive of the data that it holds, such as `"Name"` and `"LastUpdatedDate"`, and information like tags appear in a list of `{"Key": "MyKey", "Value": "MyVal"}` objects, instead of `{"MyKey": "MyValue"}`. In these cases, we perform filtering like seen above, using a filter expression like `[?Key=='MyKey']`.
 
-In these cases, we perform filtering like seen above, using a filter expression like `[?Key=='MyKey']`. But what if the JSON data is structured the other way? An example of this is say a lambda which outputs a list of page visits where the key is the name of the page, like this:
+But what if the JSON data is structured the other way? An example of this is say a DynamoDB item's attribute names, or lambda which outputs a list of page properties by their page name, like this:
 
 ```
 {
