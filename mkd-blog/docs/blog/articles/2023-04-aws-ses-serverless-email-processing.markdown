@@ -11,9 +11,9 @@ author: Richard Forshaw
 
 I have started a couple of projects which use email processing. One was to process email receipts I was receiving from other services, and the latest was to trigger batch processing jobs via email. Why email? Well in one case it was convenient because the input data was already an email, and in the other I figured that emailing a simple request would be faster to prove the concept than writing a webpage, when I didn't know if in the long run I would need a webpage or not.
 
-I learnt a few things in setting these projects up - some things are simply part of setting SES up and others were because I wanted to think a little outside the standard AWS/serverless box.
+I learnt a few things in setting these projects up - some things are simply part of setting SES up and others were because I wanted to think a little outside the standard AWS/Serverless box.
 
-In this article, I'll go through how to set up basic lambda processing of emails using SES, cloudformation and serverless.
+In this article, I'll go through how to set up basic lambda processing of emails using SES, Cloudformation and Serverless.
 
 ![AWS SES and Lambda](./images/awsses/AWS-SES-and-Lambda.jpg)
 
@@ -39,22 +39,22 @@ To receive and process emails with Amazon SES, you will need the following:
  * A SES rule set
  * A SES rule for incoming email
 
-The rule set and its associated rules can be built with cloudformation but the email identity cannot. In order to do this, go to the AWS SES dashboard and then to the 'Verified Identities' section. From there click on 'Create Identity', to see the following form.
+The rule set and its associated rules can be built with Cloudformation but the email identity cannot. In order to do this, go to the AWS SES dashboard and then to the 'Verified Identities' section. From there click on 'Create Identity', to see the following form.
 
 ![SES Create Identity](./images/awsses/ses_identity_setup.png)
 
-AWS have updated their domain verification to only use DKIM, and if you have a domain with Route53 then you can check a box to automatically publish the records to your hostedzone, which is great. This means that you don't have to put anything in to cloudformation, but it does mean that these changes are not version-controlled in any way, which may or may not suit you.
+AWS have updated their domain verification to only use DKIM, and if you have a domain with Route53 then you can check a box to automatically publish the records to your hostedzone, which is great. This means that you don't have to put anything in to Cloudformation, but it does mean that these changes are not version-controlled in any way, which may or may not suit you.
 
 ### Setting up email with Route53
 
-So you have a Route53 domain. This is great for Infrastructure-as-code as you can specify your configuration in a cloudformation stack which means it is easy to version-control and re-deploy if necessary.
+So you have a Route53 domain. This is great for Infrastructure-as-code as you can specify your configuration in a Cloudformation stack which means it is easy to version-control and re-deploy if necessary.
 
-Configuring Route53 to handle receiving emails only requires a few fairly simple cloudformation resources:
+Configuring Route53 to handle receiving emails only requires a few fairly simple Cloudformation resources:
 
  * A Route53 Hosted Zone
  * An incoming email MX record
 
-A cloudformation example of this is below:
+A Cloudformation example of this is below:
 
 ```
 Resources:
@@ -91,7 +91,7 @@ You will see that the `RecordSet` item refers to a subdomain. I prefer to do thi
 
 #### DKIM Keys
 
-Before enforcing DKIM, AWS used to require you to add a TXT record to your Route53 setup yourself, but as mentioned above that is no longer necessary. Keeping these keys out of cloudformation also means there is less security overhead and risk; this type of information is best kept out of 'source' files, and handling them can be a pain. On the other hand it does mean that if you need to re-build your domain you will need to re-configure and verify your email identity manually.
+Before enforcing DKIM, AWS used to require you to add a TXT record to your Route53 setup yourself, but as mentioned above that is no longer necessary. Keeping these keys out of Cloudformation also means there is less security overhead and risk; this type of information is best kept out of 'source' files, and handling them can be a pain. On the other hand it does mean that if you need to re-build your domain you will need to re-configure and verify your email identity manually.
 
 ### External DNS
 
@@ -114,7 +114,7 @@ Once the DKIM and MX records are set up, if they are correct then you should rec
 
 Now we can move on to the SES rules. This is required to inform AWS what to do with an email that it receives. Setting up a rule requires you to define a rule set and also define rules within that set.
 
-A common example is to simply store the incoming email so that you can process it later. In CloudFormation this looks like this:
+A common example is to simply store the incoming email so that you can process it later. In Cloudformation this looks like this:
 
 ```
   EmailReceiptRuleSet:
@@ -169,7 +169,7 @@ This Bucket Policy allows SES to perform `s3:PutObject` on the referenced bucket
 
 #### Gotcha: Enabling the RuleSet
 
-One thing that is a bit hard to find in the documentation is the fact that you need to **manually** enable the ruleset. You can enable the **rule** in cloudformation but the **ruleset** must be enabled through the console. To do this, go into the 'Email Receiving' menu item, select your ruleset and enable it.
+One thing that is a bit hard to find in the documentation is the fact that you need to **manually** enable the ruleset. You can enable the **rule** in Cloudformation but the **ruleset** must be enabled through the console. To do this, go into the 'Email Receiving' menu item, select your ruleset and enable it.
 
 ![Activate the rule set](./images/awsses/ses_activate_rule_set.png)
 
@@ -196,7 +196,7 @@ We do need to do something though, and the basics are this:
  3. Give our lambda some permissions to access S3
  4. Define the function and the trigger event
 
-Item 1 can be done when you set up your serverless project, and all the info you need is on the [serverless tutoral page](https://www.serverless.com/framework/docs/tutorial).
+Item 1 can be done when you set up your Serverless project, and all the info you need is on the [Serverless tutoral page](https://www.Serverless.com/framework/docs/tutorial).
 
 ![Locks and Keys](./images/awsses/LocksAndKeys.jpg)
 
@@ -204,7 +204,7 @@ Item 1 can be done when you set up your serverless project, and all the info you
 
 Assigning the role and permission is probably the trickiest thing. All the big cloud providers implement some kind of security model, which is a good thing. It's just up to us to use it!
 
-If you run through the serverless setup, it will allow you to deploy using your local access keys, but this is not typically recommended. I generally provide a role for serverless to assume, which restricts what it can and can't do. Setting it up is a bit cumbersome but it means you have full control over the permissions.
+If you run through the Serverless setup, it will allow you to deploy using your local access keys, but this is not typically recommended. I generally provide a role for Serverless to assume, which restricts what it can and can't do. Setting it up is a bit cumbersome but it means you have full control over the permissions.
 
 At minimum, it needs to:
 
@@ -214,11 +214,11 @@ At minimum, it needs to:
 
 A little explanation of the above points:
 
- 1. is in order for serverless to actually perform the deployment and create your resources
+ 1. is in order for Serverless to actually perform the deployment and create your resources
  2. is a special case, which will be explained soon
  3. is so it can perform actions on your resources
 
-Because serverless prefixes your project's services with the service name, I typically write the IAM PolicyDocuments to be limited to only those resources, which looks like this:
+Because Serverless prefixes your project's services with the service name, I typically write the IAM PolicyDocuments to be limited to only those resources, which looks like this:
 
 ```
   ServerlessDeploymentRole:
@@ -252,10 +252,10 @@ Because serverless prefixes your project's services with the service name, I typ
 
 I usually make an architectural decision to separate the incoming email infrastructure with the business logic in the lambda code. _You don't have to do this_, but I do it for two reasons:
 
- * Serverless is not great at handling resources that are not tightly coupled to your lambdas. It does allow you to add custom resources at the end of your `serverless.yml` file, but this is typically just CloudFormation code anyway, and brings us to the next point...
- * The email pipeline should be a more permanent fixture, and shouldn't be tightly coupled to the serverless deployment in my opinion. If you want to tear down and re-deploy your lambdas, if your email pipeline is managed by the `serverless.yml` file then it will be torn down as well. I think it is better to de-couple them.
+ * Serverless is not great at handling resources that are not tightly coupled to your lambdas. It does allow you to add custom resources at the end of your `serverless.yml` file, but this is typically just Cloudformation code anyway, and brings us to the next point...
+ * The email pipeline should be a more permanent fixture, and shouldn't be tightly coupled to the Serverless deployment in my opinion. If you want to tear down and re-deploy your lambdas, if your email pipeline is managed by the `serverless.yml` file then it will be torn down as well. I think it is better to de-couple them.
 
-Because of this, serverless needs to be told that you have a pre-configured S3 bucket and it needs to run some custom lambdas to be able to access it. In order to do this, the following policy needs to be added to the `ServerlessDeploymentRole`:
+Because of this, Serverless needs to be told that you have a pre-configured S3 bucket and it needs to run some custom lambdas to be able to access it. In order to do this, the following policy needs to be added to the `ServerlessDeploymentRole`:
 
 ```
   MyServerlessDeploymentRole:
@@ -313,7 +313,7 @@ provider:
                 - "/IncomingEmail/*"   # Matches the SES rule action
 ```
 
-There are a few ways to reference the S3 ARN. I like to export it from the cloudformation and then reference it in `serverless.yml` using `${cf:stack-name.output-name}`, but you can do all kinds of funky stuff with serverless variables to make sure you don't repeat yourself.
+There are a few ways to reference the S3 ARN. I like to export it from the Cloudformation and then reference it in `serverless.yml` using `${cf:stack-name.output-name}`, but you can do all kinds of funky stuff with Serverless variables to make sure you don't repeat yourself.
 
 One important detail is to make sure that the permission you grant to read from matches the location that you configured to write your email to in the SES rule. Once again, there are probably some tricks you can do to make sure these are synchronised.
 
@@ -342,7 +342,7 @@ There are three important things to note here:
 
  1. You need to supply the **bucket name** to the s3 event, NOT the bucket ARN. This usually trips someone up.
  2. Make sure the S3 object prefix matches the SES rule. (Of course you don't need to use a prefix, but I think it is more informative)
- 3. Because we are using an external S3 bucket, we must specify `existing: true`. (Reminder: if you have chosen not to manage your own bucket then you don't need this and serverless will create it for you, BUT tearing down the function will also delete the bucket.)
+ 3. Because we are using an external S3 bucket, we must specify `existing: true`. (Reminder: if you have chosen not to manage your own bucket then you don't need this and Serverless will create it for you, BUT tearing down the function will also delete the bucket.)
 
 ## Wrap Up
 
