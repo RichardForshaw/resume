@@ -1,0 +1,77 @@
+---
+layout: post
+title:  "Book Review 2023"
+description: "2023 was not quite as successful as 2022 for reading, but I still came across a few that I learned a lot from or would recommend to others. Here are my favourites for the year."
+tags:
+    - Books
+author: Richard Forshaw
+---
+
+I wasn't quite up to a book a week in 2023, but not too far off. 52 weeks and 40 books later, there was still plenty that I learned and plenty I enjoyed.
+
+My reading habits stayed diverse, reading books from Law to Biology, Polar Exploration to Cricket and classic authors (Oscar Wilde) to modern (Madeline Miller). I think diversity is key, and this year I have already read on Science Fiction, Buddhism, Death Row Inmates and Philosophy of Mescalin.
+
+So hopefully my 5 picks below will pique someone's interest in reading outside their regular aisle. They are presented in order that I read them. For my full 2023 list, go to [my Goodreads profile](https://www.goodreads.com/user/show/123987656-richard-f).
+
+
+-----
+<span class="book-cover">
+[![Book Cover](https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1383718290i/13079982.jpg)](https://www.goodreads.com/book/show/13079982-fahrenheit-451)
+</span>
+
+### Fahrenheit 451
+
+Imagine a world without books, where books are contraband, existing underground, and there are people (the 'Firemen') hired to seek them out and burn them. But the real contraband is not the books; it is history, ideas and free-thinking. You could say that this is a poor-man's "1984", and I read both in the same year. It is true that "1984" goes a lot deeper but it also a much tougher read. The reason I would pick "Fahrenheit 451" is that the present-time depicted in the novel could much more easily be interpreted as our present day compared to "1984".
+
+As well as a warning against censorship, "Fahrenheit 451" is a love-story for books and for reading, and an exploration that a book is much more than just a collection of words bound together in a shelf. The ideas have not aged and it is worth appearing on anyone's reading list.
+
+<span class="book-cover">
+[![Book Cover](https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1509876857i/35657708.jpg)](https://www.goodreads.com/book/show/35657708-how-to-build-a-car)
+</span>
+
+### How To Build A Car
+
+I used to work in Formula-1, in the same company as Adrian Newey, so when this came up as a special deal on Kindle I grabbed it. I did not really know what to expect, but I was very surprised and I raced through it. It is not just a book on building cars (although any F1 and Newey fans are in for a treat), it is a book on drive, passion, innovation and hard work, and a reminder to us that to be successful you cannot cut corners on any of these.
+
+For anyone interested in F1 in general, it also contains plenty of glimpses behind the curtain at the politics, power-plays and spectacle of F1, altogether providing a very healthy mix. The writing style is not top-notch but it is very easy to read and will satisfy both the F1 fan and those interested in the mind of the industry's top talent.
+
+<span class="book-cover">
+[![Book Cover](https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1638985359i/58709514.jpg)](https://www.goodreads.com/book/show/58709514-nasty-brutish-and-short)
+</span>
+
+### Nasty, Brutish and Short
+
+I came across this while listening to an episode of "Freakonomics" featuring it's author. The discussion grabbed me and so I bought the book. I think the premise is excellent, not just because it shows that anyone can be a philosophical thinker, but because the ideas are presented in a way that is not intimidating for us adults who may think that philosophy is intimidating (except in a couple of places he does go a bit deep).
+
+The topics are wonderful and will always be relevant, including some discussion on sex and gender that really opened my eyes and is highly recommended contemporary reading. For anyone just interested in thinking, or looking how to answer questions from your kids in a more meaningful way, this is worth a look.
+
+
+<span class="book-cover">
+[![Book Cover](https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1336930564i/193755.jpg)](https://www.goodreads.com/book/show/193755.The_Diving_Bell_and_the_Butterfly)
+</span>
+
+### Diving Bell and Butterfly
+
+An incredible touching read, so good that I read it twice back-to-back. Written by a man who suffered a debilitating stroke that left him with 'Locked-In-Syndrome" and only able to communicate by blinking one eye, this is a moving exploration of the gift of life.
+
+Short but full of meaning, you will never look upon things like the smell of frying potatoes and the touch of your child's hand in the same way again.
+
+<span class="book-cover">
+[![Book Cover](https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1388179842i/61505.jpg)](https://www.goodreads.com/book/show/61505.A_Little_History_of_the_World)
+</span>
+
+### Little History Of The World
+
+I bought this book for my children as a way to get interested in History. But I found that I couldn't give it to them until I had finished it! After suffering through hours or dry and boring history at school, I wished that I had this book available to me back then.
+
+From revealing the importance of the discovery of writing and maths, to describing possibly the greatest battles in the world, to unwrapping the twisted history if Christianity with the very shape of Europe itself, this book is truly engaging, even if it is written for children and young adults. I have no shame in the enjoyment it brought me in reading it. Buy it for yourself and for your children.
+
+<span class="book-cover">
+[![Book Cover](https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1447957962i/25744928.jpg)](https://www.goodreads.com/book/show/25744928-deep-work)
+</span>
+
+### Honorable Self-Improvement Mention: Deep Work
+
+Although I didn't give this book 5-stars, it is a worthy mention here and probably the best self-improvement book I read in 2023. Cal Newport praises the value of 'Deep Work' without distraction, and during 2023 I found my own ways to get into 'the zone', including a little help from this book. The observations I made agree with Newport's and I still have some of those habits in practice.
+
+Some of his discussion was a little unclear, but unlike other books like this it comes with a lot of practical and useful advice and tips, not just the arguments. Having also recently read 'Essentialism' and 'Atomic Habits', I think 'Deep Work' is probably the best starting point, especially for those in the thought-worker industry like Software Development.
