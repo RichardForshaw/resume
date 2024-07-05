@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "Vietnam: "
-description: "2 years in Vietnam were not enough for us But for those with an opportunity to go, here are my thoughts on our time there."
+title:  "Retrospective: 2 years in Vietnam"
+description: "Our time in Vietnam were not quite enough... But for those with an opportunity to go, here are my thoughts on our time there."
 tags:
     - Personal
     - Travel
@@ -25,7 +25,7 @@ Almost everywhere you can see the busy-ness that afflicts the city, and at nearl
 
 ![6 people on a bike](./images/Vietnam/6-on-a-bike.jpg) ![flowers on a bike](./images/Vietnam/delivering-flowers.jpg)
 
-I loved the energy of the street - everywhere you look, something iss happening. Whether that be people queued at a 'Bún' stall for noodles, or a Nước Mía stall for sugar-cane juice, or a giant pot-plant being delivered on a motorbike, or in fact just about anything from bunches of flowers to washing machines to 100 balloons, families on the back of a motorbike (6 was the record - above) or just off to the park with their 2 dogs (yes, on a motorbike of course). The hustle and bustle was not hidden in offices and department stores - it was around me all the time.
+I loved the energy of the street - everywhere you look, something is happening. Whether that be people queued at a 'Bún' stall for noodles, or a Nước Mía stall for sugar-cane juice, or a giant pot-plant being delivered on a motorbike, or in fact just about anything from bunches of flowers to washing machines to 100 balloons, families on the back of a motorbike (6 was the record - above) or just off to the park with their 2 dogs (yes, on a motorbike of course). The hustle and bustle was not hidden in offices and department stores - it was around me all the time.
 
 ## Food
 
