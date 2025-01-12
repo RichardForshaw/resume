@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "Book Review 2023"
-description: "2023 was not quite as successful as 2022 for reading, but I still came across a few that I learned a lot from or would recommend to others. Here are my favourites for the year."
+title:  "Book Review 2024"
+description: "2024 saw success in reading quantity, but maybe not in reading quality. Nevertheless, some titles shone through. Here are my favourites for the year."
 tags:
     - Books
 author: Richard Forshaw
