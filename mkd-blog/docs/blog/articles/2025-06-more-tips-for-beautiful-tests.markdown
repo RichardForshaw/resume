@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "Beautify Your Tests and Test Better!"
-description: "Depite having many tests, testing is still difficult and encouraging TDD is harder. When an old test breaks, knowing what has happened is difficult. By beautifying our tests, we made testing easy and fun again!"
+title:  "Make Testing Great Again: 4 tips to write more effective tests"
+description: "After writing about Domain-Specific testing languages, I identified some more effective ways to make your testing better for your company, your developers and yourself. Are you ready to make testing great again?"
 tags:
     - Software Development
     - BDD
