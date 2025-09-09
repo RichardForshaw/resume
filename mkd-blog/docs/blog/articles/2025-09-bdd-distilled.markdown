@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "BDD Distilled"
-description: "Creating software is hard. If you are a senior leader you may be using BDD... or you may think you are using it. Is there something you're missing?"
+description: "Creating software is hard. If you are a senior leader you may be using BDD... or you may **think** you are using it. Is there something you're actually missing?"
 tags:
     - Software Development
     - BDD
@@ -26,11 +26,11 @@ Every now and again I revisit the BDD expert literature so that I am sure that I
 The most important thing about getting anything done in a software team is communication. Translating from something the business wants into a set of features is fraught with danger, expecially in larger organisations.
 
 Consider the levels of communication that a new idea has to go through to get into a software product:
- 1. The board or upper management want to exploit a need in the market ("People find it hard to do their taxes, let's help them!")
- 2. This then needs to be translated into specific problem for a user of your product ("People find it hard to tally up their platform earnings over the tax period.")
- 3. This then needs to be translated into a feature that solves that problem and provides value ("OK, Let's create an 'export earnings' feature!")
- 4. This needs to be further refined to match the specifics of the problem ("The system will be able to export a user's earnings, providing a monthly summary of earnings with tax, GST and deductable components calculated and visible")
- 5. This then needs to be translated into code and tested (way too many steps here to go into!)
+  1. The board or upper management want to exploit a need in the market ("People find it hard to do their taxes, let's help them!")
+  1. This then needs to be translated into specific problem for a user of your product ("People find it hard to tally up their platform earnings over the tax period.")
+  1. This then needs to be translated into a feature that solves that problem and provides value ("OK, Let's create an 'export earnings' feature!")
+  1. This needs to be further refined to match the specifics of the problem ("The system will be able to export a user's earnings, providing a monthly summary of earnings with tax, GST and deductable components calculated and visible")
+  1. This then needs to be translated into code and tested (way too many steps here to go into!)
 
 It's important to realise that every one of these steps is important and is solved by communication. Jumping from step 2 to step 5 may seem like an efficient shortcut, but it will result in assumptions being made about the expected feature. This is because the people with the knowledge of the customer and their needs will be operating with different contextual information compared to the people who know how the product currently works.
 
