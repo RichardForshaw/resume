@@ -26,6 +26,7 @@ Every now and again I revisit the BDD expert literature so that I am sure that I
 The most important thing about getting anything done in a software team is communication. Translating from something the business wants into a set of features is fraught with danger, expecially in larger organisations.
 
 Consider the levels of communication that a new idea has to go through to get into a software product:
+
   1. The board or upper management want to exploit a need in the market ("People find it hard to do their taxes, let's help them!")
   1. This then needs to be translated into specific problem for a user of your product ("People find it hard to tally up their platform earnings over the tax period.")
   1. This then needs to be translated into a feature that solves that problem and provides value ("OK, Let's create an 'export earnings' feature!")
