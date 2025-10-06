@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  AI Psychosis: Who is really the delusional one?"
+title:  "AI Psychosis: Who is really the delusional one?"
 description: "The term 'AI psychosis' is gaining traction in the media. It's true that some people are susceptible to this, but who is really suffering from the delusions?"
 tags:
     - AI
