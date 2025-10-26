@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Why should we iterate?"
+title:  "Why Should We Iterate?"
 description: "Iteration is popular among agilists as a core behaviour in building software. On the surface we might understand why this is so, but is there more to understand about why we should move forward in small steps?"
 tags:
     - agile
@@ -24,7 +24,7 @@ Why do we make these decisions? Usually it is to get to an end goal. As a profes
 
 If we can accept this, then it leads to the next question: why do we deliberate so much over decisions? The typical answer is because decisions require information, and the best way to make a good decision is to gather as much information as we can and use it to inform us.
 
-This however leads us to an important about that information: most of the information we gather is in the form of **predictions**, and we are just as bad at making predictions as we are at making decisions.
+This however leads us to an important fact about that information: most of the information we gather is in the form of **predictions**, and we are probably worse at making predictions as we are at making decisions.
 
 ### Predicting
 
@@ -53,7 +53,7 @@ and according to popular philosophical thought:
   
 When we gather information, we believe we are *reducing uncertainty* and therefore reducing that gap, ultimately reducing our stress. But is this really just a placebo? If this information that we gather is usually unreliable, are we really just delaying our stress until a later date?
 
-Another reason why we get stressed over large decisions is the fear of making mistakes. If we keep our decisions large and filled with uncertainty the risk of making a mistake is larger and that gap between our expectations and reality is not only psychological but also temporal; the expectations we have now will not be resolved with reality for a long time. I'm sure you have had to sit nervously waiting for a test result or a piece of feedback, perhaps biting your nails and tapping your foot. Not only did you need to wait for this resolution, but it was also out of your control. All of these add up to more stress: uncertainty, time and control.
+Another reason why we get stressed over large decisions is the fear of making mistakes. If we keep our decisions large and filled with uncertainty, the risk of making a mistake is larger and that gap between our expectations and reality is not only psychological but also temporal; the expectations we have now will not be resolved with reality for a long time. I'm sure at one time you have had to sit nervously waiting for a test result or a piece of feedback, perhaps biting your nails and tapping your foot. Not only did you need to wait for this resolution, but it was also out of your control. All of these add up to more stress: uncertainty, time and control.
 
 ![Assorted Lego](./images/assorted_lego.jpg)
 
@@ -63,11 +63,11 @@ These, I think, are core reason why we need to iterate in small steps. Some peop
 
 The core effects of this are:
 
- 1. we **really are** reducing uncertainty by gathering information. The difference is that the information gathered this way is **no longer a prediction**. It is real. You have thrown out a small experiment and gathered actual data, whether that is new knowledge about your project or the customer.
+ 1. we **really are** reducing uncertainty by gathering information. The difference is that the information gathered this way is **no longer a prediction**. It is real. You have thrown out a small experiment and gathered actual data: new knowledge about your project, the customer or something else.
  2. the time between starting the experiment and getting the results is reduced. We no longer have to wait months or even years to receive information we can actually act on. It can come in weeks or days.
- 3. small, iterative experiments allows us to take back control. Each iteration allows us to make an adjustment to correct a small assumption that we now know to be wrong. Is the customer reaction good or bad? What was the actual cost of this iteration? Is the next priority actually the next priority?
+ 3. small, iterative experiments allows us to take back control. Each iteration allows us to make an adjustment, perhaps to correct a small assumption that we now know to be wrong. Is the customer reaction good or bad? What was the actual cost of this iteration? Is the next priority actually the next priority?
 
-How does this affect our decisions? Two-fold: they will be more informed, the more experiments you make, and they will be smaller. Smaller decisions are easier to make, and you are more likely to accept a 'just do it' mindset because there is less risk.
+How does this affect our decision-making? Two-fold: they will be more informed (based on the more experiments you make) and they will be smaller. Smaller decisions are easier to make, and you are more likely to accept a 'just do it' mindset because there is less risk.
 
 Harvard professor Dr Ellen Langer teaches us it's better to [make decisions quickly and deal with the consequences](https://www.youtube.com/shorts/_bctmXiPsSU). You usually can't really know if one decision will be better than its alternative. But you can make a small decision quickly, measure it, learn from it and make a better decision next time, all the while feeling happier about it.
 
