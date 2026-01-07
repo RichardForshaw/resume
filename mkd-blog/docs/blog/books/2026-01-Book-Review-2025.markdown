@@ -1,0 +1,87 @@
+---
+layout: post
+title:  "Book Review 2025"
+description: "2025 saw success in reading quantity, but maybe not in reading quality. Nevertheless, some titles shone through. Here are my favourites for the year."
+tags:
+    - Books
+author: Richard Forshaw
+---
+
+As usual I set myself a 40-book target for 2025. I think this is achievable as it's a little over 3 books a month. I didn't quite get there this time (38), but still a good effort.
+
+Again I managed to read a good cross-section, including a bit of fiction again which keeps me sane from too much non-fiction! I also joined a non-fiction book club which meant that some of my reading was outside of what I would usually read, but I think that's a good thing.
+
+My rough breakdown of reading was:
+
+ - Non-fiction: 
+   * Science/Tech/Business: 4
+   * Philosophy/Psychology: 5
+   * Self Help/Improvement: 4
+   * History/Biography: 11
+   * Society/Current Affairs: 6
+ - Fiction: 8
+
+So hopefully my 5 favourite picks below will provide some inspiration to someone! They are presented in order that I read them. For my full 2025 list, go to [my Goodreads profile](https://www.goodreads.com/user/show/123987656-richard-f).
+
+(For the first year there is no fiction in my recommendation list, which I was surprised at. But in the interest of supporting a local author, if you like crime thrillers then check out (Sugar Beach)[https://geoffdair.com.au/] by Geoff Dair)
+
+-----
+<span class="book-cover">
+[![Book Cover](https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1677891954i/72129792.jpg)](https://www.goodreads.com/book/show/40081165-the-curse-of-bigness)
+</span>
+
+### The Curse Of Bigness
+
+Despite being 7 years old, this is still an incredibly relevant read. Tim Wu does a brilliant yet concise job of revealing the history of monopolies, cartels and their influence on governments and the world order including some shocking history which is unfortunately prudent again today.
+
+Short and accessible, yet packing a punch, this is arguable essential reading for anyone wishing to comment on modern-day tech-monopolies which now includes the AI giants.
+
+
+<span class="book-cover">
+[![Book Cover](https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1565526670i/50887097.jpg)](https://www.goodreads.com/book/show/50887097-why-fish-don-t-exist)
+</span>
+
+### Why Fish Don't Exist
+
+This book surprised me. I can't remember why I picked it up but I'm glad that I did. Part historical biography, part self-help, part science-history but altogether fascinating. Centered around one man (David Starr Jordan) and his personal quest to label all the fish in the world (back when taxonomy was a noble pursuit), Lulu Miller tracks his obsession, downfall, resurrection and downfall again, mapped against her own quest to find meaning in her life and strength to overcome obstacles. But with a few twists which show us that the figures that we look back on are not always who they seem to be.
+
+
+<span class="book-cover">
+[![Book Cover](https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1311647938i/718477.jpg)](https://www.goodreads.com/book/show/718477.A_Short_History_of_the_World)
+</span>
+
+### A Short History Of The World
+
+This one was a little bit of a cheat because I listened to it as an audiobook. I started listening to it with my son in the car, mainly because it started off with the creation of the earth and the reign of the dinosaurs, and it also had the most amazing dramatic narrator who breathed life into every sentence. However as the chapters went on, through the extinction of the dinosaurs, the rise of mammals, the cradles of civilisation, the creation of the human empires... I was hooked.
+
+You may know H G Wells for his fictional contributions, but it seems he was also a remarkable historian, and this undertaking, spanning from the creation of the solar system to the end of the First World War, is quite stunning. The chapters are arranged so that it is easy to listen to on and off, and I found that whenever I walked anywhere I had to listen to another chapter. I recommend you try it as well.
+
+<span class="book-cover">
+[![Book Cover](https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1714640686i/99940735.jpg)](https://www.goodreads.com/book/show/99940735-money)
+</span>
+
+### Money: A Story of Humanity
+
+I had previously read Niall Ferguson's "The Ascent Of Money" which was a fascinating journey through the creations of all the mechanisms that we see in use today. David McWilliams' "Money" would seem like more of the same, and by its nature covers some of the same inventions, but ties them to the development of modern society. As such it is, as the author claims, a 'story of humanity'.
+
+I would say this is more accessible than Niall Ferguson's book, but perhaps also more relatable, as it reveals how many of the leaps taken by society through history were most likely only enabled (or catalysed) by new inventions of how money worked. From trading, credit and banks, to coins, mortgages and the church, I found myself learning about both money and European history.
+
+<span class="book-cover">
+[![Book Cover](https://m.media-amazon.com/images/S/compressed.photo.goodreads.com/books/1659407155i/61714633.jpg)](https://www.goodreads.com/book/show/61714633-the-wager)
+</span>
+
+### The Wager
+
+I'm finding myself loving maritime adventures more and more. Perhaps there is something about those times where great risks were taken for great reward. This particular book tells the tale of The Wager which was shipwrecked after navigating around Cape Horn in search of a Spanish Galleon laden with treasure.
+
+But that is only the beginning. The survivors then spent several months on a barren island near Chile's southern coast desparately trying to survive. What follows is a tale of mutiny, conspiracy and murder, followed by a remarkable journey back home to be met not only with fame and adulation but with a highly suspicious court-martial. It is truly cinematic and David Grann does enough for you to just want to read one more chapter.
+
+### Honorable Mention: How To Think About AI
+
+https://www.goodreads.com/book/show/220298468-how-to-think-about-ai
+
+
+With the AI explosion well underway, and opinions swirling around the workplace and social media, I thought it would be prudent to undertake some informed reading about the topic, rather than rely on the opinions from the media in general. The rapid rise of AI is concerning on numerous fronts, not only the potential revolution in business efficiency and the impact on jobs, but also around society, democracy and (without sounding too sensationalist myself) the future of humanity.
+
+Richard Susskind, with his background in AI and Law, does a grounded and well-researched job in reviewing the history of AI, the potential trajectories, the risks in play and what we should be doing about it. He has ideas which are relevant not only to AI but to the wider sphere of how to handle new technology, and makes very rational points that the application of this new technology should not be left solely in the hands of its current pioneers.
+
