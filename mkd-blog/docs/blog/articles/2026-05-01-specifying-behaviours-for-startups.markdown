@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "The Behaviour Gap 1: Is your tech team building the right product?"
+title:  "The Behaviour Gap (Pt 1): Is your Tech Team Building the RightPproduct?"
 description: "Under-defining your system's behaviour is the best way to lead to frustration, especially for startups and founders. Can we find the answer in some old and new techniques?"
 tags:
     - agile
@@ -87,6 +87,7 @@ And on it went... after about 30 minutes, we had agreed the behaviour on signing
 When I was working in complex safety-related systems, we often referred to the "V" model of Verification and Validation. The way of remembering each was:
 
 > _Verification_: we are building the system right (correctly)
+
 > _Validation_: we are building the right system
 
 As you went down the 'V', you started with high-level system requirements and moved down into low-level modules and code. Then on the corresponding side, you tested each level of specification.
@@ -125,20 +126,20 @@ These seem like reasonably high-level User Stories, which need to work together.
 
 #### The "Example Mapping" Meeting
 
-This is typically where a session to decompose the stories into rules and behaviours is necessary. As highlighted before, _discussion is key_, and the parties involved should not be afraid to ask questions. This is the purpose of an ["Example Mapping" meeting](https://cucumber.io/blog/bdd/example-mapping-introduction) meeting, and I would expect questions to be raised like:
+This is typically where a session to decompose the stories into rules and behaviours is necessary. As highlighted before, _discussion is key_, and the parties involved should not be afraid to ask questions. This is the purpose of an ["Example Mapping" meeting](https://cucumber.io/blog/bdd/example-mapping-introduction), and I would expect questions to be raised like:
 
  * _"What if the credit card is incorrect or expired?"_
-   - "Then the user should be told there is an error."
+    - "Then the user should be told there is an error."
  * _"And what would happen then?"_
-   - "They can try again or cancel"
+    - "They can try again or cancel"
  * _"What happens when they cancel?"_
-   - "They revert to the free plan"
+    - "They revert to the free plan"
  * _"What about if a payment fails on an existing subscription"_
-   - "Then their account is suspended"
+    - "Then their account is suspended"
  * _"You mean they will log in one day and have a suspended account?"_
-   - "You're right, we should give them warnings if we know their card is about to expire"
+    - "You're right, we should give them warnings if we know their card is about to expire"
  * _"How many warnings?"_
-   - "Weekly from one month before"
+    - "Weekly from one month before"
 
 Bringing an inquisitive mind to a discussion like this should serve to clarify many of these issues, and bring about a tight set of rules and examples. Every issue raised here is a question or assumption that is avoided once the development team starts work, and an opportunity to synchronise your expectations.
 
