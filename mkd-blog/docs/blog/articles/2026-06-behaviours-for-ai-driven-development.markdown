@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "The Behaviour Gap 2: Enhancing your AI prompts with boundaries and focus."
-description: "In Part 1, we looked at the importance of defining product behaviours. Now we look at how this can actually benefit your AI agents and accelerate development."
+description: "In Part 1, we looked at the importance of defining product behaviours. Now we can look at how this can actually benefit your AI agents and augment and accelerate your spec-driven development."
 tags:
     - agile
     - software engineering
@@ -12,7 +12,7 @@ author: Richard Forshaw
 
 In the [previous post](./2026-05-01-specifying-behaviours-for-startups.markdown), I looked at how important it is to identify and work with the behaviours required by your product; defining these early gives the whole team a 'Ubiquitous Language', and validating against them allows you to close the loop with agreed definitions of functionality, ultimately avoiding misunderstandings and painful re-work.
 
-With AI tools so prevalent, it is easy to think that these can turbo-charge your way to success, but as with all tools, these must be used with caution. I've been caught in multiple traps and seen others flounder in similar ways, resulting in simply replacing the problems you are solving with new ones. Specifically I'll focus on three:
+With AI coding agents so prevalent, it is easy to think that these can turbo-charge your way to successful AI-driven development, but as with all tools, these must be used with caution. I've been caught in multiple traps and seen others flounder in similar ways, resulting in simply replacing the problems you are solving with new ones. Specifically I'll focus on three:
 
  - **Vagueness and Hallucinations**: Are you enabling hallucinations?
  - **Production vs Productivity**: Just because you have a long session doesn't make it a valuable session
@@ -30,11 +30,11 @@ The additional problem presented by LLMs is their tendency to hallucinate. This 
 
 Imagine asking your new personal assistant: "Can you book me a haircut tomorrow". They will not know your haircut preferences, your favourite location, your availability according to your diary, and that one time you had a really bad result. They will just book something that they think is most likely to be right, and will also be tainted with their own biases. The request has to be augmented with this information for it to be meaningful to you, and unlike a personal assistant, you typically have to provide this information to an LLM *all the time*.
 
-### AI Interrogation
+### AI "Interrogation" prompting
 
 A technique I have seen that works well is the "Grill Me" skill presented in the excellent [video by Matt Pocock](https://www.youtube.com/watch?v=v4F1gFy-hqg). In it he suggests that you instruct an LLM to basically interrogate you... but in a nice way:
 
-![Grill me](./images/grill-me.jpg)
+![Using the grill-me technique for better LLM prompting](./images/grill-me.jpg)
 
 I have tried this, and it works brilliantly. Continuing an example from [the previous post](./2026-05-01-specifying-behaviours-for-startups.markdown#lets-get-real) where we needed to define subscription behaviour, I applied this "relentless interviewing" technique with the following results:
 
@@ -147,7 +147,7 @@ These rules go all the way back to the [Agile Manifesto](https://agilemanifesto.
 
 ## Wrapping Up
 
-I have been experimenting a lot with Spec-Driven Development, which is certainly a big step up from straight-up vibe-coding or working on a function-by-function level. However for all its benefits there are still some shortcomings; while the cost of coding may be tending to zero, the cost of misunderstanding still remains high.
+I have been experimenting a lot with Spec-Driven Development, which is certainly a big step up from straight-up vibe-coding or working on a function-by-function level with the current AI code generation tools. However for all its benefits there are still some shortcomings; while the cost of coding may be tending to zero, the cost of misunderstanding still remains high.
 
 The lessons I have learned overlap with the techniques above:
 
