@@ -120,6 +120,8 @@ For example, I didn't start by letting AI agents loose on a project from the get
  - Assisting with code-review, and then fine-tuning and up-skilling this behaviour
  - Writing code for single PRs
 
+![Colourful ice cream toppings](./images/tutti%20frutti%20toppings.jpg)
+
 These are also examples of using AI for the 3 "C"s: to *critique*, *collaborate* or *create*. I started in this order... first of all critiquing (e.g. code reviews). Then collaboration (assisting with writing test scenarios) and finally creation (write all of this code for me).
 
 I spoke to someone yesterday who has just started orchestrating a team of agents to go from new feature requirement to deployable code, but that wasn't his entry point. He has been using and learning the skills needed to be able to do this, and is now comfortable to let his agents loose. But he didn't jump straight on to a MotoGP bike; he had to learn to cycle first.
