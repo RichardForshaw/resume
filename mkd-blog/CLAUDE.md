@@ -1,6 +1,6 @@
 # mkd-blog/ - blog source (MKDocs)
 
-Builds into `www.developdeploydeliver.com`.
+Framework and content for `www.developdeploydeliver.com` website.
 
  * `docs/blog/articles/`, `docs/blog/books/` - markdown content
  * `cinder/` - custom MKDocs theme

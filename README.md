@@ -81,6 +81,8 @@ The blog lives in `mkd-blog/` and is built with [MKDocs](https://www.mkdocs.org/
 
 `bin/insert-article-dates.sh` backfills a markdown `date` field from each article's first git commit. `blog-examples/` holds standalone example code written to accompany specific blog posts (JQ/log-analytics, pipelines) - illustrative only, not deployed.
 
+Articles without an explicit `date:` field are normally dated from git history by `mkdocs-blogging-plugin`, but the build image doesn't have git/`.git` available - a build hook (`mkd-blog/hooks/git_fallback.py`, registered via `hooks:` in `mkdocs.yml`) patches that fallback to use the file's filesystem date instead of the build timestamp, so undated posts still sort sensibly.
+
 # Serverless Functions
 
 Two independent Serverless Framework services deploy from this repo (`sls deploy` in each folder):

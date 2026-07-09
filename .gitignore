@@ -26,8 +26,9 @@
 sls*/.serverless
 sls*/node_modules
 
-# pytest cache
+# python cache
 */__pycache__
+*.pyc
 
 # mkdocs stuff
 mkd-blog/site/

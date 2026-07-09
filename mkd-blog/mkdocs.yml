@@ -3,6 +3,10 @@ site_url: http://localhost:8000/
 
 site_author: Richard Forshaw
 
+# Patches mkdocs-blogging-plugin's no-git-available fallback (see hooks/git_fallback.py)
+hooks:
+    - hooks/git_fallback.py
+
 theme:
     name: null
     custom_dir: cinder
