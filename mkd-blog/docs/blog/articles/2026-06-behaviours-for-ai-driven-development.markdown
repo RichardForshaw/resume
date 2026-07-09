@@ -3,10 +3,10 @@ layout: post
 title:  "The Behaviour Gap 2: Enhancing your AI prompts with boundaries and focus."
 description: "In Part 1, we looked at the importance of defining product behaviours. Now we can look at how this can actually benefit your AI agents and augment and accelerate your spec-driven development."
 tags:
-    - agile
-    - software engineering
+    - Agile
+    - Software engineering
     - spec-driven-development
-    - ai
+    - AI
 author: Richard Forshaw
 ---
 

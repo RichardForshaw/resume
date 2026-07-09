@@ -7,7 +7,7 @@ tags:
     - CTO
     - agentic development
     - spec-driven-development
-    - ai
+    - AI
 author: Richard Forshaw
 ---
 

@@ -5,6 +5,7 @@ description: "Supporting a new company which is running on gut feel and passion 
 tags:
     - Software Development
     - CTO
+    - Startups
     - Software Management
     - Agile
 author: Richard Forshaw

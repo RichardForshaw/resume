@@ -3,8 +3,8 @@ layout: post
 title:  "Why Should We Iterate?"
 description: "Iteration is popular among agilists as a core behaviour in building software. On the surface we might understand why this is so, but is there more to understand about why we should move forward in small steps?"
 tags:
-    - agile
-    - software engineering
+    - Agile
+    - Software engineering
 author: Richard Forshaw
 ---
 

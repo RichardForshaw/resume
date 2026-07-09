@@ -3,10 +3,10 @@ layout: post
 title:  "The Behaviour Gap (Pt 1): Is your Tech Team Building the Right Product?"
 description: "Under-defining your system's behaviour is the best way to lead to frustration, especially for startups and founders. Can we find the answer in some old and new techniques?"
 tags:
-    - agile
+    - Agile
     - software engineering
     - BDD
-    - startups
+    - Startups
 author: Richard Forshaw
 ---
 
