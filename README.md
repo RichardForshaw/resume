@@ -2,6 +2,15 @@
 
 GitHub storage for online resume. Also to demonstrate some simple CD from here to webpage.
 
+This single repository builds and deploys **two static websites** from one CodePipeline/CodeBuild pipeline (see `buildspec.yml`):
+
+ * `www.forshaw.tech` - the resume/landing page (`index.html`, `assets/`)
+ * `www.developdeploydeliver.com` - the blog (built from `mkd-blog/` with MKDocs)
+
+It also hosts the infrastructure-as-code for both sites (`aws-cf/`) and a serverless page-tracking API with its own queryable endpoints (`sls-pagetracker/`), plus a small serverless service for site health checks and the contact form (`sls/`).
+
+For a deep narrative on how the AWS infrastructure was built (gotchas, decisions, history), see [Description.md](Description.md). For a concise map of the repo intended for AI coding assistants, see [CLAUDE.md](CLAUDE.md).
+
 # First principles: updating this repo
 
 ## On Windows with SSH
@@ -16,6 +25,10 @@ GitHub storage for online resume. Also to demonstrate some simple CD from here t
  * Site will be automatically deployed
 
 # Test Locally
+
+## With a Dev Container
+
+`.devcontainer/` builds a VS Code Dev Container from the root `Dockerfile` (Python + Node + Serverless Framework + MKDocs + Claude Code CLI) - a ready-to-use environment for blog builds and `sls` deploys.
 
 ## With Docker
 
@@ -63,6 +76,17 @@ Note that you need to provide:
  * Dynamo
 
 # The Blog
+
+The blog lives in `mkd-blog/` and is built with [MKDocs](https://www.mkdocs.org/) using a custom theme (`mkd-blog/cinder/`). Content is markdown under `mkd-blog/docs/blog/` (`articles/`, `books/`). `buildspec.yml` stamps the build date, points `mkdocs.yml` at the production URL, and runs `mkdocs build`, splitting the output into two CodePipeline artifacts for the two S3 buckets.
+
+`bin/insert-article-dates.sh` backfills a markdown `date` field from each article's first git commit. `blog-examples/` holds standalone example code written to accompany specific blog posts (JQ/log-analytics, pipelines) - illustrative only, not deployed.
+
+# Serverless Functions
+
+Two independent Serverless Framework services deploy from this repo (`sls deploy` in each folder):
+
+ * `sls/` (`wwwstatuscheck`) - `statuschecker` polls both sites every 30 min and alerts via SNS if down/too small; `contactformemail` handles `POST /contact_form` from the resume site via SES (+ optional Pushbullet notification).
+ * `sls-pagetracker/` (`sls-page-tracker`) - `pagetracker` parses new S3 access-log entries into a DynamoDB table (`PageTrackTable`); the queryable API is `POST /pageshare`, `GET /pagetotals`, `GET /pagehistory`.
 
 # Dynamo:
 

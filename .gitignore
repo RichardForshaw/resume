@@ -19,6 +19,9 @@
 # VSCode
 .vscode
 
+# Stray log files
+*.log
+
 # Serverless directories
 sls*/.serverless
 sls*/node_modules

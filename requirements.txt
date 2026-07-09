@@ -1,6 +1,6 @@
 mkdocs==1.4.2
 mkdocs-awesome-pages-plugin==2.8.0
-mkdocs-blogging-plugin==2.2.2
+mkdocs-blogging-plugin==2.2.11
 
 # My plugin: social sharing buttons
 git+https://github.com/RichardForshaw/mkdocs-social-buttons-plugin.git
